@@ -87,6 +87,7 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
   const [loadingMantra, setLoadingMantra] = useState(false);
   const [tasks, setTasks] = useState<{ id: string, text: string, completed: boolean }[]>([]);
   const [newTask, setNewTask] = useState('');
+  const [isAddingTask, setIsAddingTask] = useState(false);
   const [localSettingsOpen, setLocalSettingsOpen] = useState(false);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -199,8 +200,9 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
   const addTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTask.trim()) return;
-    setTasks([...tasks, { id: Math.random().toString(36).substr(2, 9), text: newTask, completed: false }]);
+    setTasks([...tasks, { id: Math.random().toString(36).substr(2, 9), text: newTask.trim(), completed: false }]);
     setNewTask('');
+    setIsAddingTask(false);
   };
 
   const updateSettings = (newSettings: PomodoroSettings) => {
@@ -586,9 +588,9 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
           ))}
         </div>
 
-        <form onSubmit={addTask} className="relative pt-2">
-          {newTask && newTask.trim() !== '' ? (
-            <div className="bg-white rounded-md p-4 space-y-4 animate-in slide-in-from-top-2 shadow-xl">
+        <div className="relative pt-2">
+          {isAddingTask ? (
+            <form onSubmit={addTask} className="bg-white rounded-md p-4 space-y-4 animate-in slide-in-from-top-2 shadow-xl">
               <Input
                 placeholder="What are you working on?"
                 value={newTask}
@@ -600,7 +602,10 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
                 <Button 
                   type="button" 
                   variant="ghost" 
-                  onClick={() => setNewTask('')}
+                  onClick={() => {
+                    setNewTask('');
+                    setIsAddingTask(false);
+                  }}
                   className="text-gray-500 font-bold h-8 text-xs"
                 >
                   Cancel
@@ -612,17 +617,17 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
                   Save Objective
                 </Button>
               </div>
-            </div>
+            </form>
           ) : (
             <button 
-              onClick={() => setNewTask(' ')}
+              onClick={() => setIsAddingTask(true)}
               className="w-full h-14 border-2 border-dashed border-white/40 rounded-md flex items-center justify-center gap-2 text-white/80 font-bold hover:bg-white/10 transition-all"
             >
               <Plus className="w-4 h-4" />
               <span className="text-xs uppercase tracking-widest">Add Objective</span>
             </button>
           )}
-        </form>
+        </div>
       </div>
     </div>
   );

@@ -595,7 +595,7 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
                 placeholder="What are you working on?"
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
-                className="border-none shadow-none text-base font-bold p-0 focus-visible:ring-0 placeholder:text-gray-300"
+                className="border-none shadow-none text-base font-bold p-0 focus-visible:ring-0 placeholder:text-gray-300 text-gray-800"
                 autoFocus
               />
               <div className="flex justify-end gap-2">

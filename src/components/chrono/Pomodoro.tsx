@@ -240,7 +240,7 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
             <button onClick={() => changeMode('long-break')} className={cn("px-3 py-1.5 rounded-md text-xs md:text-sm font-bold transition-all text-white", mode === 'long-break' ? "bg-black/15" : "hover:bg-black/5")}>Long Break</button>
           </div>
 
-          <div className="text-[100px] sm:text-[130px] md:text-[160px] leading-none font-black text-white tabular-nums mb-12 select-none tracking-tighter">
+          <div className="text-[100px] sm:text-[130px] md:text-[160px] leading-none font-black text-white tabular-nums mb-12 select-none tracking-tight">
             {formatTime(timeLeft)}
           </div>
 

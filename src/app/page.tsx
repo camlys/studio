@@ -1,7 +1,8 @@
+
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { Sun, Moon, RefreshCcw, Share2, Copy, Timer, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Sun, Moon, RefreshCcw, Share2, Copy, Timer, ChevronRight, Activity } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DateInput } from '@/components/chrono/DateInput';
@@ -21,6 +22,7 @@ export default function ChronoFlow() {
   
   const [results, setResults] = useState<CalculationResults | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const tickerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const savedDob = localStorage.getItem('chrono_dob');
@@ -56,8 +58,32 @@ export default function ChronoFlow() {
     localStorage.setItem('chrono_theme', theme);
   }, [theme]);
 
+  // Real-time ticking effect
+  useEffect(() => {
+    if (results) {
+      tickerRef.current = setInterval(() => {
+        setResults(prev => {
+          if (!prev) return null;
+          return {
+            ...prev,
+            totalSeconds: prev.totalSeconds + 1,
+            totalMinutes: Math.floor((prev.totalSeconds + 1) / 60),
+            totalHours: Math.floor((prev.totalSeconds + 1) / 3600),
+          };
+        });
+      }, 1000);
+    } else {
+      if (tickerRef.current) clearInterval(tickerRef.current);
+    }
+    return () => {
+      if (tickerRef.current) clearInterval(tickerRef.current);
+    };
+  }, [results === null]);
+
   const handleCalculate = useCallback(() => {
     setError(null);
+    if (tickerRef.current) clearInterval(tickerRef.current);
+
     if (activeTab === 'age') {
       if (!isValidDate(dob.day, dob.month, dob.year)) {
         setError("Invalid date.");
@@ -130,15 +156,14 @@ export default function ChronoFlow() {
       <main className="flex-grow container max-w-[900px] mx-auto px-2 py-3">
         <div className="flex flex-row gap-3 items-start h-full">
           
-          {/* Left Column: Calculator - Forced Side-by-Side even on small screens */}
-          <aside className="w-[120px] sm:w-[180px] shrink-0 space-y-3 sticky top-14">
-            <div className="space-y-0.5 px-1 text-center sm:text-left">
-              <h2 className="text-[9px] sm:text-sm font-headline font-extrabold tracking-tight text-foreground leading-tight">
-                Timeline <span className="text-primary">Master</span>
+          <aside className="w-[110px] sm:w-[160px] shrink-0 space-y-2 sticky top-14">
+            <div className="px-1">
+              <h2 className="text-[10px] sm:text-xs font-black uppercase tracking-tighter text-foreground/80 leading-none">
+                Chrono <span className="text-primary">Engine</span>
               </h2>
             </div>
 
-            <div className="glass-card !p-1.5 sm:!p-3 shadow-xl border-white/5">
+            <div className="glass-card !p-1.5 sm:!p-2.5 shadow-xl border-white/5">
               <Tabs 
                 value={activeTab}
                 className="w-full" 
@@ -148,25 +173,25 @@ export default function ChronoFlow() {
                 }}
               >
                 <TabsList className="grid w-full grid-cols-2 mb-2 bg-white/5 p-0.5 rounded-md h-6 sm:h-7">
-                  <TabsTrigger value="diff" className="rounded-[4px] text-[7px] sm:text-[9px] flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
+                  <TabsTrigger value="diff" className="rounded-[4px] text-[7px] sm:text-[9px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
                     Diff
                   </TabsTrigger>
-                  <TabsTrigger value="age" className="rounded-[4px] text-[7px] sm:text-[9px] flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
+                  <TabsTrigger value="age" className="rounded-[4px] text-[7px] sm:text-[9px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
                     Age
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="diff" className="space-y-1.5 animate-in fade-in slide-in-from-left-1 duration-200 mt-0">
-                  <DateInput label="Start" values={fromDate} onChange={setFromDate} />
-                  <div className="flex justify-center -my-1 relative z-10">
-                    <ChevronRight className="w-2 h-2 text-primary/40 rotate-90" />
+                <TabsContent value="diff" className="space-y-1 mt-0">
+                  <DateInput label="From" values={fromDate} onChange={setFromDate} />
+                  <div className="flex justify-center -my-0.5">
+                    <ChevronRight className="w-2 h-2 text-primary/30 rotate-90" />
                   </div>
-                  <DateInput label="End" values={toDate} onChange={setToDate} error={activeTab === 'diff' ? error || undefined : undefined} />
+                  <DateInput label="To" values={toDate} onChange={setToDate} error={activeTab === 'diff' ? error || undefined : undefined} />
                 </TabsContent>
 
-                <TabsContent value="age" className="space-y-1.5 animate-in fade-in slide-in-from-left-1 duration-200 mt-0">
+                <TabsContent value="age" className="space-y-1 mt-0">
                   <DateInput 
-                    label="Birth Date" 
+                    label="Birth" 
                     values={dob} 
                     onChange={setDob} 
                     error={activeTab === 'age' ? error || undefined : undefined} 
@@ -175,7 +200,7 @@ export default function ChronoFlow() {
               </Tabs>
 
               <Button 
-                className="w-full h-7 sm:h-8 mt-3 text-[8px] sm:text-[10px] font-bold rounded-md bg-primary hover:bg-primary/90 transition-all transform active:scale-[0.98] neon-glow"
+                className="w-full h-7 sm:h-8 mt-2.5 text-[8px] sm:text-[10px] font-black uppercase tracking-widest rounded-md bg-primary hover:bg-primary/90 transition-all transform active:scale-95 neon-glow"
                 onClick={handleCalculate}
               >
                 Calculate
@@ -183,25 +208,33 @@ export default function ChronoFlow() {
             </div>
           </aside>
 
-          {/* Right Column: Results Section */}
           <div className="flex-grow w-full min-w-0">
             {results ? (
-              <div className="space-y-2.5 animate-in fade-in slide-in-from-right-2 duration-300">
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 sm:gap-1.5">
-                  {/* Primary Age/Diff Breakdown */}
+              <div className="space-y-2 animate-in fade-in slide-in-from-right-2 duration-300">
+                {/* Live Ticker Status */}
+                <div className="flex items-center gap-1.5 px-1">
+                   <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                   <span className="text-[8px] uppercase font-bold tracking-[0.2em] text-accent">Real-time Precision Active</span>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-1.5">
                   <ResultCard label="Years" value={results.years} />
                   <ResultCard label="Months" value={results.months} />
                   <ResultCard label="Days" value={results.days} />
-                  
-                  {/* Total Counts in Decreasing Order */}
-                  <ResultCard label="Total Days" value={results.totalDays} />
-                  <ResultCard label="Total Hours" value={results.totalHours} />
-                  <ResultCard label="Total Minutes" value={results.totalMinutes} />
-                  <ResultCard label="Total Seconds" value={results.totalSeconds} />
-                  
-                  {/* Meta Information */}
                   <ResultCard label="Next Bday" value={results.nextBirthday} subLabel="Days" />
+                </div>
+
+                {/* Digital Clock Section (Decreasing Order) */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-1.5">
+                  <ResultCard label="Total Days" value={results.totalDays} />
+                  <ResultCard label="Total Hours" value={results.totalHours} className="border-primary/20" />
+                  <ResultCard label="Total Minutes" value={results.totalMinutes} className="border-primary/20" />
+                  <ResultCard label="Total Seconds" value={results.totalSeconds} className="border-primary/20" />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                   <ResultCard label="Zodiac" value={results.zodiac} />
+                  <ResultCard label="Leap Year" value={results.isLeapYear ? "Yes" : "No"} />
                 </div>
 
                 <FunFact years={results.years} months={results.months} days={results.days} />
@@ -216,10 +249,10 @@ export default function ChronoFlow() {
                 </div>
               </div>
             ) : (
-              <div className="h-full flex items-center justify-center border border-dashed border-white/5 rounded-xl min-h-[180px] sm:min-h-[200px] opacity-30">
+              <div className="h-full flex items-center justify-center border border-dashed border-white/5 rounded-xl min-h-[180px] sm:min-h-[220px] opacity-30">
                 <div className="text-center space-y-1">
-                  <Timer className="w-4 h-4 sm:w-5 sm:h-5 mx-auto text-muted-foreground" />
-                  <p className="text-muted-foreground text-[8px] sm:text-[9px] uppercase font-bold tracking-wider">Awaiting Data</p>
+                  <Timer className="w-4 h-4 sm:w-5 sm:h-5 mx-auto text-muted-foreground animate-spin-slow" />
+                  <p className="text-muted-foreground text-[8px] sm:text-[9px] uppercase font-bold tracking-widest">System Ready</p>
                 </div>
               </div>
             )}
@@ -228,10 +261,11 @@ export default function ChronoFlow() {
       </main>
 
       <footer className="py-2 text-center border-t border-white/5 glass">
-        <p className="text-muted-foreground text-[7px] sm:text-[8px] tracking-tight">
-          ChronoFlow v1.2 • Precision Engine
+        <p className="text-muted-foreground text-[7px] sm:text-[8px] tracking-widest uppercase font-medium">
+          ChronoFlow v1.5 • Atomic Precision Engine
         </p>
       </footer>
     </div>
   );
 }
+

@@ -31,20 +31,20 @@ export function FunFact({ years, months, days }: FunFactProps) {
   }, [years, months, days]);
 
   return (
-    <div className="glass-card mt-8 overflow-hidden relative group">
-      <div className="absolute top-0 right-0 p-4">
-        <Sparkles className="w-6 h-6 text-accent animate-pulse" />
+    <div className="glass-card !p-5 overflow-hidden relative group">
+      <div className="absolute top-0 right-0 p-3">
+        <Sparkles className="w-5 h-5 text-accent animate-pulse" />
       </div>
-      <h3 className="text-lg font-headline font-semibold text-accent mb-2 flex items-center gap-2">
+      <h3 className="text-base font-headline font-semibold text-accent mb-2 flex items-center gap-2">
         Did You Know?
       </h3>
       {loading ? (
-        <div className="space-y-2 animate-pulse">
-          <div className="h-4 bg-white/10 rounded w-full"></div>
-          <div className="h-4 bg-white/10 rounded w-5/6"></div>
+        <div className="space-y-1.5 animate-pulse">
+          <div className="h-3 bg-white/10 rounded w-full"></div>
+          <div className="h-3 bg-white/10 rounded w-5/6"></div>
         </div>
       ) : (
-        <p className="text-muted-foreground leading-relaxed italic">
+        <p className="text-muted-foreground text-xs leading-relaxed italic">
           "{fact || "Your age is a journey through time, filled with millions of heartbeats and countless memories."}"
         </p>
       )}

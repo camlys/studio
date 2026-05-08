@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DateInputValues } from '@/lib/date-utils';
@@ -34,44 +34,44 @@ export function DateInput({ label, values, onChange, error }: DateInputProps) {
   };
 
   return (
-    <div className="space-y-4">
-      <Label className="text-sm font-semibold uppercase tracking-wider text-primary/80">{label}</Label>
-      <div className="grid grid-cols-3 gap-4">
-        <div className="space-y-2">
+    <div className="space-y-3">
+      <Label className="text-[10px] font-bold uppercase tracking-widest text-primary/80">{label}</Label>
+      <div className="grid grid-cols-3 gap-2">
+        <div className="space-y-1">
           <Input
             ref={dayRef}
             placeholder="DD"
             value={values.day}
             onChange={(e) => handleInputChange('day', e.target.value)}
-            className="text-center text-lg h-14 bg-white/5 border-white/10 glass focus:neon-glow rounded-xl"
+            className="text-center text-base h-11 bg-white/5 border-white/10 glass focus:neon-glow rounded-lg px-1"
             maxLength={2}
           />
-          <p className="text-[10px] text-center text-muted-foreground uppercase font-medium">Day</p>
+          <p className="text-[9px] text-center text-muted-foreground uppercase font-medium">Day</p>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-1">
           <Input
             ref={monthRef}
             placeholder="MM"
             value={values.month}
             onChange={(e) => handleInputChange('month', e.target.value)}
-            className="text-center text-lg h-14 bg-white/5 border-white/10 glass focus:neon-glow rounded-xl"
+            className="text-center text-base h-11 bg-white/5 border-white/10 glass focus:neon-glow rounded-lg px-1"
             maxLength={2}
           />
-          <p className="text-[10px] text-center text-muted-foreground uppercase font-medium">Month</p>
+          <p className="text-[9px] text-center text-muted-foreground uppercase font-medium">Month</p>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-1">
           <Input
             ref={yearRef}
             placeholder="YYYY"
             value={values.year}
             onChange={(e) => handleInputChange('year', e.target.value)}
-            className="text-center text-lg h-14 bg-white/5 border-white/10 glass focus:neon-glow rounded-xl"
+            className="text-center text-base h-11 bg-white/5 border-white/10 glass focus:neon-glow rounded-lg px-1"
             maxLength={4}
           />
-          <p className="text-[10px] text-center text-muted-foreground uppercase font-medium">Year</p>
+          <p className="text-[9px] text-center text-muted-foreground uppercase font-medium">Year</p>
         </div>
       </div>
-      {error && <p className="text-xs text-destructive animate-pulse font-medium mt-2">{error}</p>}
+      {error && <p className="text-[10px] text-destructive animate-pulse font-medium mt-1">{error}</p>}
     </div>
   );
 }

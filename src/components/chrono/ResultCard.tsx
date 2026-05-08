@@ -15,19 +15,19 @@ export function ResultCard({ label, value, subLabel, className, delay }: ResultC
   return (
     <div 
       className={cn(
-        "glass p-6 rounded-2xl flex flex-col items-center justify-center text-center animate-fade-in-up",
+        "glass p-4 rounded-xl flex flex-col items-center justify-center text-center animate-fade-in-up",
         className
       )}
       style={{ animationDelay: delay }}
     >
-      <span className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-2">
+      <span className="text-[9px] uppercase tracking-widest text-muted-foreground font-bold mb-1">
         {label}
       </span>
-      <span className="text-3xl md:text-4xl font-headline font-bold text-primary neon-glow-sm">
+      <span className="text-xl md:text-2xl font-headline font-bold text-primary neon-glow-sm">
         {typeof value === 'number' ? value.toLocaleString() : value}
       </span>
       {subLabel && (
-        <span className="text-[10px] mt-1 text-accent font-medium uppercase">
+        <span className="text-[8px] mt-0.5 text-accent font-medium uppercase">
           {subLabel}
         </span>
       )}

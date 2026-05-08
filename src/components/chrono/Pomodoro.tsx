@@ -78,42 +78,33 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const pomodoroCountRef = useRef(0);
 
-  // Sync external dialog state
-  const isSettingsOpen = isExternalSettingsOpen !== undefined ? isExternalSettingsOpen : localSettingsOpen;
-  const setSettingsOpen = (open: boolean) => {
-    if (onExternalSettingsOpenChange) onExternalSettingsOpenChange(open);
-    setLocalSettingsOpen(open);
-  };
-
-  // Load settings
+  // Load settings once on mount
   useEffect(() => {
     const savedSettings = localStorage.getItem('chrono_pomodoro_settings');
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
         setSettings(parsed);
-        // Only update time if timer is not active
-        if (!isActive) {
-          const duration = mode === 'work' ? parsed.workDuration : 
-                           mode === 'short-break' ? parsed.shortBreakDuration : 
-                           parsed.longBreakDuration;
-          setTimeLeft(duration * 60);
-        }
+        // Set initial time based on loaded settings
+        const duration = mode === 'work' ? parsed.workDuration : 
+                         mode === 'short-break' ? parsed.shortBreakDuration : 
+                         parsed.longBreakDuration;
+        setTimeLeft(duration * 60);
       } catch (e) {
         console.error("Failed to parse settings", e);
       }
     }
-  }, [mode, isActive]);
+  }, []); // Run only on mount
 
-  // Sync Timer when settings change (if not active)
-  useEffect(() => {
-    if (!isActive) {
-      const duration = mode === 'work' ? settings.workDuration : 
-                       mode === 'short-break' ? settings.shortBreakDuration : 
-                       settings.longBreakDuration;
-      setTimeLeft(duration * 60);
+  // Sync external dialog state
+  const isSettingsOpen = isExternalSettingsOpen !== undefined ? isExternalSettingsOpen : localSettingsOpen;
+  const setSettingsOpen = (open: boolean) => {
+    if (onExternalSettingsOpenChange) {
+      onExternalSettingsOpenChange(open);
+    } else {
+      setLocalSettingsOpen(open);
     }
-  }, [settings.workDuration, settings.shortBreakDuration, settings.longBreakDuration, mode, isActive]);
+  };
 
   const fetchMantra = useCallback(async (currentMode: TimerMode, currentTask?: string) => {
     setLoadingMantra(true);
@@ -135,9 +126,16 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
       pomodoroCountRef.current += 1;
       const nextMode = pomodoroCountRef.current % settings.longBreakInterval === 0 ? 'long-break' : 'short-break';
       setMode(nextMode);
+      
+      const duration = nextMode === 'work' ? settings.workDuration : 
+                       nextMode === 'short-break' ? settings.shortBreakDuration : 
+                       settings.longBreakDuration;
+      setTimeLeft(duration * 60);
+
       if (settings.autoStartBreaks) setIsActive(true);
     } else {
       setMode('work');
+      setTimeLeft(settings.workDuration * 60);
       if (settings.autoStartPomodoros) setIsActive(true);
     }
   }, [mode, settings]);
@@ -147,7 +145,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
       timerRef.current = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
-    } else if (timeLeft === 0) {
+    } else if (timeLeft === 0 && isActive) {
       handleTimerComplete();
     }
 
@@ -156,6 +154,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
     };
   }, [isActive, timeLeft, handleTimerComplete]);
 
+  // Handle mode changes (UI state only)
   useEffect(() => {
     fetchMantra(mode, tasks.find(t => !t.completed)?.text);
     if (onModeChange) onModeChange(mode);
@@ -170,7 +169,6 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                      settings.longBreakDuration;
     setTimeLeft(duration * 60);
     setIsActive(false);
-    if (onModeChange) onModeChange(newMode);
   };
 
   const formatTime = (seconds: number) => {
@@ -186,9 +184,17 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
     setNewTask('');
   };
 
-  const saveSettings = (newSettings: PomodoroSettings) => {
+  const updateSettings = (newSettings: PomodoroSettings) => {
     setSettings(newSettings);
     localStorage.setItem('chrono_pomodoro_settings', JSON.stringify(newSettings));
+    
+    // Update current timer if not active
+    if (!isActive) {
+      const duration = mode === 'work' ? newSettings.workDuration : 
+                       mode === 'short-break' ? newSettings.shortBreakDuration : 
+                       newSettings.longBreakDuration;
+      setTimeLeft(duration * 60);
+    }
   };
 
   const sortedTasks = settings.checkToBottom 
@@ -270,7 +276,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                         <Input 
                           type="number" 
                           value={settings.workDuration} 
-                          onChange={(e) => saveSettings({...settings, workDuration: parseInt(e.target.value, 10) || 0})}
+                          onChange={(e) => updateSettings({...settings, workDuration: parseInt(e.target.value, 10) || 0})}
                           className="bg-muted border-none h-10 font-bold"
                           min={1}
                         />
@@ -280,7 +286,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                         <Input 
                           type="number" 
                           value={settings.shortBreakDuration} 
-                          onChange={(e) => saveSettings({...settings, shortBreakDuration: parseInt(e.target.value, 10) || 0})}
+                          onChange={(e) => updateSettings({...settings, shortBreakDuration: parseInt(e.target.value, 10) || 0})}
                           className="bg-muted border-none h-10 font-bold"
                           min={1}
                         />
@@ -290,7 +296,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                         <Input 
                           type="number" 
                           value={settings.longBreakDuration} 
-                          onChange={(e) => saveSettings({...settings, longBreakDuration: parseInt(e.target.value, 10) || 0})}
+                          onChange={(e) => updateSettings({...settings, longBreakDuration: parseInt(e.target.value, 10) || 0})}
                           className="bg-muted border-none h-10 font-bold"
                           min={1}
                         />
@@ -302,14 +308,14 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                     <Label className="text-xs font-bold text-muted-foreground">Auto Start Breaks</Label>
                     <Switch 
                       checked={settings.autoStartBreaks} 
-                      onCheckedChange={(v) => saveSettings({...settings, autoStartBreaks: v})} 
+                      onCheckedChange={(v) => updateSettings({...settings, autoStartBreaks: v})} 
                     />
                   </div>
                   <div className="flex items-center justify-between py-2">
                     <Label className="text-xs font-bold text-muted-foreground">Auto Start Pomodoros</Label>
                     <Switch 
                       checked={settings.autoStartPomodoros} 
-                      onCheckedChange={(v) => saveSettings({...settings, autoStartPomodoros: v})} 
+                      onCheckedChange={(v) => updateSettings({...settings, autoStartPomodoros: v})} 
                     />
                   </div>
                   <div className="flex items-center justify-between py-2">
@@ -317,7 +323,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                     <Input 
                       type="number" 
                       value={settings.longBreakInterval} 
-                      onChange={(e) => saveSettings({...settings, longBreakInterval: parseInt(e.target.value, 10) || 1})}
+                      onChange={(e) => updateSettings({...settings, longBreakInterval: parseInt(e.target.value, 10) || 1})}
                       className="bg-muted border-none h-10 w-20 font-bold text-right"
                       min={1}
                     />
@@ -335,14 +341,14 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                     <Label className="text-xs font-bold text-muted-foreground">Auto Check Tasks</Label>
                     <Switch 
                       checked={settings.autoCheckTasks} 
-                      onCheckedChange={(v) => saveSettings({...settings, autoCheckTasks: v})} 
+                      onCheckedChange={(v) => updateSettings({...settings, autoCheckTasks: v})} 
                     />
                   </div>
                   <div className="flex items-center justify-between">
                     <Label className="text-xs font-bold text-muted-foreground">Check to Bottom</Label>
                     <Switch 
                       checked={settings.checkToBottom} 
-                      onCheckedChange={(v) => saveSettings({...settings, checkToBottom: v})} 
+                      onCheckedChange={(v) => updateSettings({...settings, checkToBottom: v})} 
                     />
                   </div>
                 </div>
@@ -357,7 +363,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <Label className="text-xs font-bold text-muted-foreground">Alarm Sound</Label>
-                      <Select value={settings.alarmSound} onValueChange={(v) => saveSettings({...settings, alarmSound: v})}>
+                      <Select value={settings.alarmSound} onValueChange={(v) => updateSettings({...settings, alarmSound: v})}>
                         <SelectTrigger className="w-[140px] bg-muted border-none text-xs font-bold">
                           <SelectValue />
                         </SelectTrigger>
@@ -374,7 +380,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                         value={[settings.alarmVolume]} 
                         max={100} 
                         step={1} 
-                        onValueChange={([v]) => saveSettings({...settings, alarmVolume: v})}
+                        onValueChange={([v]) => updateSettings({...settings, alarmVolume: v})}
                       />
                     </div>
                   </div>
@@ -427,7 +433,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
         </div>
 
         <form onSubmit={addTask} className="relative pt-2">
-          {newTask ? (
+          {newTask && newTask.trim() !== '' ? (
             <div className="bg-white rounded-md p-4 space-y-4 animate-in slide-in-from-top-2 shadow-xl">
               <Input
                 placeholder="What are you working on?"

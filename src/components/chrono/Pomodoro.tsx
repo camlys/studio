@@ -46,7 +46,7 @@ export type PomodoroSettings = {
   darkModeWhenRunning: boolean;
   reminderMode: 'last' | 'first';
   reminderTime: number;
-  themeColor: 'red' | 'teal' | 'blue';
+  themeColor: string; // Supports 'red', 'teal', 'blue', 'purple', 'orange' or hex codes
 };
 
 const DEFAULT_SETTINGS: PomodoroSettings = {
@@ -67,7 +67,7 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
   darkModeWhenRunning: false,
   reminderMode: 'last',
   reminderTime: 0,
-  themeColor: 'red',
+  themeColor: '#ba4949', // Default Red
 };
 
 interface PomodoroProps {
@@ -96,6 +96,16 @@ export function Pomodoro({ onModeChange, onSettingsChange, isExternalSettingsOpe
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
+        // Map old preset names to hex if necessary
+        const themeMap: Record<string, string> = {
+          'red': '#ba4949',
+          'teal': '#38858a',
+          'blue': '#397097'
+        };
+        if (parsed.themeColor && themeMap[parsed.themeColor]) {
+          parsed.themeColor = themeMap[parsed.themeColor];
+        }
+        
         const mergedSettings = { ...DEFAULT_SETTINGS, ...parsed };
         setSettings(mergedSettings);
         if (onSettingsChange) onSettingsChange(mergedSettings);
@@ -213,6 +223,15 @@ export function Pomodoro({ onModeChange, onSettingsChange, isExternalSettingsOpe
     ? [...tasks].sort((a, b) => Number(a.completed) - Number(b.completed))
     : tasks;
 
+  const PRESET_COLORS = [
+    { name: 'Red', hex: '#ba4949' },
+    { name: 'Teal', hex: '#38858a' },
+    { name: 'Blue', hex: '#397097' },
+    { name: 'Purple', hex: '#7a5491' },
+    { name: 'Orange', hex: '#d98324' },
+    { name: 'Green', hex: '#518a38' },
+  ];
+
   return (
     <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 items-start justify-center py-4 animate-in fade-in duration-500">
       
@@ -230,9 +249,9 @@ export function Pomodoro({ onModeChange, onSettingsChange, isExternalSettingsOpe
 
           <button
             onClick={toggleTimer}
+            style={{ color: settings.themeColor }}
             className={cn(
-              "w-56 h-16 bg-white rounded-md text-2xl font-black uppercase tracking-widest transition-all active:translate-y-1 shadow-[0_6px_0_rgb(235,235,235)] active:shadow-none",
-              settings.themeColor === 'red' ? "text-[#ba4949]" : settings.themeColor === 'teal' ? "text-[#38858a]" : "text-[#397097]"
+              "w-56 h-16 bg-white rounded-md text-2xl font-black uppercase tracking-widest transition-all active:translate-y-1 shadow-[0_6px_0_rgb(235,235,235)] active:shadow-none"
             )}
           >
             {isActive ? 'STOP' : 'START'}
@@ -415,30 +434,31 @@ export function Pomodoro({ onModeChange, onSettingsChange, isExternalSettingsOpe
                     <Palette className="w-3.5 h-3.5" /> Theme
                   </div>
                   
-                  <div className="flex items-center justify-between">
-                    <Label className="text-xs font-bold text-muted-foreground/80">Color Themes</Label>
-                    <div className="flex gap-2">
-                       <div 
-                         onClick={() => updateSettings({...settings, themeColor: 'red'})}
-                         className={cn(
-                           "w-6 h-6 rounded-md bg-[#ba4949] cursor-pointer transition-all",
-                           settings.themeColor === 'red' && "ring-2 ring-primary ring-offset-2"
-                         )} 
-                       />
-                       <div 
-                         onClick={() => updateSettings({...settings, themeColor: 'teal'})}
-                         className={cn(
-                           "w-6 h-6 rounded-md bg-[#38858a] cursor-pointer transition-all",
-                           settings.themeColor === 'teal' && "ring-2 ring-primary ring-offset-2"
-                         )} 
-                       />
-                       <div 
-                         onClick={() => updateSettings({...settings, themeColor: 'blue'})}
-                         className={cn(
-                           "w-6 h-6 rounded-md bg-[#397097] cursor-pointer transition-all",
-                           settings.themeColor === 'blue' && "ring-2 ring-primary ring-offset-2"
-                         )} 
-                       />
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-bold text-muted-foreground/80">Color Palette</Label>
+                      <div className="flex flex-wrap gap-2 justify-end">
+                         {PRESET_COLORS.map(color => (
+                            <div 
+                              key={color.hex}
+                              onClick={() => updateSettings({...settings, themeColor: color.hex})}
+                              style={{ backgroundColor: color.hex }}
+                              className={cn(
+                                "w-6 h-6 rounded-md cursor-pointer transition-all border border-black/5",
+                                settings.themeColor === color.hex && "ring-2 ring-primary ring-offset-2 scale-110"
+                              )} 
+                              title={color.name}
+                            />
+                         ))}
+                         <div className="relative w-6 h-6 rounded-md overflow-hidden border border-black/10 group">
+                            <input 
+                              type="color"
+                              value={settings.themeColor}
+                              onChange={(e) => updateSettings({...settings, themeColor: e.target.value})}
+                              className="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer"
+                            />
+                         </div>
+                      </div>
                     </div>
                   </div>
 

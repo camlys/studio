@@ -29,9 +29,9 @@ import { Separator } from '@/components/ui/separator';
 export type TimerMode = 'work' | 'short-break' | 'long-break';
 
 export type PomodoroSettings = {
-  workDuration: number;
-  shortBreakDuration: number;
-  longBreakDuration: number;
+  workDuration: number; // total minutes
+  shortBreakDuration: number; // total minutes
+  longBreakDuration: number; // total minutes
   autoStartBreaks: boolean;
   autoStartPomodoros: boolean;
   longBreakInterval: number;
@@ -192,9 +192,15 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
   };
 
   const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    
+    const h = hrs > 0 ? `${hrs.toString().padStart(2, '0')}:` : '';
+    const m = mins.toString().padStart(2, '0');
+    const s = secs.toString().padStart(2, '0');
+    
+    return `${h}${m}:${s}`;
   };
 
   const addTask = (e: React.FormEvent) => {
@@ -230,6 +236,27 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
     { name: 'Orange', hex: '#d98324' },
     { name: 'Green', hex: '#518a38' },
   ];
+
+  const handleDurationChange = (type: 'work' | 'short' | 'long', unit: 'hr' | 'min', value: string) => {
+    const numValue = parseInt(value, 10) || 0;
+    const currentTotal = type === 'work' ? settings.workDuration : 
+                         type === 'short' ? settings.shortBreakDuration : 
+                         settings.longBreakDuration;
+    
+    const currentHrs = Math.floor(currentTotal / 60);
+    const currentMins = currentTotal % 60;
+
+    let newTotal = 0;
+    if (unit === 'hr') {
+      newTotal = (numValue * 60) + currentMins;
+    } else {
+      newTotal = (currentHrs * 60) + numValue;
+    }
+
+    if (type === 'work') updateSettings({...settings, workDuration: newTotal});
+    else if (type === 'short') updateSettings({...settings, shortBreakDuration: newTotal});
+    else if (type === 'long') updateSettings({...settings, longBreakDuration: newTotal});
+  };
 
   return (
     <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 items-start justify-center py-4 animate-in fade-in duration-500">
@@ -297,43 +324,97 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
                   <div className="flex items-center gap-2 text-muted-foreground/40 text-[9px] font-black uppercase tracking-widest">
                     <Clock className="w-3.5 h-3.5" /> Timer
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold text-muted-foreground/80">Time (minutes)</Label>
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="space-y-1">
-                        <span className="text-[10px] text-muted-foreground/60 font-bold">Pomodoro</span>
-                        <Input 
-                          type="number" 
-                          value={settings.workDuration} 
-                          onChange={(e) => updateSettings({...settings, workDuration: parseInt(e.target.value, 10) || 0})}
-                          className="bg-muted border-none h-10 font-bold text-sm"
-                          min={1}
-                        />
+                  <div className="space-y-4">
+                    <Label className="text-xs font-bold text-muted-foreground/80">Duration</Label>
+                    
+                    <div className="space-y-4">
+                      {/* Work Duration */}
+                      <div className="grid grid-cols-2 gap-4 items-center">
+                        <span className="text-[11px] text-muted-foreground/60 font-bold uppercase">Pomodoro</span>
+                        <div className="flex gap-2">
+                          <div className="space-y-1 flex-1">
+                            <span className="text-[9px] text-muted-foreground/40 uppercase font-black">Hrs</span>
+                            <Input 
+                              type="number" 
+                              value={Math.floor(settings.workDuration / 60)} 
+                              onChange={(e) => handleDurationChange('work', 'hr', e.target.value)}
+                              className="bg-muted border-none h-10 font-bold text-sm"
+                              min={0}
+                            />
+                          </div>
+                          <div className="space-y-1 flex-1">
+                            <span className="text-[9px] text-muted-foreground/40 uppercase font-black">Min</span>
+                            <Input 
+                              type="number" 
+                              value={settings.workDuration % 60} 
+                              onChange={(e) => handleDurationChange('work', 'min', e.target.value)}
+                              className="bg-muted border-none h-10 font-bold text-sm"
+                              min={0}
+                              max={59}
+                            />
+                          </div>
+                        </div>
                       </div>
-                      <div className="space-y-1">
-                        <span className="text-[10px] text-muted-foreground/60 font-bold">Short Break</span>
-                        <Input 
-                          type="number" 
-                          value={settings.shortBreakDuration} 
-                          onChange={(e) => updateSettings({...settings, shortBreakDuration: parseInt(e.target.value, 10) || 0})}
-                          className="bg-muted border-none h-10 font-bold text-sm"
-                          min={1}
-                        />
+
+                      {/* Short Break Duration */}
+                      <div className="grid grid-cols-2 gap-4 items-center">
+                        <span className="text-[11px] text-muted-foreground/60 font-bold uppercase">Short Break</span>
+                        <div className="flex gap-2">
+                          <div className="space-y-1 flex-1">
+                            <span className="text-[9px] text-muted-foreground/40 uppercase font-black">Hrs</span>
+                            <Input 
+                              type="number" 
+                              value={Math.floor(settings.shortBreakDuration / 60)} 
+                              onChange={(e) => handleDurationChange('short', 'hr', e.target.value)}
+                              className="bg-muted border-none h-10 font-bold text-sm"
+                              min={0}
+                            />
+                          </div>
+                          <div className="space-y-1 flex-1">
+                            <span className="text-[9px] text-muted-foreground/40 uppercase font-black">Min</span>
+                            <Input 
+                              type="number" 
+                              value={settings.shortBreakDuration % 60} 
+                              onChange={(e) => handleDurationChange('short', 'min', e.target.value)}
+                              className="bg-muted border-none h-10 font-bold text-sm"
+                              min={0}
+                              max={59}
+                            />
+                          </div>
+                        </div>
                       </div>
-                      <div className="space-y-1">
-                        <span className="text-[10px] text-muted-foreground/60 font-bold">Long Break</span>
-                        <Input 
-                          type="number" 
-                          value={settings.longBreakDuration} 
-                          onChange={(e) => updateSettings({...settings, longBreakDuration: parseInt(e.target.value, 10) || 0})}
-                          className="bg-muted border-none h-10 font-bold text-sm"
-                          min={1}
-                        />
+
+                      {/* Long Break Duration */}
+                      <div className="grid grid-cols-2 gap-4 items-center">
+                        <span className="text-[11px] text-muted-foreground/60 font-bold uppercase">Long Break</span>
+                        <div className="flex gap-2">
+                          <div className="space-y-1 flex-1">
+                            <span className="text-[9px] text-muted-foreground/40 uppercase font-black">Hrs</span>
+                            <Input 
+                              type="number" 
+                              value={Math.floor(settings.longBreakDuration / 60)} 
+                              onChange={(e) => handleDurationChange('long', 'hr', e.target.value)}
+                              className="bg-muted border-none h-10 font-bold text-sm"
+                              min={0}
+                            />
+                          </div>
+                          <div className="space-y-1 flex-1">
+                            <span className="text-[9px] text-muted-foreground/40 uppercase font-black">Min</span>
+                            <Input 
+                              type="number" 
+                              value={settings.longBreakDuration % 60} 
+                              onChange={(e) => handleDurationChange('long', 'min', e.target.value)}
+                              className="bg-muted border-none h-10 font-bold text-sm"
+                              min={0}
+                              max={59}
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between py-1 pt-2">
+                  <div className="flex items-center justify-between py-1 pt-4">
                     <Label className="text-xs font-bold text-muted-foreground/80">Auto Start Breaks</Label>
                     <Switch 
                       checked={settings.autoStartBreaks} 

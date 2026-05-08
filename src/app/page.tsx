@@ -346,7 +346,7 @@ export default function ChronoFlow() {
             <div className="flex gap-6">
               <Link href="/privacy-protocol" className="text-[9px] text-muted-foreground/60 hover:text-primary cursor-pointer uppercase tracking-widest transition-colors font-bold">Privacy Protocol</Link>
               <Link href="/terms-of-sync" className="text-[9px] text-muted-foreground/60 hover:text-primary cursor-pointer uppercase tracking-widest transition-colors font-bold">Terms of Sync</Link>
-              <span className="text-[9px] text-muted-foreground/60 hover:text-primary cursor-pointer uppercase tracking-widest transition-colors font-bold">Security Ops</span>
+              <Link href="/security-ops" className="text-[9px] text-muted-foreground/60 hover:text-primary cursor-pointer uppercase tracking-widest transition-colors font-bold">Security Ops</Link>
             </div>
           </div>
         </div>

@@ -68,7 +68,7 @@ export default function PrecisionCalculator() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
-      <nav className="sticky top-0 z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between">
+      <nav className="relative glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center neon-glow group-hover:scale-110 transition-transform">

@@ -143,7 +143,7 @@ export default function ChronoFlow() {
           <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center neon-glow">
             <Timer className="text-primary-foreground w-4 h-4" />
           </div>
-          <h1 className="text-sm md:text-base font-headline font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+          <h1 className="text-sm md:text-base font-headline font-black tracking-tighter bg-clip-text text-transparent bg-gradient-r from-primary to-accent">
             CHRONOFLOW
           </h1>
         </div>
@@ -344,7 +344,7 @@ export default function ChronoFlow() {
               © 2024 ChronoFlow Operations • Precision Utilities
             </p>
             <div className="flex gap-6">
-              <span className="text-[9px] text-muted-foreground/60 hover:text-primary cursor-pointer uppercase tracking-widest transition-colors font-bold">Privacy Protocol</span>
+              <Link href="/privacy-protocol" className="text-[9px] text-muted-foreground/60 hover:text-primary cursor-pointer uppercase tracking-widest transition-colors font-bold">Privacy Protocol</Link>
               <span className="text-[9px] text-muted-foreground/60 hover:text-primary cursor-pointer uppercase tracking-widest transition-colors font-bold">Terms of Sync</span>
               <span className="text-[9px] text-muted-foreground/60 hover:text-primary cursor-pointer uppercase tracking-widest transition-colors font-bold">Security Ops</span>
             </div>

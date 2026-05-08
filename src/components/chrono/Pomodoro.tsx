@@ -285,7 +285,10 @@ export function Pomodoro({ onModeChange, onSettingsChange, isExternalSettingsOpe
                 <Settings className="w-4 h-4 text-white" />
               </button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-y-auto">
+            <DialogContent 
+              className="sm:max-w-[480px] max-h-[90vh] overflow-y-auto"
+              onOpenAutoFocus={(e) => e.preventDefault()}
+            >
               <DialogHeader>
                 <DialogTitle className="text-center uppercase tracking-widest text-muted-foreground text-[10px] border-b pb-4">Setting</DialogTitle>
               </DialogHeader>

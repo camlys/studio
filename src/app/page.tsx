@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Sun, Moon, RefreshCcw, Share2, Copy, Timer, ChevronRight } from 'lucide-react';
+import { Sun, Moon, RefreshCcw, Share2, Copy, Timer, ChevronRight, Github, Twitter, Mail, Cpu, Database, ShieldCheck, ExternalLink, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DateInput } from '@/components/chrono/DateInput';
@@ -9,6 +9,7 @@ import { ResultCard } from '@/components/chrono/ResultCard';
 import { FunFact } from '@/components/chrono/FunFact';
 import { isValidDate, calculateAll, DateInputValues, CalculationResults } from '@/lib/date-utils';
 import { useToast } from '@/hooks/use-toast';
+import { Separator } from "@/components/ui/separator";
 
 export default function ChronoFlow() {
   const { toast } = useToast();
@@ -57,7 +58,6 @@ export default function ChronoFlow() {
     localStorage.setItem('chrono_theme', theme);
   }, [theme]);
 
-  // Real-time ticking effect
   useEffect(() => {
     if (results) {
       tickerRef.current = setInterval(() => {
@@ -260,10 +260,82 @@ export default function ChronoFlow() {
         </div>
       </main>
 
-      <footer className="py-6 text-center border-t border-white/5 glass mt-auto">
-        <p className="text-muted-foreground text-[10px] tracking-[0.3em] uppercase font-black">
-          ChronoFlow v1.5 • Atomic Precision Dashboard
-        </p>
+      <footer className="relative mt-auto pt-16 pb-8 px-6 glass border-t border-white/10">
+        <div className="container max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+            <div className="col-span-2 lg:col-span-2 space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center neon-glow">
+                  <Timer className="text-primary-foreground w-5 h-5" />
+                </div>
+                <h2 className="text-lg font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+                  CHRONOFLOW
+                </h2>
+              </div>
+              <p className="text-muted-foreground text-xs leading-relaxed max-w-xs">
+                ChronoFlow is an advanced chronological computation engine designed for ultimate precision. 
+                Experience time in high definition with our atomic-sync dashboard.
+              </p>
+              <div className="flex gap-4">
+                <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full hover:bg-white/10"><Github className="w-4 h-4" /></Button>
+                <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full hover:bg-white/10"><Twitter className="w-4 h-4" /></Button>
+                <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full hover:bg-white/10"><Globe className="w-4 h-4" /></Button>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Engines</h3>
+              <ul className="space-y-2 text-xs text-muted-foreground">
+                <li className="hover:text-foreground cursor-pointer transition-colors">Age Processor</li>
+                <li className="hover:text-foreground cursor-pointer transition-colors">Date Delta</li>
+                <li className="hover:text-foreground cursor-pointer transition-colors">Zodiac Mapping</li>
+                <li className="hover:text-foreground cursor-pointer transition-colors">Leap Year ID</li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Intelligence</h3>
+              <ul className="space-y-2 text-xs text-muted-foreground">
+                <li className="hover:text-foreground cursor-pointer transition-colors">Genkit AI Facts</li>
+                <li className="hover:text-foreground cursor-pointer transition-colors">Lunar Cycles</li>
+                <li className="hover:text-foreground cursor-pointer transition-colors">Planetary Time</li>
+                <li className="hover:text-foreground cursor-pointer transition-colors">Historical Logs</li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">System</h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-[10px] font-medium text-accent">
+                  <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                  SYNC: ACTIVE
+                </div>
+                <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-mono">
+                  <Cpu className="w-3 h-3" /> V1.5.0-ALPHA
+                </div>
+                <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-mono">
+                  <Database className="w-3 h-3" /> LOCAL STORAGE
+                </div>
+                <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-mono">
+                  <ShieldCheck className="w-3 h-3" /> AES-256 SYNC
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <Separator className="bg-white/5 mb-8" />
+
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-[9px] text-muted-foreground/60 uppercase tracking-[0.4em] font-black">
+              © 2024 ChronoFlow Operations • No Rights Reserved
+            </p>
+            <div className="flex gap-6">
+              <span className="text-[9px] text-muted-foreground/60 hover:text-primary cursor-pointer uppercase tracking-widest transition-colors font-bold">Privacy Protocol</span>
+              <span className="text-[9px] text-muted-foreground/60 hover:text-primary cursor-pointer uppercase tracking-widest transition-colors font-bold">Terms of Sync</span>
+              <span className="text-[9px] text-muted-foreground/60 hover:text-primary cursor-pointer uppercase tracking-widest transition-colors font-bold">Security Ops</span>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );

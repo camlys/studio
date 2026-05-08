@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator";
 
 export default function ChronoFlow() {
   const { toast } = useToast();
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [activeTab, setActiveTab] = useState<'diff' | 'age'>('diff');
   
   const [dob, setDob] = useState<DateInputValues>({ day: '', month: '', year: '' });
@@ -44,8 +44,12 @@ export default function ChronoFlow() {
       });
     }
 
-    const savedTheme = localStorage.getItem('chrono_theme');
-    if (savedTheme === 'light') setTheme('light');
+    const savedTheme = localStorage.getItem('chrono_theme') as 'light' | 'dark' | null;
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else {
+      setTheme('light');
+    }
   }, []);
 
   useEffect(() => {
@@ -133,8 +137,8 @@ export default function ChronoFlow() {
   };
 
   return (
-    <div className="min-h-screen animate-gradient-bg flex flex-col transition-colors duration-500 overflow-x-hidden">
-      <nav className="sticky top-0 z-50 glass border-b border-white/10 h-12 flex items-center px-4 md:px-6 justify-between">
+    <div className="min-h-screen flex flex-col transition-colors duration-500 overflow-x-hidden bg-background">
+      <nav className="sticky top-0 z-50 glass border-b border-border h-12 flex items-center px-4 md:px-6 justify-between">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center neon-glow">
             <Timer className="text-primary-foreground w-4 h-4" />
@@ -145,14 +149,14 @@ export default function ChronoFlow() {
         </div>
         <div className="flex items-center gap-1">
           <Link href="/blog">
-            <Button variant="ghost" size="sm" className="hidden sm:flex rounded-full hover:bg-white/10 text-[10px] uppercase font-bold tracking-widest gap-2">
+            <Button variant="ghost" size="sm" className="hidden sm:flex rounded-full hover:bg-accent/10 text-[10px] uppercase font-bold tracking-widest gap-2">
               <BookOpen className="w-3.5 h-3.5" /> Insights
             </Button>
           </Link>
-          <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full hover:bg-white/10 w-8 h-8">
+          <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full hover:bg-accent/10 w-8 h-8">
             {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </Button>
-          <Button variant="ghost" size="icon" onClick={handleReset} className="rounded-full hover:bg-white/10 w-8 h-8">
+          <Button variant="ghost" size="icon" onClick={handleReset} className="rounded-full hover:bg-accent/10 w-8 h-8">
             <RefreshCcw className="w-4 h-4" />
           </Button>
         </div>
@@ -161,14 +165,14 @@ export default function ChronoFlow() {
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-6 md:py-8">
         <div className="flex flex-col min-[480px]:flex-row gap-6 items-start">
           
-          <aside className="w-full min-[480px]:w-[110px] sm:w-[220px] md:w-[260px] lg:w-[300px] shrink-0 space-y-4 min-[480px]:sticky min-[480px]:top-20">
+          <aside className="w-full min-[480px]:w-[160px] sm:w-[220px] md:w-[280px] lg:w-[320px] shrink-0 space-y-4 min-[480px]:sticky min-[480px]:top-20">
             <div className="px-1">
               <h2 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-foreground/70 leading-none">
                 Chrono <span className="text-primary">Engine</span>
               </h2>
             </div>
 
-            <div className="glass-card !p-4 shadow-2xl border-white/10">
+            <div className="glass-card !p-5 shadow-xl border-border">
               <Tabs 
                 value={activeTab}
                 className="w-full" 
@@ -177,7 +181,7 @@ export default function ChronoFlow() {
                   setError(null);
                 }}
               >
-                <TabsList className="grid w-full grid-cols-2 mb-4 bg-white/5 p-1 rounded-lg h-9">
+                <TabsList className="grid w-full grid-cols-2 mb-4 bg-muted p-1 rounded-lg h-9">
                   <TabsTrigger value="diff" className="rounded-md text-[9px] sm:text-[10px] md:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
                     Difference
                   </TabsTrigger>
@@ -186,15 +190,15 @@ export default function ChronoFlow() {
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="diff" className="space-y-3 mt-0">
+                <TabsContent value="diff" className="space-y-4 mt-0">
                   <DateInput label="Start Date" values={fromDate} onChange={setFromDate} />
-                  <div className="flex justify-center -my-1.5">
+                  <div className="flex justify-center -my-2">
                     <ChevronRight className="w-4 h-4 text-primary/30 rotate-90" />
                   </div>
                   <DateInput label="End Date" values={toDate} onChange={setToDate} error={activeTab === 'diff' ? error || undefined : undefined} />
                 </TabsContent>
 
-                <TabsContent value="age" className="space-y-3 mt-0">
+                <TabsContent value="age" className="space-y-4 mt-0">
                   <DateInput 
                     label="Birth Date" 
                     values={dob} 
@@ -205,7 +209,7 @@ export default function ChronoFlow() {
               </Tabs>
 
               <Button 
-                className="w-full h-10 mt-6 text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-widest rounded-lg bg-primary hover:bg-primary/90 transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 neon-glow"
+                className="w-full h-11 mt-6 text-[10px] sm:text-[11px] md:text-xs font-black uppercase tracking-widest rounded-lg bg-primary hover:bg-primary/90 transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 neon-glow"
                 onClick={handleCalculate}
               >
                 Process Data
@@ -252,7 +256,7 @@ export default function ChronoFlow() {
                 </div>
               </div>
             ) : (
-              <div className="h-full flex items-center justify-center border border-dashed border-white/10 rounded-3xl min-h-[300px] md:min-h-[450px] bg-white/[0.02] transition-all hover:bg-white/[0.04]">
+              <div className="h-full flex items-center justify-center border border-dashed border-border rounded-3xl min-h-[300px] md:min-h-[450px] bg-muted/20 transition-all hover:bg-muted/40">
                 <div className="text-center space-y-3 px-6">
                   <Timer className="w-8 h-8 md:w-10 md:h-10 mx-auto text-muted-foreground/30 animate-spin-slow" />
                   <div className="space-y-1">
@@ -266,7 +270,7 @@ export default function ChronoFlow() {
         </div>
       </main>
 
-      <footer className="relative mt-auto pt-16 pb-8 px-6 glass border-t border-white/10">
+      <footer className="relative mt-auto pt-16 pb-8 px-6 glass border-t border-border">
         <div className="container max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
             <div className="col-span-2 lg:col-span-2 space-y-4">
@@ -283,9 +287,9 @@ export default function ChronoFlow() {
                 Experience time in high definition with our atomic-sync dashboard.
               </p>
               <div className="flex gap-4">
-                <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full hover:bg-white/10"><Github className="w-4 h-4" /></Button>
-                <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full hover:bg-white/10"><Twitter className="w-4 h-4" /></Button>
-                <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full hover:bg-white/10"><Globe className="w-4 h-4" /></Button>
+                <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full hover:bg-accent/10"><Github className="w-4 h-4" /></Button>
+                <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full hover:bg-accent/10"><Twitter className="w-4 h-4" /></Button>
+                <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full hover:bg-accent/10"><Globe className="w-4 h-4" /></Button>
               </div>
             </div>
 
@@ -333,7 +337,7 @@ export default function ChronoFlow() {
             </div>
           </div>
 
-          <Separator className="bg-white/5 mb-8" />
+          <Separator className="bg-border mb-8" />
 
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-[9px] text-muted-foreground/60 uppercase tracking-[0.4em] font-black">

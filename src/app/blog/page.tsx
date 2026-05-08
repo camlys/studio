@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -10,6 +9,15 @@ import { Badge } from "@/components/ui/badge";
 
 const BLOG_POSTS = [
   {
+    title: "The Enterprise Blueprint for Digital Asset Velocity",
+    description: "The definitive 9000-word enterprise guide to maximizing digital asset velocity through high-precision optimization and edge-compute architectures.",
+    date: "July 15, 2024",
+    author: "Camly Ops Team",
+    readTime: "120 min read",
+    slug: "/blog/digital-asset-velocity-enterprise-guide",
+    category: "Enterprise Whitepaper"
+  },
+  {
     title: "The Master Guide to Global Time Synchronization",
     description: "An exhaustive technical guide to the science of time synchronization, NTP protocols, and high-precision chronological engineering.",
     date: "July 10, 2024",
@@ -19,20 +27,11 @@ const BLOG_POSTS = [
     category: "Chronology"
   },
   {
-    title: "The Enterprise Blueprint for Digital Asset Velocity",
-    description: "How to maximize digital asset velocity through high-precision image and PDF optimization to drive enterprise SEO and performance.",
-    date: "July 15, 2024",
-    author: "Camly Ops Team",
-    readTime: "45 min read",
-    slug: "/blog/digital-asset-velocity-enterprise-guide",
-    category: "Enterprise"
-  },
-  {
     title: "The Ultimate 8000-Word Guide to Image and PDF Resizing",
     description: "Master the art of digital asset management. Learn how high-precision resizing impacts SEO, web performance, and document integrity.",
     date: "June 05, 2024",
     author: "Camly Tech Ops",
-    readTime: "55 min read",
+    readTime: "90 min read",
     slug: "/blog/image-and-pdf-resizing-optimization",
     category: "Asset Management"
   },
@@ -115,24 +114,24 @@ export default function BlogHub() {
         </header>
 
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Featured Post */}
+          {/* Featured Post - The 9000 Word Masterpiece */}
           <div className="md:col-span-2 glass border border-border rounded-3xl overflow-hidden group hover:border-primary/30 transition-all">
             <div className="grid md:grid-cols-2">
               <div className="bg-gradient-to-br from-primary/10 to-accent/10 h-64 md:h-full flex items-center justify-center relative">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_70%)] opacity-30" />
-                <Globe className="w-24 h-24 text-primary opacity-20 group-hover:scale-110 transition-transform duration-500" />
+                <Zap className="w-24 h-24 text-primary opacity-20 group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div className="p-8 space-y-4 flex flex-col justify-center">
-                <Badge className="w-fit bg-primary text-primary-foreground text-[10px]">NEW TECHNICAL WHITEPAPER</Badge>
-                <h2 className="text-3xl font-black leading-tight tracking-tight">The Master Guide to Global Time Synchronization</h2>
+                <Badge className="w-fit bg-primary text-primary-foreground text-[10px]">9000-WORD ENTERPRISE MASTERCLASS</Badge>
+                <h2 className="text-3xl font-black leading-tight tracking-tight">The Enterprise Blueprint for Digital Asset Velocity</h2>
                 <p className="text-muted-foreground text-sm line-clamp-3">
-                  An exhaustive exploration of atomic chronology, NTP protocols, and the mathematics of drift correction. Learn why precision is the bedrock of the digital era.
+                  The definitive guide to maximizing digital asset velocity. Learn how high-precision optimization, edge-computing, and atomic compression drive enterprise performance.
                 </p>
                 <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2">
-                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> Camly Engineering</span>
-                  <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> 60 min read</span>
+                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> Camly Ops Team</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> 120 min read</span>
                 </div>
-                <Link href="/blog/global-time-synchronization-standards">
+                <Link href="/blog/digital-asset-velocity-enterprise-guide">
                   <Button className="w-full md:w-fit mt-4 bg-primary text-primary-foreground font-bold uppercase tracking-widest text-[10px] h-10 px-8">
                     Read Whitepaper
                   </Button>
@@ -165,7 +164,7 @@ export default function BlogHub() {
 
       <footer className="py-12 glass border-t border-border text-center">
         <p className="text-[10px] uppercase font-black tracking-[0.4em] text-muted-foreground/60">
-          Camly Insights Hub • Precision in Every Pixel
+          Camly Insights Hub • Precision in Every Pixel • © 2024 Camly Inc
         </p>
       </footer>
     </div>

@@ -130,15 +130,15 @@ export default function ChronoFlow() {
       <main className="flex-grow container max-w-[900px] mx-auto px-2 py-3">
         <div className="flex flex-row gap-3 items-start h-full">
           
-          {/* Left Column: Calculator */}
-          <aside className="w-[140px] sm:w-[180px] shrink-0 space-y-3 sticky top-14">
-            <div className="space-y-0.5 px-1">
-              <h2 className="text-[10px] sm:text-sm font-headline font-extrabold tracking-tight text-foreground leading-tight">
+          {/* Left Column: Calculator - Forced Side-by-Side even on small screens */}
+          <aside className="w-[120px] sm:w-[180px] shrink-0 space-y-3 sticky top-14">
+            <div className="space-y-0.5 px-1 text-center sm:text-left">
+              <h2 className="text-[9px] sm:text-sm font-headline font-extrabold tracking-tight text-foreground leading-tight">
                 Timeline <span className="text-primary">Master</span>
               </h2>
             </div>
 
-            <div className="glass-card !p-2 sm:!p-3 shadow-xl border-white/5">
+            <div className="glass-card !p-1.5 sm:!p-3 shadow-xl border-white/5">
               <Tabs 
                 value={activeTab}
                 className="w-full" 
@@ -148,10 +148,10 @@ export default function ChronoFlow() {
                 }}
               >
                 <TabsList className="grid w-full grid-cols-2 mb-2 bg-white/5 p-0.5 rounded-md h-6 sm:h-7">
-                  <TabsTrigger value="diff" className="rounded-[4px] text-[8px] sm:text-[9px] flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
+                  <TabsTrigger value="diff" className="rounded-[4px] text-[7px] sm:text-[9px] flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
                     Diff
                   </TabsTrigger>
-                  <TabsTrigger value="age" className="rounded-[4px] text-[8px] sm:text-[9px] flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
+                  <TabsTrigger value="age" className="rounded-[4px] text-[7px] sm:text-[9px] flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
                     Age
                   </TabsTrigger>
                 </TabsList>
@@ -175,7 +175,7 @@ export default function ChronoFlow() {
               </Tabs>
 
               <Button 
-                className="w-full h-7 sm:h-8 mt-3 text-[9px] sm:text-[10px] font-bold rounded-md bg-primary hover:bg-primary/90 transition-all transform active:scale-[0.98] neon-glow"
+                className="w-full h-7 sm:h-8 mt-3 text-[8px] sm:text-[10px] font-bold rounded-md bg-primary hover:bg-primary/90 transition-all transform active:scale-[0.98] neon-glow"
                 onClick={handleCalculate}
               >
                 Calculate
@@ -193,11 +193,11 @@ export default function ChronoFlow() {
                   <ResultCard label="Months" value={results.months} />
                   <ResultCard label="Days" value={results.days} />
                   
-                  {/* Total Counts in Increasing Order */}
-                  <ResultCard label="Total Seconds" value={results.totalSeconds} />
-                  <ResultCard label="Total Minutes" value={results.totalMinutes} />
-                  <ResultCard label="Total Hours" value={results.totalHours} />
+                  {/* Total Counts in Decreasing Order */}
                   <ResultCard label="Total Days" value={results.totalDays} />
+                  <ResultCard label="Total Hours" value={results.totalHours} />
+                  <ResultCard label="Total Minutes" value={results.totalMinutes} />
+                  <ResultCard label="Total Seconds" value={results.totalSeconds} />
                   
                   {/* Meta Information */}
                   <ResultCard label="Next Bday" value={results.nextBirthday} subLabel="Days" />

@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, RotateCcw, Brain, Zap, Target, Plus, Check, X, Settings, BarChart3, UserCircle, Clock, Volume2, Palette, Bell, Share2, ExternalLink, Lock } from 'lucide-react';
+import { Play, Pause, RotateCcw, Brain, Zap, Target, Plus, Check, X, Settings, BarChart3, UserCircle, Clock, Volume2, Palette, Bell, Share2, ExternalLink, Lock, Info as InfoIcon } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -46,6 +46,7 @@ export type PomodoroSettings = {
   darkModeWhenRunning: boolean;
   reminderMode: 'last' | 'first';
   reminderTime: number;
+  themeColor: 'red' | 'teal' | 'blue';
 };
 
 const DEFAULT_SETTINGS: PomodoroSettings = {
@@ -66,15 +67,17 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
   darkModeWhenRunning: false,
   reminderMode: 'last',
   reminderTime: 0,
+  themeColor: 'red',
 };
 
 interface PomodoroProps {
   onModeChange?: (mode: TimerMode) => void;
+  onSettingsChange?: (settings: PomodoroSettings) => void;
   isExternalSettingsOpen?: boolean;
   onExternalSettingsOpenChange?: (open: boolean) => void;
 }
 
-export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSettingsOpenChange }: PomodoroProps) {
+export function Pomodoro({ onModeChange, onSettingsChange, isExternalSettingsOpen, onExternalSettingsOpenChange }: PomodoroProps) {
   const [settings, setSettings] = useState<PomodoroSettings>(DEFAULT_SETTINGS);
   const [mode, setMode] = useState<TimerMode>('work');
   const [timeLeft, setTimeLeft] = useState(DEFAULT_SETTINGS.workDuration * 60);
@@ -93,9 +96,9 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
-        // Merge with DEFAULT_SETTINGS to ensure new keys aren't undefined
         const mergedSettings = { ...DEFAULT_SETTINGS, ...parsed };
         setSettings(mergedSettings);
+        if (onSettingsChange) onSettingsChange(mergedSettings);
         
         const duration = mode === 'work' ? mergedSettings.workDuration : 
                          mode === 'short-break' ? mergedSettings.shortBreakDuration : 
@@ -196,6 +199,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
   const updateSettings = (newSettings: PomodoroSettings) => {
     setSettings(newSettings);
     localStorage.setItem('chrono_pomodoro_settings', JSON.stringify(newSettings));
+    if (onSettingsChange) onSettingsChange(newSettings);
     
     if (!isActive) {
       const duration = mode === 'work' ? newSettings.workDuration : 
@@ -228,7 +232,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
             onClick={toggleTimer}
             className={cn(
               "w-56 h-16 bg-white rounded-md text-2xl font-black uppercase tracking-widest transition-all active:translate-y-1 shadow-[0_6px_0_rgb(235,235,235)] active:shadow-none",
-              mode === 'work' ? "text-[#ba4949]" : mode === 'short-break' ? "text-[#38858a]" : "text-[#397097]"
+              settings.themeColor === 'red' ? "text-[#ba4949]" : settings.themeColor === 'teal' ? "text-[#38858a]" : "text-[#397097]"
             )}
           >
             {isActive ? 'STOP' : 'START'}
@@ -268,7 +272,6 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
               </DialogHeader>
               
               <div className="space-y-8 py-4">
-                {/* Timer Settings */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-muted-foreground/40 text-[9px] font-black uppercase tracking-widest">
                     <Clock className="w-3.5 h-3.5" /> Timer
@@ -280,7 +283,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                         <span className="text-[10px] text-muted-foreground/60 font-bold">Pomodoro</span>
                         <Input 
                           type="number" 
-                          value={settings.workDuration ?? 25} 
+                          value={settings.workDuration} 
                           onChange={(e) => updateSettings({...settings, workDuration: parseInt(e.target.value, 10) || 0})}
                           className="bg-muted border-none h-10 font-bold text-sm"
                           min={1}
@@ -290,7 +293,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                         <span className="text-[10px] text-muted-foreground/60 font-bold">Short Break</span>
                         <Input 
                           type="number" 
-                          value={settings.shortBreakDuration ?? 5} 
+                          value={settings.shortBreakDuration} 
                           onChange={(e) => updateSettings({...settings, shortBreakDuration: parseInt(e.target.value, 10) || 0})}
                           className="bg-muted border-none h-10 font-bold text-sm"
                           min={1}
@@ -300,7 +303,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                         <span className="text-[10px] text-muted-foreground/60 font-bold">Long Break</span>
                         <Input 
                           type="number" 
-                          value={settings.longBreakDuration ?? 15} 
+                          value={settings.longBreakDuration} 
                           onChange={(e) => updateSettings({...settings, longBreakDuration: parseInt(e.target.value, 10) || 0})}
                           className="bg-muted border-none h-10 font-bold text-sm"
                           min={1}
@@ -312,14 +315,14 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                   <div className="flex items-center justify-between py-1 pt-2">
                     <Label className="text-xs font-bold text-muted-foreground/80">Auto Start Breaks</Label>
                     <Switch 
-                      checked={settings.autoStartBreaks ?? false} 
+                      checked={settings.autoStartBreaks} 
                       onCheckedChange={(v) => updateSettings({...settings, autoStartBreaks: v})} 
                     />
                   </div>
                   <div className="flex items-center justify-between py-1">
                     <Label className="text-xs font-bold text-muted-foreground/80">Auto Start Pomodoros</Label>
                     <Switch 
-                      checked={settings.autoStartPomodoros ?? false} 
+                      checked={settings.autoStartPomodoros} 
                       onCheckedChange={(v) => updateSettings({...settings, autoStartPomodoros: v})} 
                     />
                   </div>
@@ -327,7 +330,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                     <Label className="text-xs font-bold text-muted-foreground/80">Long Break interval</Label>
                     <Input 
                       type="number" 
-                      value={settings.longBreakInterval ?? 4} 
+                      value={settings.longBreakInterval} 
                       onChange={(e) => updateSettings({...settings, longBreakInterval: parseInt(e.target.value, 10) || 1})}
                       className="bg-muted border-none h-10 w-16 font-bold text-right text-sm"
                       min={1}
@@ -337,7 +340,6 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
 
                 <Separator />
 
-                {/* Sound Settings */}
                 <div className="space-y-5">
                   <div className="flex items-center gap-2 text-muted-foreground/40 text-[9px] font-black uppercase tracking-widest">
                     <Volume2 className="w-3.5 h-3.5" /> Sound
@@ -346,23 +348,21 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <Label className="text-xs font-bold text-muted-foreground/80">Alarm Sound</Label>
-                      <div className="flex items-center gap-2">
-                         <Select value={settings.alarmSound ?? 'kitchen'} onValueChange={(v) => updateSettings({...settings, alarmSound: v})}>
-                          <SelectTrigger className="w-[140px] bg-muted border-none text-xs font-bold">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="kitchen">Kitchen</SelectItem>
-                            <SelectItem value="bell">Bell</SelectItem>
-                            <SelectItem value="digital">Digital</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      <Select value={settings.alarmSound} onValueChange={(v) => updateSettings({...settings, alarmSound: v})}>
+                        <SelectTrigger className="w-[140px] bg-muted border-none text-xs font-bold">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="kitchen">Kitchen</SelectItem>
+                          <SelectItem value="bell">Bell</SelectItem>
+                          <SelectItem value="digital">Digital</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="flex items-center gap-4 pl-1">
-                      <span className="text-[10px] font-bold text-muted-foreground/40 w-5">{settings.alarmVolume ?? 50}</span>
+                      <span className="text-[10px] font-bold text-muted-foreground/40 w-5">{settings.alarmVolume}</span>
                       <Slider 
-                        value={[settings.alarmVolume ?? 50]} 
+                        value={[settings.alarmVolume]} 
                         max={100} 
                         step={1} 
                         onValueChange={([v]) => updateSettings({...settings, alarmVolume: v})}
@@ -372,7 +372,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                          <span className="text-[9px] font-black text-muted-foreground/40 uppercase">repeat</span>
                          <Input 
                             type="number" 
-                            value={settings.alarmRepeat ?? 1} 
+                            value={settings.alarmRepeat} 
                             onChange={(e) => updateSettings({...settings, alarmRepeat: parseInt(e.target.value, 10) || 1})}
                             className="bg-muted border-none h-8 w-12 font-bold text-center text-xs"
                           />
@@ -383,7 +383,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <Label className="text-xs font-bold text-muted-foreground/80">Focus Sound</Label>
-                      <Select value={settings.focusSound ?? 'none'} onValueChange={(v) => updateSettings({...settings, focusSound: v})}>
+                      <Select value={settings.focusSound} onValueChange={(v) => updateSettings({...settings, focusSound: v})}>
                         <SelectTrigger className="w-[140px] bg-muted border-none text-xs font-bold">
                           <SelectValue />
                         </SelectTrigger>
@@ -396,9 +396,9 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                       </Select>
                     </div>
                     <div className="flex items-center gap-4 pl-1">
-                      <span className="text-[10px] font-bold text-muted-foreground/40 w-5">{settings.focusVolume ?? 50}</span>
+                      <span className="text-[10px] font-bold text-muted-foreground/40 w-5">{settings.focusVolume}</span>
                       <Slider 
-                        value={[settings.focusVolume ?? 50]} 
+                        value={[settings.focusVolume]} 
                         max={100} 
                         step={1} 
                         onValueChange={([v]) => updateSettings({...settings, focusVolume: v})}
@@ -410,7 +410,6 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
 
                 <Separator />
 
-                {/* Theme Settings */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-muted-foreground/40 text-[9px] font-black uppercase tracking-widest">
                     <Palette className="w-3.5 h-3.5" /> Theme
@@ -419,15 +418,33 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                   <div className="flex items-center justify-between">
                     <Label className="text-xs font-bold text-muted-foreground/80">Color Themes</Label>
                     <div className="flex gap-2">
-                       <div className="w-6 h-6 rounded-md bg-[#ba4949] cursor-pointer ring-offset-2 ring-primary/20" />
-                       <div className="w-6 h-6 rounded-md bg-[#38858a] cursor-pointer" />
-                       <div className="w-6 h-6 rounded-md bg-[#397097] cursor-pointer" />
+                       <div 
+                         onClick={() => updateSettings({...settings, themeColor: 'red'})}
+                         className={cn(
+                           "w-6 h-6 rounded-md bg-[#ba4949] cursor-pointer transition-all",
+                           settings.themeColor === 'red' && "ring-2 ring-primary ring-offset-2"
+                         )} 
+                       />
+                       <div 
+                         onClick={() => updateSettings({...settings, themeColor: 'teal'})}
+                         className={cn(
+                           "w-6 h-6 rounded-md bg-[#38858a] cursor-pointer transition-all",
+                           settings.themeColor === 'teal' && "ring-2 ring-primary ring-offset-2"
+                         )} 
+                       />
+                       <div 
+                         onClick={() => updateSettings({...settings, themeColor: 'blue'})}
+                         className={cn(
+                           "w-6 h-6 rounded-md bg-[#397097] cursor-pointer transition-all",
+                           settings.themeColor === 'blue' && "ring-2 ring-primary ring-offset-2"
+                         )} 
+                       />
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <Label className="text-xs font-bold text-muted-foreground/80">Hour Format</Label>
-                    <Select value={settings.hourFormat ?? '24'} onValueChange={(v: '12' | '24') => updateSettings({...settings, hourFormat: v})}>
+                    <Select value={settings.hourFormat} onValueChange={(v: '12' | '24') => updateSettings({...settings, hourFormat: v})}>
                       <SelectTrigger className="w-[140px] bg-muted border-none text-xs font-bold">
                         <SelectValue />
                       </SelectTrigger>
@@ -441,7 +458,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                   <div className="flex items-center justify-between">
                     <Label className="text-xs font-bold text-muted-foreground/80">Dark Mode when running</Label>
                     <Switch 
-                      checked={settings.darkModeWhenRunning ?? false} 
+                      checked={settings.darkModeWhenRunning} 
                       onCheckedChange={(v) => updateSettings({...settings, darkModeWhenRunning: v})} 
                     />
                   </div>
@@ -449,7 +466,6 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
 
                 <Separator />
 
-                {/* Notification Settings */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-muted-foreground/40 text-[9px] font-black uppercase tracking-widest">
                     <Bell className="w-3.5 h-3.5" /> Notification
@@ -458,7 +474,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                   <div className="flex items-center justify-between">
                     <Label className="text-xs font-bold text-muted-foreground/80">Reminder</Label>
                     <div className="flex items-center gap-2">
-                       <Select value={settings.reminderMode ?? 'last'} onValueChange={(v: 'last' | 'first') => updateSettings({...settings, reminderMode: v})}>
+                       <Select value={settings.reminderMode} onValueChange={(v: 'last' | 'first') => updateSettings({...settings, reminderMode: v})}>
                           <SelectTrigger className="w-[80px] bg-muted border-none text-xs font-bold">
                             <SelectValue />
                           </SelectTrigger>
@@ -469,7 +485,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                         </Select>
                         <Input 
                           type="number" 
-                          value={settings.reminderTime ?? 0} 
+                          value={settings.reminderTime} 
                           onChange={(e) => updateSettings({...settings, reminderTime: parseInt(e.target.value, 10) || 0})}
                           className="bg-muted border-none h-10 w-16 font-bold text-center text-xs"
                           min={0}
@@ -481,7 +497,6 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
 
                 <Separator />
 
-                {/* Integration Settings */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-muted-foreground/40 text-[9px] font-black uppercase tracking-widest">
                     <Zap className="w-3.5 h-3.5" /> Integration
@@ -591,25 +606,4 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
       </div>
     </div>
   );
-}
-
-function InfoIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <path d="M12 16v-4" />
-      <path d="M12 8h.01" />
-    </svg>
-  )
 }

@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DateInput } from '@/components/chrono/DateInput';
 import { ResultCard } from '@/components/chrono/ResultCard';
 import { FunFact } from '@/components/chrono/FunFact';
-import { Pomodoro, TimerMode } from '@/components/chrono/Pomodoro';
+import { Pomodoro, TimerMode, PomodoroSettings } from '@/components/chrono/Pomodoro';
 import { isValidDate, calculateAll, DateInputValues, CalculationResults } from '@/lib/date-utils';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from "@/components/ui/separator";
@@ -27,6 +27,7 @@ export default function ChronoFlow() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [activeTab, setActiveTab] = useState<'diff' | 'age' | 'focus'>('diff');
   const [pomodoroMode, setPomodoroMode] = useState<TimerMode>('work');
+  const [pomodoroSettings, setPomodoroSettings] = useState<PomodoroSettings | null>(null);
   const [isPomodoroSettingsOpen, setIsPomodoroSettingsOpen] = useState(false);
   
   const [dob, setDob] = useState<DateInputValues>({ day: '', month: '', year: '' });
@@ -150,9 +151,21 @@ export default function ChronoFlow() {
 
   const getAtmosphereClass = () => {
     if (activeTab !== 'focus') return 'bg-background';
-    if (pomodoroMode === 'work') return 'bg-[#ba4949]';
-    if (pomodoroMode === 'short-break') return 'bg-[#38858a]';
-    if (pomodoroMode === 'long-break') return 'bg-[#397097]';
+    
+    // Default colors
+    const colors = {
+      red: { work: 'bg-[#ba4949]', short: 'bg-[#38858a]', long: 'bg-[#397097]' },
+      teal: { work: 'bg-[#38858a]', short: 'bg-[#397097]', long: 'bg-[#ba4949]' },
+      blue: { work: 'bg-[#397097]', short: 'bg-[#ba4949]', long: 'bg-[#38858a]' }
+    };
+
+    const selectedTheme = pomodoroSettings?.themeColor || 'red';
+    const themeSet = colors[selectedTheme];
+
+    if (pomodoroMode === 'work') return themeSet.work;
+    if (pomodoroMode === 'short-break') return themeSet.short;
+    if (pomodoroMode === 'long-break') return themeSet.long;
+    
     return 'bg-background';
   };
 
@@ -222,7 +235,6 @@ export default function ChronoFlow() {
           activeTab === 'focus' ? "items-center" : "min-[480px]:flex-row items-start"
         )}>
           
-          {/* Main Controls Aside */}
           <aside className={cn(
             "w-full shrink-0 space-y-4",
             activeTab === 'focus' ? "max-w-[480px]" : "min-[480px]:w-[160px] sm:w-[220px] md:w-[280px] lg:w-[320px] min-[480px]:sticky min-[480px]:top-20"
@@ -303,7 +315,6 @@ export default function ChronoFlow() {
                 </TabsContent>
 
                 <TabsContent value="focus" className="mt-0">
-                   {/* Pomodoro is handled in the results area for better centering */}
                 </TabsContent>
               </Tabs>
             </div>
@@ -318,11 +329,11 @@ export default function ChronoFlow() {
             )}
           </aside>
 
-          {/* Results Area */}
           <div className="flex-grow w-full min-w-0">
             {activeTab === 'focus' ? (
               <Pomodoro 
                 onModeChange={setPomodoroMode} 
+                onSettingsChange={setPomodoroSettings}
                 isExternalSettingsOpen={isPomodoroSettingsOpen}
                 onExternalSettingsOpenChange={setIsPomodoroSettingsOpen}
               />
@@ -377,7 +388,6 @@ export default function ChronoFlow() {
           </div>
         </div>
 
-        {/* Rich Content Sections */}
         {activeTab !== 'focus' && (
           <section className="mt-20 space-y-32">
             <div className="space-y-12">

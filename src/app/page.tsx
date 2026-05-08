@@ -9,7 +9,7 @@ import {
   ExternalLink, Globe, BookOpen, Zap, Brain, Activity, 
   Lock, Star, ArrowRight, CheckCircle, Scale, HeartPulse, 
   Coins, Milestone, Server, Layers, BarChart3, Target, Settings, UserCircle,
-  Clock, ArrowUpRight, FileText, Workflow
+  Clock, ArrowUpRight, FileText, Workflow, Calculator as CalcIcon
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -235,6 +235,23 @@ export default function ChronoFlow() {
             CHRONOFLOW
           </h1>
         </div>
+
+        {/* Centered Calculator Link */}
+        <div className="absolute left-1/2 -translate-x-1/2 hidden md:block">
+           <Link href="/calculator">
+             <Button 
+               variant="ghost" 
+               className={cn(
+                 "rounded-full text-[10px] font-black uppercase tracking-[0.2em] gap-2.5 transition-all group",
+                 activeTab === 'focus' ? "text-white hover:bg-white/10" : "hover:bg-primary/5 text-primary/60 hover:text-primary"
+               )}
+             >
+               <Cpu className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
+               Precision Calculator
+             </Button>
+           </Link>
+        </div>
+
         <div className="flex items-center gap-2">
           {activeTab === 'focus' ? (
             <div className="flex gap-2">
@@ -301,7 +318,7 @@ export default function ChronoFlow() {
                 </TabsList>
 
                 <TabsContent value="diff" className="space-y-4 mt-0">
-                  <DateInput label="Baseline Timestamp" values={fromDate} onChange={setFromDate} />
+                  <DateInput label="Date of Birth" values={fromDate} onChange={setFromDate} />
                   <div className="flex justify-center -my-3">
                     <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center border border-primary/10">
                       <Workflow className="w-3.5 h-3.5 text-primary/40" />

@@ -13,7 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 export default function ChronoFlow() {
   const { toast } = useToast();
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-  const [activeTab, setActiveTab] = useState<'age' | 'diff'>('age');
+  const [activeTab, setActiveTab] = useState<'age' | 'diff'>('diff');
   
   const [dob, setDob] = useState<DateInputValues>({ day: '', month: '', year: '' });
   const [fromDate, setFromDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
@@ -107,7 +107,7 @@ export default function ChronoFlow() {
   };
 
   return (
-    <div className="min-h-screen animate-gradient-bg flex flex-col transition-colors duration-500">
+    <div className="min-h-screen animate-gradient-bg flex flex-col transition-colors duration-500 overflow-x-hidden">
       <nav className="sticky top-0 z-50 glass border-b border-white/10 h-10 flex items-center px-3 justify-between">
         <div className="flex items-center gap-1.5">
           <div className="w-6 h-6 bg-primary rounded-md flex items-center justify-center neon-glow">
@@ -130,33 +130,41 @@ export default function ChronoFlow() {
       <main className="flex-grow container max-w-[900px] mx-auto px-2 py-3">
         <div className="flex flex-row gap-3 items-start h-full">
           
-          {/* Left Column: Calculator - Fixed side-by-side */}
-          <aside className="w-[180px] sm:w-[220px] shrink-0 space-y-3 sticky top-14">
+          {/* Left Column: Calculator - Forced side-by-side */}
+          <aside className="w-[140px] sm:w-[180px] shrink-0 space-y-3 sticky top-14">
             <div className="space-y-0.5 px-1">
-              <h2 className="text-sm font-headline font-extrabold tracking-tight text-foreground leading-tight">
+              <h2 className="text-[10px] sm:text-sm font-headline font-extrabold tracking-tight text-foreground leading-tight">
                 Timeline <span className="text-primary">Master</span>
               </h2>
             </div>
 
-            <div className="glass-card !p-3 shadow-xl border-white/5">
+            <div className="glass-card !p-2 sm:!p-3 shadow-xl border-white/5">
               <Tabs 
-                defaultValue="age" 
+                defaultValue="diff" 
                 className="w-full" 
                 onValueChange={(v) => {
                   setActiveTab(v as 'age' | 'diff');
                   setError(null);
                 }}
               >
-                <TabsList className="grid w-full grid-cols-2 mb-3 bg-white/5 p-0.5 rounded-md h-7">
-                  <TabsTrigger value="age" className="rounded-[4px] text-[9px] flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    Age
-                  </TabsTrigger>
-                  <TabsTrigger value="diff" className="rounded-[4px] text-[9px] flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                <TabsList className="grid w-full grid-cols-2 mb-2 bg-white/5 p-0.5 rounded-md h-6 sm:h-7">
+                  <TabsTrigger value="diff" className="rounded-[4px] text-[8px] sm:text-[9px] flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
                     Diff
+                  </TabsTrigger>
+                  <TabsTrigger value="age" className="rounded-[4px] text-[8px] sm:text-[9px] flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
+                    Age
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="age" className="space-y-2 animate-in fade-in slide-in-from-left-1 duration-200">
+                <TabsContent value="diff" className="space-y-1.5 animate-in fade-in slide-in-from-left-1 duration-200">
+                  <DateInput label="Start" values={fromDate} onChange={setFromDate} />
+                  <div className="flex justify-center -my-1 relative z-10">
+                    <ChevronRight className="w-2 h-2 text-primary/40 rotate-90" />
+                  </div>
+                  <DateInput label="End" values={toDate} onChange={setToDate} error={activeTab === 'diff' ? error || undefined : undefined} />
+                </TabsContent>
+
+                <TabsContent value="age" className="space-y-1.5 animate-in fade-in slide-in-from-left-1 duration-200">
                   <DateInput 
                     label="Birth Date" 
                     values={dob} 
@@ -164,18 +172,10 @@ export default function ChronoFlow() {
                     error={activeTab === 'age' ? error || undefined : undefined} 
                   />
                 </TabsContent>
-
-                <TabsContent value="diff" className="space-y-2 animate-in fade-in slide-in-from-left-1 duration-200">
-                  <DateInput label="Start" values={fromDate} onChange={setFromDate} />
-                  <div className="flex justify-center -my-0.5 relative z-10">
-                    <ChevronRight className="w-2.5 h-2.5 text-primary/40 rotate-90" />
-                  </div>
-                  <DateInput label="End" values={toDate} onChange={setToDate} error={activeTab === 'diff' ? error || undefined : undefined} />
-                </TabsContent>
               </Tabs>
 
               <Button 
-                className="w-full h-8 mt-3 text-[10px] font-bold rounded-md bg-primary hover:bg-primary/90 transition-all transform active:scale-[0.98] neon-glow"
+                className="w-full h-7 sm:h-8 mt-3 text-[9px] sm:text-[10px] font-bold rounded-md bg-primary hover:bg-primary/90 transition-all transform active:scale-[0.98] neon-glow"
                 onClick={handleCalculate}
               >
                 Calculate
@@ -184,10 +184,10 @@ export default function ChronoFlow() {
           </aside>
 
           {/* Right Column: Results Section */}
-          <div className="flex-grow w-full">
+          <div className="flex-grow w-full min-w-0">
             {results ? (
-              <div className="space-y-3 animate-in fade-in slide-in-from-right-2 duration-300">
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+              <div className="space-y-2.5 animate-in fade-in slide-in-from-right-2 duration-300">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 sm:gap-1.5">
                   <ResultCard label="Years" value={results.years} />
                   <ResultCard label="Months" value={results.months} />
                   <ResultCard label="Days" value={results.days} />
@@ -196,16 +196,16 @@ export default function ChronoFlow() {
                   <ResultCard label="Zodiac" value={results.zodiac} />
                 </div>
 
-                <div className="glass-card !p-2.5 space-y-1.5">
-                  <h4 className="text-[8px] uppercase tracking-widest font-bold text-foreground opacity-50">Detailed Chronometry</h4>
+                <div className="glass-card !p-2 sm:!p-2.5 space-y-1 border-white/5">
+                  <h4 className="text-[7px] uppercase tracking-widest font-bold text-foreground opacity-50">Detailed Chronometry</h4>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-0.5">
-                      <p className="text-[7px] text-muted-foreground uppercase font-bold tracking-widest">Minutes</p>
-                      <p className="text-xs font-headline font-black text-primary">{results.totalMinutes.toLocaleString()}</p>
+                      <p className="text-[6px] text-muted-foreground uppercase font-bold tracking-widest">Minutes</p>
+                      <p className="text-[10px] sm:text-xs font-headline font-black text-primary">{results.totalMinutes.toLocaleString()}</p>
                     </div>
                     <div className="space-y-0.5">
-                      <p className="text-[7px] text-muted-foreground uppercase font-bold tracking-widest">Seconds</p>
-                      <p className="text-xs font-headline font-black text-accent">{results.totalSeconds.toLocaleString()}</p>
+                      <p className="text-[6px] text-muted-foreground uppercase font-bold tracking-widest">Seconds</p>
+                      <p className="text-[10px] sm:text-xs font-headline font-black text-accent">{results.totalSeconds.toLocaleString()}</p>
                     </div>
                   </div>
                 </div>
@@ -213,19 +213,19 @@ export default function ChronoFlow() {
                 <FunFact years={results.years} months={results.months} days={results.days} />
 
                 <div className="flex flex-wrap gap-1 pt-0.5">
-                  <Button variant="secondary" size="sm" className="rounded-md h-7 px-2 gap-1 text-[9px]" onClick={handleShare}>
-                    <Share2 className="w-2.5 h-2.5" /> Share
+                  <Button variant="secondary" size="sm" className="rounded-md h-6 sm:h-7 px-2 gap-1 text-[8px] sm:text-[9px]" onClick={handleShare}>
+                    <Share2 className="w-2 h-2 sm:w-2.5 sm:h-2.5" /> Share
                   </Button>
-                  <Button variant="secondary" size="sm" className="rounded-md h-7 px-2 gap-1 text-[9px]" onClick={handleShare}>
-                    <Copy className="w-2.5 h-2.5" /> Copy
+                  <Button variant="secondary" size="sm" className="rounded-md h-6 sm:h-7 px-2 gap-1 text-[8px] sm:text-[9px]" onClick={handleShare}>
+                    <Copy className="w-2 h-2 sm:w-2.5 sm:h-2.5" /> Copy
                   </Button>
                 </div>
               </div>
             ) : (
-              <div className="h-full flex items-center justify-center border border-dashed border-white/5 rounded-xl min-h-[200px] opacity-30">
+              <div className="h-full flex items-center justify-center border border-dashed border-white/5 rounded-xl min-h-[180px] sm:min-h-[200px] opacity-30">
                 <div className="text-center space-y-1">
-                  <Timer className="w-5 h-5 mx-auto text-muted-foreground" />
-                  <p className="text-muted-foreground text-[9px] uppercase font-bold tracking-wider">Awaiting Data</p>
+                  <Timer className="w-4 h-4 sm:w-5 sm:h-5 mx-auto text-muted-foreground" />
+                  <p className="text-muted-foreground text-[8px] sm:text-[9px] uppercase font-bold tracking-wider">Awaiting Data</p>
                 </div>
               </div>
             )}
@@ -234,7 +234,7 @@ export default function ChronoFlow() {
       </main>
 
       <footer className="py-2 text-center border-t border-white/5 glass">
-        <p className="text-muted-foreground text-[8px] tracking-tight">
+        <p className="text-muted-foreground text-[7px] sm:text-[8px] tracking-tight">
           ChronoFlow v1.2 • Precision Engine
         </p>
       </footer>

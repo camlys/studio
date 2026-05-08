@@ -25,7 +25,7 @@ export default function ChronoFlow() {
   const [results, setResults] = useState<CalculationResults | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Load from local storage
+  // Load from local storage and set defaults
   useEffect(() => {
     const savedDob = localStorage.getItem('chrono_dob');
     if (savedDob) setDob(JSON.parse(savedDob));
@@ -34,7 +34,16 @@ export default function ChronoFlow() {
     if (savedFrom) setFromDate(JSON.parse(savedFrom));
     
     const savedTo = localStorage.getItem('chrono_to');
-    if (savedTo) setToDate(JSON.parse(savedTo));
+    if (savedTo) {
+      setToDate(JSON.parse(savedTo));
+    } else {
+      const now = new Date();
+      setToDate({
+        day: now.getDate().toString().padStart(2, '0'),
+        month: (now.getMonth() + 1).toString().padStart(2, '0'),
+        year: now.getFullYear().toString()
+      });
+    }
 
     const savedTheme = localStorage.getItem('chrono_theme');
     if (savedTheme === 'light') setTheme('light');
@@ -80,14 +89,23 @@ export default function ChronoFlow() {
   const handleReset = () => {
     setDob({ day: '', month: '', year: '' });
     setFromDate({ day: '', month: '', year: '' });
-    setToDate({ day: '', month: '', year: '' });
+    
+    const now = new Date();
+    setToDate({
+      day: now.getDate().toString().padStart(2, '0'),
+      month: (now.getMonth() + 1).toString().padStart(2, '0'),
+      year: now.getFullYear().toString()
+    });
+    
     setResults(null);
     setError(null);
   };
 
   const handleShare = () => {
     if (!results) return;
-    const text = `I am ${results.years} years, ${results.months} months, and ${results.days} days old! Calculated with ChronoFlow.`;
+    const text = activeTab === 'age' 
+      ? `I am ${results.years} years, ${results.months} months, and ${results.days} days old! Calculated with ChronoFlow.`
+      : `The difference is ${results.years} years, ${results.months} months, and ${results.days} days! Calculated with ChronoFlow.`;
     navigator.clipboard.writeText(text);
     toast({
       title: "Copied to clipboard!",

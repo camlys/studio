@@ -13,8 +13,8 @@ type TimerMode = 'work' | 'short-break' | 'long-break';
 
 const MODE_CONFIG: Record<TimerMode, { label: string, duration: number, color: string }> = {
   work: { label: 'Focus Work', duration: 25 * 60, color: 'text-primary' },
-  'short-break': { label: 'Quick Reset', duration: 5 * 60, color: 'text-accent' },
-  'long-break': { label: 'Deep Rest', duration: 15 * 60, color: 'text-blue-500' },
+  'short-break': { label: 'Short Break', duration: 5 * 60, color: 'text-accent' },
+  'long-break': { label: 'Long Break', duration: 15 * 60, color: 'text-blue-500' },
 };
 
 export function Pomodoro() {
@@ -47,7 +47,6 @@ export function Pomodoro() {
     } else if (timeLeft === 0) {
       setIsActive(false);
       if (timerRef.current) clearInterval(timerRef.current);
-      // Logic for switching modes automatically could go here
     }
 
     return () => {
@@ -136,10 +135,9 @@ export function Pomodoro() {
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="4"
-                strokeDasharray="100 100"
-                strokeDashoffset={100 - progress}
+                strokeDasharray="301.59"
+                strokeDashoffset={(301.59 * (100 - progress)) / 100}
                 className={cn("transition-all duration-1000 ease-linear", MODE_CONFIG[mode].color)}
-                style={{ strokeDasharray: '301.59', strokeDashoffset: (301.59 * (100 - progress)) / 100 }}
               />
             </svg>
             <div className="text-center space-y-1 z-10">

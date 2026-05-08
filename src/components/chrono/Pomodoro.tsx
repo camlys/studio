@@ -104,8 +104,8 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
     <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 items-start justify-center py-4 animate-in fade-in duration-500">
       
       {/* Left Column: Timer and Mantra */}
-      <div className="w-full lg:w-[480px] space-y-6">
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 md:p-8 flex flex-col items-center transition-all duration-500 shadow-2xl">
+      <div className="w-full lg:w-[540px] space-y-6">
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 md:p-10 flex flex-col items-center transition-all duration-500 shadow-2xl">
           <div className="flex gap-1 mb-8">
             {(Object.keys(MODE_CONFIG) as TimerMode[]).map((m) => (
               <button
@@ -121,14 +121,14 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
             ))}
           </div>
 
-          <div className="text-8xl md:text-[100px] font-black text-white tabular-nums mb-8 select-none">
+          <div className="text-[100px] sm:text-[130px] md:text-[160px] leading-none font-black text-white tabular-nums mb-12 select-none tracking-tighter">
             {formatTime(timeLeft)}
           </div>
 
           <button
             onClick={toggleTimer}
             className={cn(
-              "w-48 h-14 bg-white rounded-md text-xl font-black uppercase tracking-widest transition-all active:translate-y-1 shadow-[0_6px_0_rgb(235,235,235)] active:shadow-none",
+              "w-56 h-16 bg-white rounded-md text-2xl font-black uppercase tracking-widest transition-all active:translate-y-1 shadow-[0_6px_0_rgb(235,235,235)] active:shadow-none",
               mode === 'work' ? "text-[#ba4949]" : mode === 'short-break' ? "text-[#38858a]" : "text-[#397097]"
             )}
           >
@@ -146,18 +146,18 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
           </div>
 
           {mantra && (
-            <div className="bg-black/10 rounded-xl p-5 text-center border border-white/10 backdrop-blur-sm">
+            <div className="bg-black/10 rounded-xl p-6 text-center border border-white/10 backdrop-blur-sm">
               <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-white/60 mb-2">Focus Mantra</h4>
-              <p className="text-xs md:text-sm font-medium italic text-white leading-relaxed">"{mantra}"</p>
+              <p className="text-sm md:text-base font-medium italic text-white leading-relaxed">"{mantra}"</p>
             </div>
           )}
         </div>
       </div>
 
       {/* Right Column: Tasks Section */}
-      <div className="flex-grow w-full lg:max-w-[480px] space-y-4">
+      <div className="flex-grow w-full lg:max-w-[440px] space-y-4">
         <div className="flex items-center justify-between border-b border-white/30 pb-3">
-          <h3 className="text-lg font-bold text-white uppercase tracking-widest text-sm">Focus Objectives</h3>
+          <h3 className="text-lg font-bold text-white uppercase tracking-widest text-xs">Focus Objectives</h3>
           <button className="bg-white/20 hover:bg-white/30 p-1.5 rounded transition-colors">
             <Settings className="w-4 h-4 text-white" />
           </button>

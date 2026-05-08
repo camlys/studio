@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -6,7 +7,8 @@ import {
   Sun, Moon, RefreshCcw, Share2, Copy, Timer, ChevronRight, 
   Github, Twitter, Mail, Cpu, Database, ShieldCheck, 
   ExternalLink, Globe, BookOpen, Zap, Brain, Activity, 
-  Lock, Star, ArrowRight, CheckCircle 
+  Lock, Star, ArrowRight, CheckCircle, Scale, HeartPulse, 
+  Coins, Milestone, Server, Layers, BarChart3
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -284,31 +286,151 @@ export default function ChronoFlow() {
         </div>
 
         {/* Rich Content Sections Above Footer */}
-        <section className="mt-20 space-y-24">
+        <section className="mt-20 space-y-32">
           
-          {/* Engine Capabilities Grid */}
-          <div className="space-y-8">
-            <div className="text-center space-y-2">
-              <Badge variant="outline" className="text-[10px] uppercase font-black tracking-widest text-primary border-primary/20 px-4">Core Technology</Badge>
-              <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Engine <span className="text-primary">Capabilities</span></h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto text-xs md:text-sm">Our platform leverages industrial-grade chronological computation to deliver absolute precision across all dimensions of time.</p>
+          {/* Methodology Section */}
+          <div className="space-y-12">
+            <div className="text-center space-y-3">
+              <Badge className="bg-primary/10 text-primary border-primary/20 uppercase tracking-widest text-[9px] px-4 font-black">Technical Documentation</Badge>
+              <h2 className="text-3xl md:text-6xl font-black tracking-tighter leading-none">The ChronoFlow <span className="text-primary">Methodology</span></h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto text-xs md:text-base">We bridge the gap between ancient sky-mapping and atomic-clock synchronization.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="glass-card hover:translate-y-[-4px] transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+                   <Milestone className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-black mb-3 tracking-tight">Gregorian Alignment</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">Our algorithms account for the complex centurial leap year rules, ensuring your total elapsed days are astronomically accurate across decades.</p>
+              </div>
+              <div className="glass-card hover:translate-y-[-4px] transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
+                   <Globe className="w-6 h-6 text-accent" />
+                </div>
+                <h3 className="text-xl font-black mb-3 tracking-tight">Temporal Drift Control</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">By synchronizing with UTC standards, we eliminate local system clock variances that often lead to discrepancies in chronological calculations.</p>
+              </div>
+              <div className="glass-card hover:translate-y-[-4px] transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+                   <Star className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-black mb-3 tracking-tight">Celestial Mapping</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">Zodiac sign determination utilizes high-precision ecliptic coordinate systems to handle cusp transitions with sub-minute resolution.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Use Case Matrix */}
+          <div className="space-y-12 py-16 bg-muted/20 rounded-[3rem] px-8 md:px-16 border border-border/50">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Precision for <span className="text-primary">Every Vertical</span></h2>
+              <p className="text-muted-foreground text-sm max-w-xl mx-auto">ChronoFlow serves critical functions across professional and personal sectors where time isn't just a number—it's a record.</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="glass-card hover:border-primary/30 transition-all group">
-                <Zap className="w-8 h-8 text-primary mb-4 group-hover:scale-110 transition-transform" />
-                <h3 className="text-lg font-bold mb-2 tracking-tight">Real-time Delta</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">Calculate the exact distance between two points in time with millisecond-level resolution, accounting for every leap year shift.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="space-y-4">
+                <Scale className="w-7 h-7 text-primary" />
+                <h4 className="font-black text-sm uppercase tracking-widest">Legal & Compliance</h4>
+                <p className="text-[11px] text-muted-foreground leading-relaxed">Determining exact age for statutes of limitation, contract eligibility, and legal maturation milestones.</p>
               </div>
-              <div className="glass-card hover:border-accent/30 transition-all group">
-                <Brain className="w-8 h-8 text-accent mb-4 group-hover:scale-110 transition-transform" />
-                <h3 className="text-lg font-bold mb-2 tracking-tight">AI Insights</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">Generative AI models contextualize your age, providing biological and historical facts that make raw data feel human.</p>
+              <div className="space-y-4">
+                <HeartPulse className="w-7 h-7 text-accent" />
+                <h4 className="font-black text-sm uppercase tracking-widest">Healthcare Stats</h4>
+                <p className="text-[11px] text-muted-foreground leading-relaxed">Tracking pediatric developmental cycles and age-specific biological markers with absolute day-level precision.</p>
               </div>
-              <div className="glass-card hover:border-primary/30 transition-all group">
-                <Globe className="w-8 h-8 text-primary mb-4 group-hover:scale-110 transition-transform" />
-                <h3 className="text-lg font-bold mb-2 tracking-tight">Astronomical Sync</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">Automated mapping of zodiac signs and celestial alignments based on high-precision astronomical coordinate systems.</p>
+              <div className="space-y-4">
+                <Coins className="w-7 h-7 text-primary" />
+                <h4 className="font-black text-sm uppercase tracking-widest">Financial Planning</h4>
+                <p className="text-[11px] text-muted-foreground leading-relaxed">Calculating exact time horizons for compound interest maturation and retirement account eligibility windows.</p>
+              </div>
+              <div className="space-y-4">
+                <Milestone className="w-7 h-7 text-accent" />
+                <h4 className="font-black text-sm uppercase tracking-widest">Life Logistics</h4>
+                <p className="text-[11px] text-muted-foreground leading-relaxed">A high-definition view of your personal timeline, turning abstract years into concrete, living metrics.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Infrastructure Visualization */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <Badge variant="outline" className="text-accent border-accent/30 text-[9px] font-black tracking-[0.2em] uppercase">Architecture</Badge>
+                <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.9]">Global Sync <span className="text-primary">Network</span>.</h2>
+                <p className="text-muted-foreground text-sm leading-relaxed md:text-base">
+                  The ChronoFlow engine isn't just a local script. It's a distributed network of chronological nodes ensuring that your data remains accurate regardless of your geographical location or device speed.
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-5 glass border-border/50 rounded-2xl">
+                   <div className="text-2xl font-black text-primary mb-1">0.1ms</div>
+                   <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Network Latency</p>
+                </div>
+                <div className="p-5 glass border-border/50 rounded-2xl">
+                   <div className="text-2xl font-black text-accent mb-1">E2EE</div>
+                   <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Privacy Standard</p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <Link href="/security-ops">
+                  <Button className="rounded-xl h-12 px-8 text-xs font-black uppercase tracking-widest bg-primary neon-glow">
+                    View Network Ops
+                  </Button>
+                </Link>
+                <Link href="/blog">
+                  <Button variant="ghost" className="rounded-xl h-12 px-8 text-xs font-black uppercase tracking-widest">
+                    Read Whitepaper
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary/10 blur-[120px] rounded-full -z-10" />
+              <div className="glass-card !p-0 overflow-hidden border-primary/20 shadow-3xl">
+                <div className="h-12 bg-white/5 border-b border-white/5 flex items-center px-6 justify-between">
+                   <div className="flex items-center gap-2">
+                     <Server className="w-4 h-4 text-primary" />
+                     <span className="text-[10px] font-mono uppercase font-black text-muted-foreground/60 tracking-widest">infra_visualization.exe</span>
+                   </div>
+                   <div className="flex gap-1.5">
+                     <div className="w-2 h-2 rounded-full bg-destructive/30" />
+                     <div className="w-2 h-2 rounded-full bg-accent/30" />
+                   </div>
+                </div>
+                <div className="p-8 space-y-6">
+                   <div className="space-y-3">
+                     <div className="flex justify-between text-[10px] font-mono">
+                        <span>CPU_LOAD</span>
+                        <span className="text-primary">12.4%</span>
+                     </div>
+                     <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div className="h-full bg-primary w-[12%] animate-pulse" />
+                     </div>
+                   </div>
+                   <div className="space-y-3">
+                     <div className="flex justify-between text-[10px] font-mono">
+                        <span>SYNC_STABILITY</span>
+                        <span className="text-accent">STABLE_99.9%</span>
+                     </div>
+                     <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div className="h-full bg-accent w-[99%]" />
+                     </div>
+                   </div>
+                   <div className="grid grid-cols-2 gap-3 pt-4">
+                      <div className="p-3 bg-white/5 border border-white/5 rounded-xl font-mono text-[9px]">
+                         <span className="block text-primary mb-1">NODE_WEST</span>
+                         <span className="opacity-60 uppercase">San_Francisco</span>
+                      </div>
+                      <div className="p-3 bg-white/5 border border-white/5 rounded-xl font-mono text-[9px]">
+                         <span className="block text-accent mb-1">NODE_EAST</span>
+                         <span className="opacity-60 uppercase">New_York</span>
+                      </div>
+                   </div>
+                </div>
               </div>
             </div>
           </div>
@@ -378,7 +500,7 @@ export default function ChronoFlow() {
                     <span className="text-[10px] font-mono text-muted-foreground/60 ml-2">system_logs.sh</span>
                  </div>
                  <div className="p-6 font-mono text-[10px] space-y-2 text-muted-foreground leading-relaxed overflow-x-auto">
-                    <p className="text-accent">$ INITIALIZING CHRONO_ENGINE_V1.6.0</p>
+                    <p className="text-accent">&gt; INITIALIZING CHRON_ENGINE_V1.6.0</p>
                     <p>&gt; AUTHENTICATING_LOCAL_STORAGE... OK</p>
                     <p>&gt; FETCHING_TIME_SYNC_DATA... [200 OK]</p>
                     <p>&gt; CALC_PRECISION: ATOMIC_CLOCK_STRATEGY</p>

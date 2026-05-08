@@ -15,17 +15,13 @@ export default function ChronoFlow() {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [activeTab, setActiveTab] = useState<'age' | 'diff'>('age');
   
-  // States for Age Calculator
   const [dob, setDob] = useState<DateInputValues>({ day: '', month: '', year: '' });
-  
-  // States for Difference Calculator
   const [fromDate, setFromDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
   const [toDate, setToDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
   
   const [results, setResults] = useState<CalculationResults | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Load from local storage and set defaults
   useEffect(() => {
     const savedDob = localStorage.getItem('chrono_dob');
     if (savedDob) setDob(JSON.parse(savedDob));
@@ -49,7 +45,6 @@ export default function ChronoFlow() {
     if (savedTheme === 'light') setTheme('light');
   }, []);
 
-  // Persist to local storage
   useEffect(() => {
     localStorage.setItem('chrono_dob', JSON.stringify(dob));
     localStorage.setItem('chrono_from', JSON.stringify(fromDate));
@@ -65,19 +60,19 @@ export default function ChronoFlow() {
     setError(null);
     if (activeTab === 'age') {
       if (!isValidDate(dob.day, dob.month, dob.year)) {
-        setError("Please enter a valid date of birth.");
+        setError("Please enter a valid date.");
         return;
       }
       const birth = new Date(parseInt(dob.year), parseInt(dob.month) - 1, parseInt(dob.day));
       if (birth > new Date()) {
-        setError("Date of birth cannot be in the future.");
+        setError("Date cannot be in the future.");
         return;
       }
       setResults(calculateAll(birth));
     } else {
       if (!isValidDate(fromDate.day, fromDate.month, fromDate.year) || 
           !isValidDate(toDate.day, toDate.month, toDate.year)) {
-        setError("Please enter valid 'From' and 'To' dates.");
+        setError("Please enter valid dates.");
         return;
       }
       const start = new Date(parseInt(fromDate.year), parseInt(fromDate.month) - 1, parseInt(fromDate.day));
@@ -89,14 +84,12 @@ export default function ChronoFlow() {
   const handleReset = () => {
     setDob({ day: '', month: '', year: '' });
     setFromDate({ day: '', month: '', year: '' });
-    
     const now = new Date();
     setToDate({
       day: now.getDate().toString().padStart(2, '0'),
       month: (now.getMonth() + 1).toString().padStart(2, '0'),
       year: now.getFullYear().toString()
     });
-    
     setResults(null);
     setError(null);
   };
@@ -109,13 +102,12 @@ export default function ChronoFlow() {
     navigator.clipboard.writeText(text);
     toast({
       title: "Copied to clipboard!",
-      description: "You can now share your results with others.",
+      description: "Results copied to your clipboard.",
     });
   };
 
   return (
     <div className="min-h-screen animate-gradient-bg flex flex-col transition-colors duration-500">
-      {/* Sticky Navbar */}
       <nav className="sticky top-0 z-50 glass border-b border-white/10 h-16 flex items-center px-4 md:px-8 justify-between">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center neon-glow">
@@ -126,12 +118,7 @@ export default function ChronoFlow() {
           </h1>
         </div>
         <div className="flex items-center gap-2">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="rounded-full hover:bg-white/10"
-          >
+          <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full hover:bg-white/10">
             {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </Button>
           <Button variant="ghost" size="icon" onClick={handleReset} className="rounded-full hover:bg-white/10">
@@ -140,152 +127,149 @@ export default function ChronoFlow() {
         </div>
       </nav>
 
-      <main className="flex-grow container max-w-4xl mx-auto px-4 py-12 md:py-20">
-        <div className="space-y-12">
-          {/* Header Section */}
-          <div className="text-center space-y-4">
-            <h2 className="text-4xl md:text-6xl font-headline font-extrabold tracking-tight text-foreground">
-              Master Your <span className="text-primary">Timeline</span>
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-              Precision age and date difference calculations with a premium, glassmorphism interface.
-            </p>
-          </div>
-
-          {/* Calculator Section */}
-          <section className="glass-card max-w-2xl mx-auto">
-            <Tabs 
-              defaultValue="age" 
-              className="w-full" 
-              onValueChange={(v) => {
-                setActiveTab(v as 'age' | 'diff');
-                setResults(null);
-                setError(null);
-              }}
-            >
-              <TabsList className="grid w-full grid-cols-2 mb-10 bg-white/5 p-1 rounded-2xl h-14">
-                <TabsTrigger value="age" className="rounded-xl flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-300">
-                  <Calculator className="w-4 h-4" />
-                  Age
-                </TabsTrigger>
-                <TabsTrigger value="diff" className="rounded-xl flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-300">
-                  <Calendar className="w-4 h-4" />
-                  Difference
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="age" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                <DateInput 
-                  label="Date of Birth" 
-                  values={dob} 
-                  onChange={setDob} 
-                  error={activeTab === 'age' ? error || undefined : undefined} 
-                />
-              </TabsContent>
-
-              <TabsContent value="diff" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                <DateInput 
-                  label="From Date" 
-                  values={fromDate} 
-                  onChange={setFromDate} 
-                />
-                <div className="flex justify-center -my-4 relative z-10">
-                  <div className="w-10 h-10 glass rounded-full flex items-center justify-center">
-                    <ChevronRight className="w-5 h-5 text-primary" />
-                  </div>
-                </div>
-                <DateInput 
-                  label="To Date" 
-                  values={toDate} 
-                  onChange={setToDate} 
-                  error={activeTab === 'diff' ? error || undefined : undefined}
-                />
-              </TabsContent>
-            </Tabs>
-
-            <Button 
-              className="w-full h-16 mt-10 text-lg font-bold rounded-2xl bg-primary hover:bg-primary/90 transition-all transform active:scale-[0.98] neon-glow"
-              onClick={handleCalculate}
-            >
-              Calculate {activeTab === 'age' ? 'Age' : 'Difference'}
-            </Button>
-          </section>
-
-          {/* Results Section */}
-          {results && (
-            <div className="space-y-12 animate-in fade-in zoom-in-95 duration-700">
-              <div className="text-center">
-                <h3 className="text-2xl font-headline font-bold text-foreground mb-8">Calculation Breakdown</h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-                  <ResultCard label="Years" value={results.years} delay="0s" />
-                  <ResultCard label="Months" value={results.months} delay="0.1s" />
-                  <ResultCard label="Days" value={results.days} delay="0.2s" />
-                  <ResultCard label="Total Weeks" value={results.totalWeeks} delay="0.3s" className="md:col-span-1" />
-                  <ResultCard label="Total Days" value={results.totalDays} delay="0.4s" />
-                  <ResultCard label="Total Hours" value={results.totalHours} delay="0.5s" />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="glass-card flex items-center gap-6 group hover:neon-glow transition-all duration-300">
-                  <div className="w-16 h-16 bg-accent/20 rounded-2xl flex items-center justify-center group-hover:bg-accent/30 transition-colors">
-                    <History className="text-accent w-8 h-8" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground font-medium uppercase tracking-widest">Next Birthday</p>
-                    <p className="text-2xl font-bold text-foreground">{results.nextBirthday} Days</p>
-                  </div>
-                </div>
-                <div className="glass-card flex items-center gap-6 group hover:neon-glow transition-all duration-300">
-                  <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-                    <Calendar className="text-primary w-8 h-8" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground font-medium uppercase tracking-widest">Zodiac Sign</p>
-                    <p className="text-2xl font-bold text-foreground">{results.zodiac}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Precise Time Breakdown */}
-              <div className="glass-card text-center space-y-6">
-                <h4 className="text-xl font-bold text-foreground">Precise Timeline</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-1">
-                    <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest">Minutes Lived</p>
-                    <p className="text-3xl font-headline font-black text-primary">{results.totalMinutes.toLocaleString()}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest">Seconds Lived</p>
-                    <p className="text-3xl font-headline font-black text-accent">{results.totalSeconds.toLocaleString()}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* GenAI Fun Fact */}
-              <FunFact years={results.years} months={results.months} days={results.days} />
-
-              {/* Actions */}
-              <div className="flex flex-wrap justify-center gap-4 mt-8">
-                <Button variant="secondary" className="rounded-xl h-12 px-6 flex items-center gap-2 hover:bg-secondary/80" onClick={handleShare}>
-                  <Share2 className="w-4 h-4" /> Share Results
-                </Button>
-                <Button variant="secondary" className="rounded-xl h-12 px-6 flex items-center gap-2 hover:bg-secondary/80" onClick={handleShare}>
-                  <Copy className="w-4 h-4" /> Copy Text
-                </Button>
-                <Button variant="secondary" className="rounded-xl h-12 px-6 flex items-center gap-2 hover:bg-secondary/80">
-                  <Download className="w-4 h-4" /> Download PDF
-                </Button>
-              </div>
+      <main className="flex-grow container max-w-[1400px] mx-auto px-4 py-8 md:py-12">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
+          
+          {/* Left Column: Header + Calculator */}
+          <aside className="w-full lg:w-[420px] shrink-0 space-y-8 sticky lg:top-24">
+            <div className="space-y-3">
+              <h2 className="text-3xl md:text-5xl font-headline font-extrabold tracking-tight text-foreground leading-tight">
+                Master Your <br /><span className="text-primary">Timeline</span>
+              </h2>
+              <p className="text-muted-foreground text-base max-w-sm">
+                Precision age and date difference calculations with a premium interface.
+              </p>
             </div>
-          )}
+
+            <div className="glass-card !p-6 shadow-2xl border-white/5">
+              <Tabs 
+                defaultValue="age" 
+                className="w-full" 
+                onValueChange={(v) => {
+                  setActiveTab(v as 'age' | 'diff');
+                  setError(null);
+                }}
+              >
+                <TabsList className="grid w-full grid-cols-2 mb-8 bg-white/5 p-1 rounded-2xl h-12">
+                  <TabsTrigger value="age" className="rounded-xl flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Calculator className="w-4 h-4" />
+                    Age
+                  </TabsTrigger>
+                  <TabsTrigger value="diff" className="rounded-xl flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Calendar className="w-4 h-4" />
+                    Diff
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="age" className="space-y-6 animate-in fade-in slide-in-from-left-2 duration-300">
+                  <DateInput 
+                    label="Date of Birth" 
+                    values={dob} 
+                    onChange={setDob} 
+                    error={activeTab === 'age' ? error || undefined : undefined} 
+                  />
+                </TabsContent>
+
+                <TabsContent value="diff" className="space-y-6 animate-in fade-in slide-in-from-left-2 duration-300">
+                  <DateInput label="From Date" values={fromDate} onChange={setFromDate} />
+                  <div className="flex justify-center -my-3 relative z-10">
+                    <div className="w-8 h-8 glass rounded-full flex items-center justify-center border-white/10">
+                      <ChevronRight className="w-4 h-4 text-primary rotate-90 lg:rotate-0" />
+                    </div>
+                  </div>
+                  <DateInput label="To Date" values={toDate} onChange={setToDate} error={activeTab === 'diff' ? error || undefined : undefined} />
+                </TabsContent>
+              </Tabs>
+
+              <Button 
+                className="w-full h-14 mt-8 text-lg font-bold rounded-2xl bg-primary hover:bg-primary/90 transition-all transform active:scale-[0.98] neon-glow"
+                onClick={handleCalculate}
+              >
+                Calculate
+              </Button>
+            </div>
+          </aside>
+
+          {/* Right Column: Results Section */}
+          <div className="flex-grow w-full min-h-[500px]">
+            {results ? (
+              <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-700">
+                <div className="text-center lg:text-left">
+                  <h3 className="text-2xl font-headline font-bold text-foreground mb-6">Calculation Results</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <ResultCard label="Years" value={results.years} delay="0s" />
+                    <ResultCard label="Months" value={results.months} delay="0.1s" />
+                    <ResultCard label="Days" value={results.days} delay="0.2s" />
+                    <ResultCard label="Weeks" value={results.totalWeeks} delay="0.3s" />
+                    <ResultCard label="Total Days" value={results.totalDays} delay="0.4s" />
+                    <ResultCard label="Hours" value={results.totalHours} delay="0.5s" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="glass-card !p-5 flex items-center gap-5 hover:neon-glow transition-all duration-300">
+                    <div className="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+                      <History className="text-accent w-6 h-6" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Next Birthday</p>
+                      <p className="text-xl font-bold text-foreground">{results.nextBirthday} Days</p>
+                    </div>
+                  </div>
+                  <div className="glass-card !p-5 flex items-center gap-5 hover:neon-glow transition-all duration-300">
+                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
+                      <Calendar className="text-primary w-6 h-6" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Zodiac Sign</p>
+                      <p className="text-xl font-bold text-foreground">{results.zodiac}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="glass-card !p-6 text-center lg:text-left space-y-4">
+                  <h4 className="text-lg font-bold text-foreground">Timeline Statistics</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-1">
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Minutes</p>
+                      <p className="text-2xl font-headline font-black text-primary">{results.totalMinutes.toLocaleString()}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Seconds</p>
+                      <p className="text-2xl font-headline font-black text-accent">{results.totalSeconds.toLocaleString()}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <FunFact years={results.years} months={results.months} days={results.days} />
+
+                <div className="flex flex-wrap justify-center lg:justify-start gap-3 pt-4">
+                  <Button variant="secondary" size="sm" className="rounded-xl h-10 px-5 gap-2" onClick={handleShare}>
+                    <Share2 className="w-3.5 h-3.5" /> Share
+                  </Button>
+                  <Button variant="secondary" size="sm" className="rounded-xl h-10 px-5 gap-2" onClick={handleShare}>
+                    <Copy className="w-3.5 h-3.5" /> Copy
+                  </Button>
+                  <Button variant="outline" size="sm" className="rounded-xl h-10 px-5 gap-2 border-white/5 bg-white/5 hover:bg-white/10">
+                    <Download className="w-3.5 h-3.5" /> Export PDF
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="h-full flex items-center justify-center border-2 border-dashed border-white/5 rounded-3xl min-h-[400px] opacity-40">
+                <div className="text-center space-y-4">
+                  <Timer className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground italic font-medium">Calculation details will appear here...</p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="py-10 text-center border-t border-white/5 glass">
-        <p className="text-muted-foreground text-sm flex items-center justify-center gap-2">
-          Crafted with <span className="text-destructive">❤</span> by ChronoFlow Team
+      <footer className="py-8 text-center border-t border-white/5 glass">
+        <p className="text-muted-foreground text-xs flex items-center justify-center gap-2">
+          Precision Engineering for Time Data • ChronoFlow v1.2
         </p>
       </footer>
     </div>

@@ -3,14 +3,32 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Timer, ArrowLeft, Calendar, User, Clock, ChevronRight, Search, BookOpen, Sparkles, FileType } from 'lucide-react';
+import { Timer, ArrowLeft, Calendar, User, Clock, ChevronRight, Search, BookOpen, Sparkles, FileType, Globe, Zap } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
 const BLOG_POSTS = [
   {
-    title: "The Ultimate Guide to Image and PDF Resizing Optimization",
+    title: "The Master Guide to Global Time Synchronization",
+    description: "An exhaustive technical guide to the science of time synchronization, NTP protocols, and high-precision chronological engineering.",
+    date: "July 10, 2024",
+    author: "Camly Engineering",
+    readTime: "60 min read",
+    slug: "/blog/global-time-synchronization-standards",
+    category: "Chronology"
+  },
+  {
+    title: "The Enterprise Blueprint for Digital Asset Velocity",
+    description: "How to maximize digital asset velocity through high-precision image and PDF optimization to drive enterprise SEO and performance.",
+    date: "July 15, 2024",
+    author: "Camly Ops Team",
+    readTime: "45 min read",
+    slug: "/blog/digital-asset-velocity-enterprise-guide",
+    category: "Enterprise"
+  },
+  {
+    title: "The Ultimate 8000-Word Guide to Image and PDF Resizing",
     description: "Master the art of digital asset management. Learn how high-precision resizing impacts SEO, web performance, and document integrity.",
     date: "June 05, 2024",
     author: "Camly Tech Ops",
@@ -102,19 +120,19 @@ export default function BlogHub() {
             <div className="grid md:grid-cols-2">
               <div className="bg-gradient-to-br from-primary/10 to-accent/10 h-64 md:h-full flex items-center justify-center relative">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_70%)] opacity-30" />
-                <FileType className="w-24 h-24 text-primary opacity-20 group-hover:scale-110 transition-transform duration-500" />
+                <Globe className="w-24 h-24 text-primary opacity-20 group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div className="p-8 space-y-4 flex flex-col justify-center">
-                <Badge className="w-fit bg-primary text-primary-foreground text-[10px]">NEW COMPREHENSIVE GUIDE</Badge>
-                <h2 className="text-3xl font-black leading-tight tracking-tight">The Ultimate Guide to Image and PDF Resizing Optimization</h2>
+                <Badge className="w-fit bg-primary text-primary-foreground text-[10px]">NEW TECHNICAL WHITEPAPER</Badge>
+                <h2 className="text-3xl font-black leading-tight tracking-tight">The Master Guide to Global Time Synchronization</h2>
                 <p className="text-muted-foreground text-sm line-clamp-3">
-                  Dive deep into the mechanics of digital asset optimization. From lossy compression to vector scaling, understand how to maintain quality while maximizing performance.
+                  An exhaustive exploration of atomic chronology, NTP protocols, and the mathematics of drift correction. Learn why precision is the bedrock of the digital era.
                 </p>
                 <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2">
-                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> Camly Tech Ops</span>
-                  <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> 55 min read</span>
+                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> Camly Engineering</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> 60 min read</span>
                 </div>
-                <Link href="/blog/image-and-pdf-resizing-optimization">
+                <Link href="/blog/global-time-synchronization-standards">
                   <Button className="w-full md:w-fit mt-4 bg-primary text-primary-foreground font-bold uppercase tracking-widest text-[10px] h-10 px-8">
                     Read Whitepaper
                   </Button>
@@ -124,12 +142,15 @@ export default function BlogHub() {
           </div>
 
           {/* Regular Posts */}
-          {filteredPosts.map((post, i) => (
+          {filteredPosts.slice(1).map((post, i) => (
             <div key={i} className="glass p-6 rounded-3xl border border-border hover:border-primary/20 transition-all flex flex-col group">
               <div className="space-y-4 flex-grow">
-                <Badge variant="secondary" className="text-[9px] uppercase tracking-widest">{post.category}</Badge>
+                <div className="flex justify-between items-start">
+                  <Badge variant="secondary" className="text-[9px] uppercase tracking-widest">{post.category}</Badge>
+                  <span className="text-[9px] text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" /> {post.readTime}</span>
+                </div>
                 <h3 className="text-xl font-black tracking-tight group-hover:text-primary transition-colors">{post.title}</h3>
-                <p className="text-muted-foreground text-xs leading-relaxed">{post.description}</p>
+                <p className="text-muted-foreground text-xs leading-relaxed line-clamp-2">{post.description}</p>
               </div>
               <div className="mt-6 pt-6 border-t border-border flex items-center justify-between text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
                 <span>{post.date}</span>

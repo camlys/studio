@@ -76,7 +76,6 @@ export default function ChronoFlow() {
     const isOverriddenDark = isTimerActive && pomodoroSettings?.darkModeWhenRunning;
     document.documentElement.classList.toggle('dark', isOverriddenDark || theme === 'dark');
     
-    // Only persist the theme if it's not being temporarily overridden by the timer
     if (!isOverriddenDark) {
       localStorage.setItem('chrono_theme', theme);
     }
@@ -200,6 +199,17 @@ export default function ChronoFlow() {
   const getAtmosphereStyles = () => {
     if (activeTab !== 'focus') return {};
     
+    // Check if dark mode override is active
+    const isOverriddenDark = isTimerActive && pomodoroSettings?.darkModeWhenRunning;
+    if (isOverriddenDark) {
+      return { backgroundColor: '#111111' }; // Deep dark for focus mode
+    }
+
+    // Manual dark mode
+    if (theme === 'dark') {
+      return { backgroundColor: '#1a1a1a' };
+    }
+
     const baseColor = pomodoroSettings?.themeColor || '#ba4949';
 
     if (pomodoroMode === 'work') return { backgroundColor: baseColor };

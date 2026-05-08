@@ -11,10 +11,10 @@ import { cn } from '@/lib/utils';
 
 type TimerMode = 'work' | 'short-break' | 'long-break';
 
-const MODE_CONFIG: Record<TimerMode, { label: string, duration: number, color: string }> = {
-  work: { label: 'Focus Work', duration: 25 * 60, color: 'text-primary' },
-  'short-break': { label: 'Short Break', duration: 5 * 60, color: 'text-accent' },
-  'long-break': { label: 'Long Break', duration: 15 * 60, color: 'text-blue-500' },
+const MODE_CONFIG: Record<TimerMode, { label: string, duration: number, color: string, glow: string }> = {
+  work: { label: 'Focus Work', duration: 25 * 60, color: 'text-primary', glow: 'shadow-primary/20' },
+  'short-break': { label: 'Short Break', duration: 5 * 60, color: 'text-accent', glow: 'shadow-accent/20' },
+  'long-break': { label: 'Long Break', duration: 15 * 60, color: 'text-blue-500', glow: 'shadow-blue-500/20' },
 };
 
 export function Pomodoro() {
@@ -94,79 +94,81 @@ export function Pomodoro() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Timer Visualization */}
-        <div className="lg:col-span-2 glass-card !p-8 flex flex-col items-center justify-center relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-6 opacity-5">
-            <Target className="w-32 h-32 text-primary" />
-          </div>
+        {/* Rectangle Timer Visualization */}
+        <div className="lg:col-span-2 glass-card !p-0 flex flex-col items-center justify-between relative overflow-hidden group min-h-[400px]">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,_var(--tw-gradient-from)_0%,_transparent_50%)] from-primary/5 opacity-20 pointer-events-none" />
+          
+          <div className="w-full p-8 flex flex-col items-center flex-grow justify-center space-y-8">
+            <div className="flex gap-2 bg-muted/30 p-1 rounded-xl border border-white/5">
+              {(Object.keys(MODE_CONFIG) as TimerMode[]).map((m) => (
+                <Button
+                  key={m}
+                  variant={mode === m ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => changeMode(m)}
+                  className={cn(
+                    "rounded-lg text-[9px] uppercase font-black tracking-widest px-4 h-8 transition-all",
+                    mode === m && cn("bg-primary text-primary-foreground shadow-lg", MODE_CONFIG[m].glow)
+                  )}
+                >
+                  {MODE_CONFIG[m].label}
+                </Button>
+              ))}
+            </div>
 
-          <div className="flex gap-2 mb-8 bg-muted/30 p-1.5 rounded-2xl border border-white/5">
-            {(Object.keys(MODE_CONFIG) as TimerMode[]).map((m) => (
+            <div className="text-center space-y-2 py-4">
+              <div className={cn(
+                "text-8xl md:text-[10rem] font-black tracking-tighter tabular-nums transition-colors duration-500",
+                MODE_CONFIG[mode].color
+              )}>
+                {formatTime(timeLeft)}
+              </div>
+              <div className="flex items-center justify-center gap-2">
+                <Badge variant="outline" className="border-white/10 text-[10px] uppercase font-black tracking-[0.3em] px-4 py-1">
+                  {mode === 'work' ? 'Deep Work Phase' : 'Rejuvenation Phase'}
+                </Badge>
+              </div>
+            </div>
+
+            <div className="flex gap-4 pt-4">
               <Button
-                key={m}
-                variant={mode === m ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => changeMode(m)}
+                size="lg"
+                onClick={toggleTimer}
                 className={cn(
-                  "rounded-xl text-[10px] uppercase font-black tracking-widest px-4 h-9 transition-all",
-                  mode === m && "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                  "h-14 px-12 rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl hover:scale-[1.02]",
+                  isActive ? "bg-secondary text-secondary-foreground" : "bg-primary text-primary-foreground",
+                  !isActive && MODE_CONFIG[mode].glow
                 )}
               >
-                {MODE_CONFIG[m].label}
+                {isActive ? <Pause className="w-5 h-5 mr-3" /> : <Play className="w-5 h-5 mr-3" />}
+                {isActive ? 'Freeze' : 'Ignite'}
               </Button>
-            ))}
-          </div>
-
-          <div className="relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center mb-8">
-            <svg className="absolute inset-0 w-full h-full -rotate-90">
-              <circle
-                cx="50%"
-                cy="50%"
-                r="48%"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="4"
-                className="text-white/5"
-              />
-              <circle
-                cx="50%"
-                cy="50%"
-                r="48%"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="4"
-                strokeDasharray="301.59"
-                strokeDashoffset={(301.59 * (100 - progress)) / 100}
-                className={cn("transition-all duration-1000 ease-linear", MODE_CONFIG[mode].color)}
-              />
-            </svg>
-            <div className="text-center space-y-1 z-10">
-              <span className="block text-6xl md:text-8xl font-black tracking-tighter tabular-nums text-foreground">
-                {formatTime(timeLeft)}
-              </span>
-              <span className={cn("text-[10px] uppercase font-black tracking-[0.4em] block", MODE_CONFIG[mode].color)}>
-                {mode === 'work' ? 'Deep Work' : 'Recovery'}
-              </span>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={resetTimer}
+                className="w-14 h-14 rounded-2xl border-white/10 hover:bg-white/5 transition-all"
+              >
+                <RotateCcw className="w-5 h-5" />
+              </Button>
             </div>
           </div>
 
-          <div className="flex gap-4">
-            <Button
-              size="lg"
-              onClick={toggleTimer}
-              className="h-14 px-10 rounded-2xl bg-primary text-primary-foreground font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all"
-            >
-              {isActive ? <Pause className="w-5 h-5 mr-2" /> : <Play className="w-5 h-5 mr-2" />}
-              {isActive ? 'Freeze' : 'Ignite'}
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={resetTimer}
-              className="w-14 h-14 rounded-2xl border-white/10 hover:bg-white/5 transition-all"
-            >
-              <RotateCcw className="w-5 h-5" />
-            </Button>
+          {/* Linear Progress Indicator */}
+          <div className="w-full px-8 pb-8">
+             <div className="space-y-2">
+                <div className="flex justify-between text-[10px] font-black uppercase tracking-widest opacity-40">
+                  <span>Cycle Progress</span>
+                  <span>{Math.round(progress)}%</span>
+                </div>
+                <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                  <div 
+                    className={cn("h-full transition-all duration-1000 ease-linear", mode === 'work' ? 'bg-primary' : 'bg-accent')}
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+             </div>
           </div>
         </div>
 
@@ -205,7 +207,7 @@ export function Pomodoro() {
               </Button>
             </form>
 
-            <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="space-y-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
               {tasks.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground/40 space-y-2">
                   <Target className="w-6 h-6 mx-auto opacity-20" />

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Sun, Moon, RefreshCcw, Share2, Copy, History, Timer, Calendar, Calculator, ChevronRight, Download } from 'lucide-react';
+import { Sun, Moon, RefreshCcw, Share2, Copy, Timer, ChevronRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DateInput } from '@/components/chrono/DateInput';
@@ -13,7 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 export default function ChronoFlow() {
   const { toast } = useToast();
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-  const [activeTab, setActiveTab] = useState<'age' | 'diff'>('diff');
+  const [activeTab, setActiveTab] = useState<'diff' | 'age'>('diff');
   
   const [dob, setDob] = useState<DateInputValues>({ day: '', month: '', year: '' });
   const [fromDate, setFromDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
@@ -130,7 +130,7 @@ export default function ChronoFlow() {
       <main className="flex-grow container max-w-[900px] mx-auto px-2 py-3">
         <div className="flex flex-row gap-3 items-start h-full">
           
-          {/* Left Column: Calculator - Forced side-by-side */}
+          {/* Left Column: Calculator */}
           <aside className="w-[140px] sm:w-[180px] shrink-0 space-y-3 sticky top-14">
             <div className="space-y-0.5 px-1">
               <h2 className="text-[10px] sm:text-sm font-headline font-extrabold tracking-tight text-foreground leading-tight">
@@ -140,7 +140,7 @@ export default function ChronoFlow() {
 
             <div className="glass-card !p-2 sm:!p-3 shadow-xl border-white/5">
               <Tabs 
-                defaultValue="diff" 
+                value={activeTab}
                 className="w-full" 
                 onValueChange={(v) => {
                   setActiveTab(v as 'age' | 'diff');
@@ -156,7 +156,7 @@ export default function ChronoFlow() {
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="diff" className="space-y-1.5 animate-in fade-in slide-in-from-left-1 duration-200">
+                <TabsContent value="diff" className="space-y-1.5 animate-in fade-in slide-in-from-left-1 duration-200 mt-0">
                   <DateInput label="Start" values={fromDate} onChange={setFromDate} />
                   <div className="flex justify-center -my-1 relative z-10">
                     <ChevronRight className="w-2 h-2 text-primary/40 rotate-90" />
@@ -164,7 +164,7 @@ export default function ChronoFlow() {
                   <DateInput label="End" values={toDate} onChange={setToDate} error={activeTab === 'diff' ? error || undefined : undefined} />
                 </TabsContent>
 
-                <TabsContent value="age" className="space-y-1.5 animate-in fade-in slide-in-from-left-1 duration-200">
+                <TabsContent value="age" className="space-y-1.5 animate-in fade-in slide-in-from-left-1 duration-200 mt-0">
                   <DateInput 
                     label="Birth Date" 
                     values={dob} 
@@ -188,26 +188,20 @@ export default function ChronoFlow() {
             {results ? (
               <div className="space-y-2.5 animate-in fade-in slide-in-from-right-2 duration-300">
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 sm:gap-1.5">
+                  {/* Primary Age/Diff Breakdown */}
                   <ResultCard label="Years" value={results.years} />
                   <ResultCard label="Months" value={results.months} />
                   <ResultCard label="Days" value={results.days} />
+                  
+                  {/* Total Counts in Increasing Order */}
+                  <ResultCard label="Total Seconds" value={results.totalSeconds} />
+                  <ResultCard label="Total Minutes" value={results.totalMinutes} />
+                  <ResultCard label="Total Hours" value={results.totalHours} />
                   <ResultCard label="Total Days" value={results.totalDays} />
+                  
+                  {/* Meta Information */}
                   <ResultCard label="Next Bday" value={results.nextBirthday} subLabel="Days" />
                   <ResultCard label="Zodiac" value={results.zodiac} />
-                </div>
-
-                <div className="glass-card !p-2 sm:!p-2.5 space-y-1 border-white/5">
-                  <h4 className="text-[7px] uppercase tracking-widest font-bold text-foreground opacity-50">Detailed Chronometry</h4>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-0.5">
-                      <p className="text-[6px] text-muted-foreground uppercase font-bold tracking-widest">Minutes</p>
-                      <p className="text-[10px] sm:text-xs font-headline font-black text-primary">{results.totalMinutes.toLocaleString()}</p>
-                    </div>
-                    <div className="space-y-0.5">
-                      <p className="text-[6px] text-muted-foreground uppercase font-bold tracking-widest">Seconds</p>
-                      <p className="text-[10px] sm:text-xs font-headline font-black text-accent">{results.totalSeconds.toLocaleString()}</p>
-                    </div>
-                  </div>
                 </div>
 
                 <FunFact years={results.years} months={results.months} days={results.days} />

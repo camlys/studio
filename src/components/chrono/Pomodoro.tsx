@@ -101,73 +101,91 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
   };
 
   return (
-    <div className="max-w-[480px] mx-auto space-y-6 py-4 animate-in fade-in duration-500">
-      {/* Main Timer Card */}
-      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 md:p-8 flex flex-col items-center transition-all duration-500">
-        <div className="flex gap-1 mb-8">
-          {(Object.keys(MODE_CONFIG) as TimerMode[]).map((m) => (
-            <button
-              key={m}
-              onClick={() => changeMode(m)}
-              className={cn(
-                "px-3 py-1.5 rounded-md text-xs md:text-sm font-bold transition-all text-white",
-                mode === m ? "bg-black/15" : "hover:bg-black/5"
-              )}
-            >
-              {MODE_CONFIG[m].label}
-            </button>
-          ))}
+    <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 items-start justify-center py-4 animate-in fade-in duration-500">
+      
+      {/* Left Column: Timer and Mantra */}
+      <div className="w-full lg:w-[480px] space-y-6">
+        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 md:p-8 flex flex-col items-center transition-all duration-500 shadow-2xl">
+          <div className="flex gap-1 mb-8">
+            {(Object.keys(MODE_CONFIG) as TimerMode[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => changeMode(m)}
+                className={cn(
+                  "px-3 py-1.5 rounded-md text-xs md:text-sm font-bold transition-all text-white",
+                  mode === m ? "bg-black/15" : "hover:bg-black/5"
+                )}
+              >
+                {MODE_CONFIG[m].label}
+              </button>
+            ))}
+          </div>
+
+          <div className="text-8xl md:text-[100px] font-black text-white tabular-nums mb-8 select-none">
+            {formatTime(timeLeft)}
+          </div>
+
+          <button
+            onClick={toggleTimer}
+            className={cn(
+              "w-48 h-14 bg-white rounded-md text-xl font-black uppercase tracking-widest transition-all active:translate-y-1 shadow-[0_6px_0_rgb(235,235,235)] active:shadow-none",
+              mode === 'work' ? "text-[#ba4949]" : mode === 'short-break' ? "text-[#38858a]" : "text-[#397097]"
+            )}
+          >
+            {isActive ? 'STOP' : 'START'}
+          </button>
         </div>
 
-        <div className="text-8xl md:text-[100px] font-black text-white tabular-nums mb-8 select-none">
-          {formatTime(timeLeft)}
-        </div>
+        {/* Status and Mantra */}
+        <div className="text-center text-white space-y-4">
+          <div className="space-y-1">
+            <p className="text-xs opacity-60">#{tasks.filter(t => t.completed).length + 1}</p>
+            <p className="text-base font-bold">
+              {isActive ? (mode === 'work' ? 'Time to focus!' : 'Taking a break!') : (mode === 'work' ? 'Ready to focus?' : 'Break time!')}
+            </p>
+          </div>
 
-        <button
-          onClick={toggleTimer}
-          className={cn(
-            "w-48 h-14 bg-white rounded-md text-xl font-black uppercase tracking-widest transition-all active:translate-y-1 shadow-[0_6px_0_rgb(235,235,235)] active:shadow-none",
-            mode === 'work' ? "text-[#ba4949]" : mode === 'short-break' ? "text-[#38858a]" : "text-[#397097]"
+          {mantra && (
+            <div className="bg-black/10 rounded-xl p-5 text-center border border-white/10 backdrop-blur-sm">
+              <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-white/60 mb-2">Focus Mantra</h4>
+              <p className="text-xs md:text-sm font-medium italic text-white leading-relaxed">"{mantra}"</p>
+            </div>
           )}
-        >
-          {isActive ? 'STOP' : 'START'}
-        </button>
+        </div>
       </div>
 
-      {/* Mantra / Status */}
-      <div className="text-center text-white space-y-2">
-        <p className="text-xs opacity-60">#{tasks.filter(t => t.completed).length + 1}</p>
-        <p className="text-base font-bold">
-          {isActive ? (mode === 'work' ? 'Time to focus!' : 'Taking a break!') : (mode === 'work' ? 'Time to focus!' : 'Time for a break!')}
-        </p>
-      </div>
-
-      {/* Tasks Section */}
-      <div className="space-y-4">
+      {/* Right Column: Tasks Section */}
+      <div className="flex-grow w-full lg:max-w-[480px] space-y-4">
         <div className="flex items-center justify-between border-b border-white/30 pb-3">
-          <h3 className="text-lg font-bold text-white">Tasks</h3>
+          <h3 className="text-lg font-bold text-white uppercase tracking-widest text-sm">Focus Objectives</h3>
           <button className="bg-white/20 hover:bg-white/30 p-1.5 rounded transition-colors">
             <Settings className="w-4 h-4 text-white" />
           </button>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
+          {tasks.length === 0 && (
+            <div className="bg-white/5 border border-dashed border-white/20 rounded-md p-8 text-center">
+              <p className="text-white/40 text-xs italic">No objectives defined for this session.</p>
+            </div>
+          )}
+          
           {tasks.map((task) => (
             <div 
               key={task.id} 
-              className="group flex items-center gap-3 bg-white rounded-md p-4 transition-all hover:translate-x-1"
+              className="group flex items-center gap-3 bg-white rounded-md p-4 transition-all hover:translate-x-1 shadow-md"
             >
               <button
                 onClick={() => setTasks(tasks.map(t => t.id === task.id ? { ...t, completed: !t.completed } : t))}
                 className={cn(
-                  "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all",
+                  "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all shrink-0",
                   task.completed ? "bg-accent border-accent text-white" : "border-gray-200 text-transparent hover:border-gray-400"
                 )}
               >
                 <Check className="w-4 h-4" />
               </button>
               <span className={cn(
-                "flex-grow font-bold text-gray-700",
+                "flex-grow font-bold text-gray-700 text-sm",
                 task.completed && "line-through opacity-40"
               )}>
                 {task.text}
@@ -182,14 +200,14 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
           ))}
         </div>
 
-        <form onSubmit={addTask} className="relative">
+        <form onSubmit={addTask} className="relative pt-2">
           {newTask ? (
-            <div className="bg-white rounded-md p-4 space-y-4 animate-in slide-in-from-top-2">
+            <div className="bg-white rounded-md p-4 space-y-4 animate-in slide-in-from-top-2 shadow-xl">
               <Input
                 placeholder="What are you working on?"
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
-                className="border-none shadow-none text-lg font-bold p-0 focus-visible:ring-0 placeholder:text-gray-300"
+                className="border-none shadow-none text-base font-bold p-0 focus-visible:ring-0 placeholder:text-gray-300"
                 autoFocus
               />
               <div className="flex justify-end gap-2">
@@ -197,37 +215,29 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
                   type="button" 
                   variant="ghost" 
                   onClick={() => setNewTask('')}
-                  className="text-gray-500 font-bold"
+                  className="text-gray-500 font-bold h-8 text-xs"
                 >
                   Cancel
                 </Button>
                 <Button 
                   type="submit" 
-                  className="bg-gray-800 text-white font-bold px-6"
+                  className="bg-gray-800 text-white font-bold px-6 h-8 text-xs"
                 >
-                  Save
+                  Save Objective
                 </Button>
               </div>
             </div>
           ) : (
             <button 
               onClick={() => setNewTask(' ')}
-              className="w-full h-16 border-2 border-dashed border-white/40 rounded-md flex items-center justify-center gap-2 text-white/80 font-bold hover:bg-white/10 transition-all"
+              className="w-full h-14 border-2 border-dashed border-white/40 rounded-md flex items-center justify-center gap-2 text-white/80 font-bold hover:bg-white/10 transition-all"
             >
-              <Plus className="w-5 h-5" />
-              <span>Add Task</span>
+              <Plus className="w-4 h-4" />
+              <span className="text-xs uppercase tracking-widest">Add Objective</span>
             </button>
           )}
         </form>
       </div>
-
-      {/* AI Mantra Overlay */}
-      {mantra && (
-        <div className="bg-black/10 rounded-xl p-6 text-center border border-white/10">
-          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60 mb-2">Focus Mantra</h4>
-          <p className="text-sm font-medium italic text-white leading-relaxed">"{mantra}"</p>
-        </div>
-      )}
     </div>
   );
 }

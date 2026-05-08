@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useCallback } from 'react';
@@ -31,7 +30,6 @@ export default function PrecisionCalculator() {
     try {
       const fullExpression = expression + display;
       // Using a safer evaluation for basic scientific functions
-      // In a production app, a math parser like mathjs would be preferred
       const result = eval(fullExpression.replace('×', '*').replace('÷', '/'));
       const formattedResult = Number(result.toFixed(8)).toString();
       
@@ -71,7 +69,6 @@ export default function PrecisionCalculator() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
-      {/* Centered Navigation Link as requested */}
       <nav className="sticky top-0 z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2 group">
@@ -99,37 +96,37 @@ export default function PrecisionCalculator() {
         </div>
       </nav>
 
-      <main className="flex-grow container max-w-4xl mx-auto px-4 py-12 flex flex-col items-center">
-        <div className="text-center space-y-4 mb-12">
-          <h2 className="text-4xl md:text-6xl font-black tracking-tighter">Scientific <span className="text-primary">Inference</span> Engine</h2>
-          <p className="text-muted-foreground text-sm md:text-base max-w-xl mx-auto font-medium">
-            High-fidelity mathematical computation layer for tactical asset and chronological analysis.
+      <main className="flex-grow container max-w-4xl mx-auto px-4 py-8 flex flex-col items-center">
+        <div className="text-center space-y-2 mb-8">
+          <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Scientific <span className="text-primary">Inference</span> Engine</h2>
+          <p className="text-muted-foreground text-[10px] md:text-xs max-w-xl mx-auto font-bold uppercase tracking-widest opacity-60">
+            High-fidelity mathematical computation layer
           </p>
         </div>
 
-        <div className="w-full max-w-[400px] glass-card !p-0 overflow-hidden shadow-2xl border-border/40">
+        <div className="w-full max-w-[360px] glass-card !p-0 overflow-hidden shadow-2xl border-border/40">
           {/* Display Area */}
-          <div className="bg-black/5 dark:bg-black/20 p-8 text-right space-y-1 border-b border-border/40">
-            <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 h-4">
+          <div className="bg-black/5 dark:bg-black/20 p-5 text-right space-y-0.5 border-b border-border/40">
+            <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/50 h-3">
               {expression}
             </div>
-            <div className="text-4xl md:text-5xl font-black tracking-tight tabular-nums overflow-hidden text-ellipsis">
+            <div className="text-3xl md:text-4xl font-black tracking-tight tabular-nums overflow-hidden text-ellipsis">
               {display}
             </div>
           </div>
 
           {/* Controls */}
-          <div className="p-1 grid grid-cols-4 gap-1 bg-muted/20">
+          <div className="p-0.5 grid grid-cols-4 gap-0.5 bg-muted/20">
             {/* Scientific Row Toggle */}
-            <div className="col-span-4 flex justify-between px-4 py-2 bg-muted/10 border-b border-border/10">
-               <span className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
-                 <Cpu className="w-3 h-3" /> System: Active
+            <div className="col-span-4 flex justify-between px-3 py-1.5 bg-muted/10 border-b border-border/10">
+               <span className="text-[8px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-1.5">
+                 <Cpu className="w-2.5 h-2.5" /> Active
                </span>
                <button 
                  onClick={() => setIsScientific(!isScientific)}
-                 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary hover:underline"
+                 className="text-[8px] font-black uppercase tracking-[0.2em] text-primary hover:underline"
                >
-                 {isScientific ? 'Standard' : 'Scientific'} Mode
+                 {isScientific ? 'Standard' : 'Scientific'}
                </button>
             </div>
 
@@ -173,49 +170,45 @@ export default function PrecisionCalculator() {
         </div>
 
         {/* History / Status Section */}
-        <div className="w-full max-w-[400px] mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-           <div className="glass-card !p-6 border-border/40">
-             <div className="flex items-center gap-2 mb-4">
+        <div className="w-full max-w-[360px] mt-6 grid grid-cols-1 md:grid-cols-2 gap-3">
+           <div className="glass-card !p-4 border-border/40">
+             <div className="flex items-center gap-2 mb-3">
                <History className="w-3 h-3 text-primary" />
-               <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Recent Syncs</span>
+               <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Cache</span>
              </div>
-             <div className="space-y-2">
+             <div className="space-y-1.5">
                {history.length === 0 ? (
-                 <p className="text-[10px] text-muted-foreground/40 italic">No cache found.</p>
+                 <p className="text-[9px] text-muted-foreground/40 italic">Null</p>
                ) : (
                  history.map((item, i) => (
-                   <p key={i} className="text-[11px] font-mono text-muted-foreground line-clamp-1">{item}</p>
+                   <p key={i} className="text-[10px] font-mono text-muted-foreground line-clamp-1">{item}</p>
                  ))
                )}
              </div>
            </div>
 
-           <div className="glass-card !p-6 border-accent/20 bg-accent/5">
-              <div className="flex items-center gap-2 mb-4">
+           <div className="glass-card !p-4 border-accent/20 bg-accent/5">
+              <div className="flex items-center gap-2 mb-3">
                 <ShieldCheck className="w-3 h-3 text-accent" />
-                <span className="text-[9px] font-black uppercase tracking-widest text-accent">Compute Status</span>
+                <span className="text-[8px] font-black uppercase tracking-widest text-accent">Status</span>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold text-muted-foreground/60 uppercase">Encryption</span>
-                  <span className="text-[10px] font-black text-accent">AES-256</span>
+                  <span className="text-[8px] font-bold text-muted-foreground/60 uppercase tracking-tighter">Precision</span>
+                  <span className="text-[9px] font-black text-accent">8-DEC</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold text-muted-foreground/60 uppercase">Accuracy</span>
-                  <span className="text-[10px] font-black text-accent">8-DECIMAL</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold text-muted-foreground/60 uppercase">State</span>
-                  <span className="text-[10px] font-black text-accent">LOCAL</span>
+                  <span className="text-[8px] font-bold text-muted-foreground/60 uppercase tracking-tighter">Compute</span>
+                  <span className="text-[9px] font-black text-accent">LOCAL</span>
                 </div>
               </div>
            </div>
         </div>
       </main>
 
-      <footer className="mt-auto py-8 glass border-t border-border/40 text-center">
-        <p className="text-[10px] uppercase font-black tracking-[0.4em] text-muted-foreground/60">
-          Camly Intelligence • High-Precision Inference • © 2024
+      <footer className="mt-auto py-6 glass border-t border-border/40 text-center">
+        <p className="text-[9px] uppercase font-black tracking-[0.4em] text-muted-foreground/60">
+          Camly Intelligence • Precision Engine • © 2024
         </p>
       </footer>
     </div>
@@ -227,7 +220,7 @@ function CalcButton({ children, onClick, className }: { children: React.ReactNod
     <button 
       onClick={onClick}
       className={cn(
-        "h-14 md:h-16 flex items-center justify-center text-lg md:text-xl font-bold transition-all hover:bg-white/5 active:scale-95",
+        "h-12 md:h-13 flex items-center justify-center text-base md:text-lg font-bold transition-all hover:bg-white/5 active:scale-95",
         className
       )}
     >

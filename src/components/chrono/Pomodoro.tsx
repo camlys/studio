@@ -1,37 +1,29 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, RotateCcw, Coffee, Zap, Brain, Target, Plus, Check, X } from 'lucide-react';
+import { Play, Pause, RotateCcw, Brain, Zap, Target, Plus, Check, X, Settings, BarChart3, UserCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { generateFocusMantra } from '@/ai/flows/generate-focus-mantra';
 import { cn } from '@/lib/utils';
 
 export type TimerMode = 'work' | 'short-break' | 'long-break';
 
-const MODE_CONFIG: Record<TimerMode, { label: string, duration: number, color: string, glow: string, bg: string }> = {
+const MODE_CONFIG: Record<TimerMode, { label: string, duration: number, color: string }> = {
   work: { 
-    label: 'Focus Work', 
+    label: 'Pomodoro', 
     duration: 25 * 60, 
-    color: 'text-primary', 
-    glow: 'shadow-primary/20',
-    bg: 'bg-primary/10'
+    color: 'bg-[#ba4949]'
   },
   'short-break': { 
     label: 'Short Break', 
     duration: 5 * 60, 
-    color: 'text-accent', 
-    glow: 'shadow-accent/20',
-    bg: 'bg-accent/10'
+    color: 'bg-[#38858a]'
   },
   'long-break': { 
     label: 'Long Break', 
     duration: 15 * 60, 
-    color: 'text-indigo-400', 
-    glow: 'shadow-indigo-500/20',
-    bg: 'bg-indigo-500/10'
+    color: 'bg-[#397097]'
   },
 };
 
@@ -101,8 +93,6 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const progress = ((MODE_CONFIG[mode].duration - timeLeft) / MODE_CONFIG[mode].duration) * 100;
-
   const addTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTask.trim()) return;
@@ -111,163 +101,133 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
-      <div className="flex items-center gap-2.5 px-1">
-        <div className={cn(
-          "w-2.5 h-2.5 rounded-full animate-pulse shadow-lg transition-all duration-700",
-          mode === 'work' ? 'bg-primary' : mode === 'short-break' ? 'bg-accent' : 'bg-indigo-400'
-        )} />
-        <span className="text-[10px] uppercase font-black tracking-[0.25em] text-foreground/80">Focus Performance Engine</span>
+    <div className="max-w-[480px] mx-auto space-y-6 py-4 animate-in fade-in duration-500">
+      {/* Main Timer Card */}
+      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 md:p-8 flex flex-col items-center transition-all duration-500">
+        <div className="flex gap-1 mb-8">
+          {(Object.keys(MODE_CONFIG) as TimerMode[]).map((m) => (
+            <button
+              key={m}
+              onClick={() => changeMode(m)}
+              className={cn(
+                "px-3 py-1.5 rounded-md text-xs md:text-sm font-bold transition-all text-white",
+                mode === m ? "bg-black/15" : "hover:bg-black/5"
+              )}
+            >
+              {MODE_CONFIG[m].label}
+            </button>
+          ))}
+        </div>
+
+        <div className="text-8xl md:text-[100px] font-black text-white tabular-nums mb-8 select-none">
+          {formatTime(timeLeft)}
+        </div>
+
+        <button
+          onClick={toggleTimer}
+          className={cn(
+            "w-48 h-14 bg-white rounded-md text-xl font-black uppercase tracking-widest transition-all active:translate-y-1 shadow-[0_6px_0_rgb(235,235,235)] active:shadow-none",
+            mode === 'work' ? "text-[#ba4949]" : mode === 'short-break' ? "text-[#38858a]" : "text-[#397097]"
+          )}
+        >
+          {isActive ? 'STOP' : 'START'}
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Rectangle Timer Visualization */}
-        <div className="lg:col-span-2 glass-card !p-0 flex flex-col items-center justify-between relative overflow-hidden group min-h-[450px]">
-          {/* Background Pattern */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,_var(--tw-gradient-from)_0%,_transparent_50%)] from-primary/5 opacity-20 pointer-events-none" />
-          
-          <div className="w-full p-8 flex flex-col items-center flex-grow justify-center space-y-10">
-            <div className="flex gap-2 bg-muted/30 p-1.5 rounded-2xl border border-white/5">
-              {(Object.keys(MODE_CONFIG) as TimerMode[]).map((m) => (
-                <Button
-                  key={m}
-                  variant={mode === m ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => changeMode(m)}
-                  className={cn(
-                    "rounded-xl text-[9px] uppercase font-black tracking-widest px-6 h-9 transition-all duration-300",
-                    mode === m && cn("bg-primary text-primary-foreground shadow-xl", MODE_CONFIG[m].glow)
-                  )}
-                >
-                  {MODE_CONFIG[m].label}
-                </Button>
-              ))}
-            </div>
+      {/* Mantra / Status */}
+      <div className="text-center text-white space-y-2">
+        <p className="text-xs opacity-60">#{tasks.filter(t => t.completed).length + 1}</p>
+        <p className="text-base font-bold">
+          {isActive ? (mode === 'work' ? 'Time to focus!' : 'Taking a break!') : (mode === 'work' ? 'Time to focus!' : 'Time for a break!')}
+        </p>
+      </div>
 
-            {/* Separate Clock Background Area */}
-            <div className={cn(
-              "relative px-12 py-10 rounded-[4rem] transition-all duration-1000 ease-in-out border border-white/10 shadow-inner group-hover:scale-[1.02]",
-              mode === 'work' ? 'bg-primary/5' : mode === 'short-break' ? 'bg-accent/5' : 'bg-indigo-500/5'
-            )}>
-              <div className="absolute inset-0 bg-black/40 backdrop-blur-3xl rounded-[4rem] -z-10" />
-              <div className={cn(
-                "text-8xl md:text-[11rem] font-black tracking-tighter tabular-nums transition-colors duration-1000 leading-none",
-                MODE_CONFIG[mode].color
-              )}>
-                {formatTime(timeLeft)}
-              </div>
-            </div>
+      {/* Tasks Section */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between border-b border-white/30 pb-3">
+          <h3 className="text-lg font-bold text-white">Tasks</h3>
+          <button className="bg-white/20 hover:bg-white/30 p-1.5 rounded transition-colors">
+            <Settings className="w-4 h-4 text-white" />
+          </button>
+        </div>
 
-            <div className="flex gap-4">
-              <Button
-                size="lg"
-                onClick={toggleTimer}
+        <div className="space-y-2">
+          {tasks.map((task) => (
+            <div 
+              key={task.id} 
+              className="group flex items-center gap-3 bg-white rounded-md p-4 transition-all hover:translate-x-1"
+            >
+              <button
+                onClick={() => setTasks(tasks.map(t => t.id === task.id ? { ...t, completed: !t.completed } : t))}
                 className={cn(
-                  "h-16 px-14 rounded-3xl font-black uppercase tracking-widest transition-all shadow-2xl hover:scale-[1.05]",
-                  isActive ? "bg-secondary text-secondary-foreground" : "bg-primary text-primary-foreground",
-                  !isActive && MODE_CONFIG[mode].glow
+                  "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all",
+                  task.completed ? "bg-accent border-accent text-white" : "border-gray-200 text-transparent hover:border-gray-400"
                 )}
               >
-                {isActive ? <Pause className="w-6 h-6 mr-3" /> : <Play className="w-6 h-6 mr-3" />}
-                {isActive ? 'Freeze' : 'Ignite'}
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={resetTimer}
-                className="w-16 h-16 rounded-3xl border-white/10 hover:bg-white/10 transition-all"
+                <Check className="w-4 h-4" />
+              </button>
+              <span className={cn(
+                "flex-grow font-bold text-gray-700",
+                task.completed && "line-through opacity-40"
+              )}>
+                {task.text}
+              </span>
+              <button
+                onClick={() => setTasks(tasks.filter(t => t.id !== task.id))}
+                className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-destructive"
               >
-                <RotateCcw className="w-6 h-6" />
-              </Button>
+                <X className="w-4 h-4" />
+              </button>
             </div>
-          </div>
-
-          {/* Linear Progress Indicator */}
-          <div className="w-full px-8 pb-8">
-             <div className="space-y-3">
-                <div className="flex justify-between text-[10px] font-black uppercase tracking-widest opacity-40">
-                  <span>Cycle Progress</span>
-                  <span>{Math.round(progress)}%</span>
-                </div>
-                <div className="h-2.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
-                  <div 
-                    className={cn("h-full transition-all duration-1000 ease-linear", mode === 'work' ? 'bg-primary' : mode === 'short-break' ? 'bg-accent' : 'bg-indigo-400')}
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-             </div>
-          </div>
+          ))}
         </div>
 
-        {/* Mantra & Tasks */}
-        <div className="space-y-6">
-          <div className="glass-card !p-6 border-accent/20 bg-accent/5 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-10">
-              <Brain className="w-12 h-12 text-accent" />
-            </div>
-            <h3 className="text-[10px] uppercase font-black tracking-widest text-accent mb-3 flex items-center gap-2">
-              <Zap className="w-3 h-3" /> Focus Insight
-            </h3>
-            {loadingMantra ? (
-              <div className="space-y-2 animate-pulse">
-                <div className="h-3 bg-accent/20 rounded w-full"></div>
-                <div className="h-3 bg-accent/20 rounded w-4/5"></div>
-              </div>
-            ) : (
-              <p className="text-sm font-medium leading-relaxed italic text-foreground/80">
-                "{mantra || "Clarity is the precursor to velocity. Define your target and begin."}"
-              </p>
-            )}
-          </div>
-
-          <div className="glass-card !p-6 border-white/5 space-y-4">
-            <h3 className="text-[10px] uppercase font-black tracking-widest text-muted-foreground mb-1">Target Objectives</h3>
-            <form onSubmit={addTask} className="flex gap-2">
+        <form onSubmit={addTask} className="relative">
+          {newTask ? (
+            <div className="bg-white rounded-md p-4 space-y-4 animate-in slide-in-from-top-2">
               <Input
-                placeholder="Next target..."
+                placeholder="What are you working on?"
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
-                className="h-10 bg-white/5 border-white/5 text-xs rounded-xl"
+                className="border-none shadow-none text-lg font-bold p-0 focus-visible:ring-0 placeholder:text-gray-300"
+                autoFocus
               />
-              <Button type="submit" size="icon" className="h-10 w-10 shrink-0 bg-primary rounded-xl">
-                <Plus className="w-4 h-4" />
-              </Button>
-            </form>
-
-            <div className="space-y-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
-              {tasks.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground/40 space-y-2">
-                  <Target className="w-6 h-6 mx-auto opacity-20" />
-                  <p className="text-[10px] uppercase tracking-widest">No objectives defined</p>
-                </div>
-              ) : (
-                tasks.map((task) => (
-                  <div key={task.id} className="flex items-center gap-3 p-3 glass border-white/5 rounded-xl group hover:border-primary/30 transition-all">
-                    <button
-                      onClick={() => setTasks(tasks.map(t => t.id === task.id ? { ...t, completed: !t.completed } : t))}
-                      className={cn(
-                        "w-5 h-5 rounded-md border flex items-center justify-center transition-all",
-                        task.completed ? "bg-accent border-accent text-white" : "border-white/10 text-transparent hover:border-accent"
-                      )}
-                    >
-                      <Check className="w-3 h-3" />
-                    </button>
-                    <span className={cn("text-[11px] flex-grow font-medium transition-all", task.completed && "line-through opacity-40")}>
-                      {task.text}
-                    </span>
-                    <button
-                      onClick={() => setTasks(tasks.filter(t => t.id !== task.id))}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ))
-              )}
+              <div className="flex justify-end gap-2">
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  onClick={() => setNewTask('')}
+                  className="text-gray-500 font-bold"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  className="bg-gray-800 text-white font-bold px-6"
+                >
+                  Save
+                </Button>
+              </div>
             </div>
-          </div>
-        </div>
+          ) : (
+            <button 
+              onClick={() => setNewTask(' ')}
+              className="w-full h-16 border-2 border-dashed border-white/40 rounded-md flex items-center justify-center gap-2 text-white/80 font-bold hover:bg-white/10 transition-all"
+            >
+              <Plus className="w-5 h-5" />
+              <span>Add Task</span>
+            </button>
+          )}
+        </form>
       </div>
+
+      {/* AI Mantra Overlay */}
+      {mantra && (
+        <div className="bg-black/10 rounded-xl p-6 text-center border border-white/10">
+          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60 mb-2">Focus Mantra</h4>
+          <p className="text-sm font-medium italic text-white leading-relaxed">"{mantra}"</p>
+        </div>
+      )}
     </div>
   );
 }

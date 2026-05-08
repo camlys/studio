@@ -93,10 +93,13 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
-        setSettings(parsed);
-        const duration = mode === 'work' ? parsed.workDuration : 
-                         mode === 'short-break' ? parsed.shortBreakDuration : 
-                         parsed.longBreakDuration;
+        // Merge with DEFAULT_SETTINGS to ensure new keys aren't undefined
+        const mergedSettings = { ...DEFAULT_SETTINGS, ...parsed };
+        setSettings(mergedSettings);
+        
+        const duration = mode === 'work' ? mergedSettings.workDuration : 
+                         mode === 'short-break' ? mergedSettings.shortBreakDuration : 
+                         mergedSettings.longBreakDuration;
         setTimeLeft(duration * 60);
       } catch (e) {
         console.error("Failed to parse settings", e);
@@ -277,7 +280,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                         <span className="text-[10px] text-muted-foreground/60 font-bold">Pomodoro</span>
                         <Input 
                           type="number" 
-                          value={settings.workDuration} 
+                          value={settings.workDuration ?? 25} 
                           onChange={(e) => updateSettings({...settings, workDuration: parseInt(e.target.value, 10) || 0})}
                           className="bg-muted border-none h-10 font-bold text-sm"
                           min={1}
@@ -287,7 +290,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                         <span className="text-[10px] text-muted-foreground/60 font-bold">Short Break</span>
                         <Input 
                           type="number" 
-                          value={settings.shortBreakDuration} 
+                          value={settings.shortBreakDuration ?? 5} 
                           onChange={(e) => updateSettings({...settings, shortBreakDuration: parseInt(e.target.value, 10) || 0})}
                           className="bg-muted border-none h-10 font-bold text-sm"
                           min={1}
@@ -297,7 +300,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                         <span className="text-[10px] text-muted-foreground/60 font-bold">Long Break</span>
                         <Input 
                           type="number" 
-                          value={settings.longBreakDuration} 
+                          value={settings.longBreakDuration ?? 15} 
                           onChange={(e) => updateSettings({...settings, longBreakDuration: parseInt(e.target.value, 10) || 0})}
                           className="bg-muted border-none h-10 font-bold text-sm"
                           min={1}
@@ -309,14 +312,14 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                   <div className="flex items-center justify-between py-1 pt-2">
                     <Label className="text-xs font-bold text-muted-foreground/80">Auto Start Breaks</Label>
                     <Switch 
-                      checked={settings.autoStartBreaks} 
+                      checked={settings.autoStartBreaks ?? false} 
                       onCheckedChange={(v) => updateSettings({...settings, autoStartBreaks: v})} 
                     />
                   </div>
                   <div className="flex items-center justify-between py-1">
                     <Label className="text-xs font-bold text-muted-foreground/80">Auto Start Pomodoros</Label>
                     <Switch 
-                      checked={settings.autoStartPomodoros} 
+                      checked={settings.autoStartPomodoros ?? false} 
                       onCheckedChange={(v) => updateSettings({...settings, autoStartPomodoros: v})} 
                     />
                   </div>
@@ -324,7 +327,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                     <Label className="text-xs font-bold text-muted-foreground/80">Long Break interval</Label>
                     <Input 
                       type="number" 
-                      value={settings.longBreakInterval} 
+                      value={settings.longBreakInterval ?? 4} 
                       onChange={(e) => updateSettings({...settings, longBreakInterval: parseInt(e.target.value, 10) || 1})}
                       className="bg-muted border-none h-10 w-16 font-bold text-right text-sm"
                       min={1}
@@ -344,7 +347,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                     <div className="flex items-center justify-between">
                       <Label className="text-xs font-bold text-muted-foreground/80">Alarm Sound</Label>
                       <div className="flex items-center gap-2">
-                         <Select value={settings.alarmSound} onValueChange={(v) => updateSettings({...settings, alarmSound: v})}>
+                         <Select value={settings.alarmSound ?? 'kitchen'} onValueChange={(v) => updateSettings({...settings, alarmSound: v})}>
                           <SelectTrigger className="w-[140px] bg-muted border-none text-xs font-bold">
                             <SelectValue />
                           </SelectTrigger>
@@ -357,9 +360,9 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                       </div>
                     </div>
                     <div className="flex items-center gap-4 pl-1">
-                      <span className="text-[10px] font-bold text-muted-foreground/40 w-5">{settings.alarmVolume}</span>
+                      <span className="text-[10px] font-bold text-muted-foreground/40 w-5">{settings.alarmVolume ?? 50}</span>
                       <Slider 
-                        value={[settings.alarmVolume]} 
+                        value={[settings.alarmVolume ?? 50]} 
                         max={100} 
                         step={1} 
                         onValueChange={([v]) => updateSettings({...settings, alarmVolume: v})}
@@ -369,7 +372,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                          <span className="text-[9px] font-black text-muted-foreground/40 uppercase">repeat</span>
                          <Input 
                             type="number" 
-                            value={settings.alarmRepeat} 
+                            value={settings.alarmRepeat ?? 1} 
                             onChange={(e) => updateSettings({...settings, alarmRepeat: parseInt(e.target.value, 10) || 1})}
                             className="bg-muted border-none h-8 w-12 font-bold text-center text-xs"
                           />
@@ -380,7 +383,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <Label className="text-xs font-bold text-muted-foreground/80">Focus Sound</Label>
-                      <Select value={settings.focusSound} onValueChange={(v) => updateSettings({...settings, focusSound: v})}>
+                      <Select value={settings.focusSound ?? 'none'} onValueChange={(v) => updateSettings({...settings, focusSound: v})}>
                         <SelectTrigger className="w-[140px] bg-muted border-none text-xs font-bold">
                           <SelectValue />
                         </SelectTrigger>
@@ -393,9 +396,9 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                       </Select>
                     </div>
                     <div className="flex items-center gap-4 pl-1">
-                      <span className="text-[10px] font-bold text-muted-foreground/40 w-5">{settings.focusVolume}</span>
+                      <span className="text-[10px] font-bold text-muted-foreground/40 w-5">{settings.focusVolume ?? 50}</span>
                       <Slider 
-                        value={[settings.focusVolume]} 
+                        value={[settings.focusVolume ?? 50]} 
                         max={100} 
                         step={1} 
                         onValueChange={([v]) => updateSettings({...settings, focusVolume: v})}
@@ -414,7 +417,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <Label className="text-xs font-bold text-muted-foreground/80">Color Themes</     Label>
+                    <Label className="text-xs font-bold text-muted-foreground/80">Color Themes</Label>
                     <div className="flex gap-2">
                        <div className="w-6 h-6 rounded-md bg-[#ba4949] cursor-pointer ring-offset-2 ring-primary/20" />
                        <div className="w-6 h-6 rounded-md bg-[#38858a] cursor-pointer" />
@@ -424,7 +427,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
 
                   <div className="flex items-center justify-between">
                     <Label className="text-xs font-bold text-muted-foreground/80">Hour Format</Label>
-                    <Select value={settings.hourFormat} onValueChange={(v: '12' | '24') => updateSettings({...settings, hourFormat: v})}>
+                    <Select value={settings.hourFormat ?? '24'} onValueChange={(v: '12' | '24') => updateSettings({...settings, hourFormat: v})}>
                       <SelectTrigger className="w-[140px] bg-muted border-none text-xs font-bold">
                         <SelectValue />
                       </SelectTrigger>
@@ -438,7 +441,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                   <div className="flex items-center justify-between">
                     <Label className="text-xs font-bold text-muted-foreground/80">Dark Mode when running</Label>
                     <Switch 
-                      checked={settings.darkModeWhenRunning} 
+                      checked={settings.darkModeWhenRunning ?? false} 
                       onCheckedChange={(v) => updateSettings({...settings, darkModeWhenRunning: v})} 
                     />
                   </div>
@@ -455,7 +458,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                   <div className="flex items-center justify-between">
                     <Label className="text-xs font-bold text-muted-foreground/80">Reminder</Label>
                     <div className="flex items-center gap-2">
-                       <Select value={settings.reminderMode} onValueChange={(v: 'last' | 'first') => updateSettings({...settings, reminderMode: v})}>
+                       <Select value={settings.reminderMode ?? 'last'} onValueChange={(v: 'last' | 'first') => updateSettings({...settings, reminderMode: v})}>
                           <SelectTrigger className="w-[80px] bg-muted border-none text-xs font-bold">
                             <SelectValue />
                           </SelectTrigger>
@@ -466,7 +469,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                         </Select>
                         <Input 
                           type="number" 
-                          value={settings.reminderTime} 
+                          value={settings.reminderTime ?? 0} 
                           onChange={(e) => updateSettings({...settings, reminderTime: parseInt(e.target.value, 10) || 0})}
                           className="bg-muted border-none h-10 w-16 font-bold text-center text-xs"
                           min={0}

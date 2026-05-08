@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -8,13 +7,14 @@ import {
   Github, Twitter, Mail, Cpu, Database, ShieldCheck, 
   ExternalLink, Globe, BookOpen, Zap, Brain, Activity, 
   Lock, Star, ArrowRight, CheckCircle, Scale, HeartPulse, 
-  Coins, Milestone, Server, Layers, BarChart3
+  Coins, Milestone, Server, Layers, BarChart3, Target
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DateInput } from '@/components/chrono/DateInput';
 import { ResultCard } from '@/components/chrono/ResultCard';
 import { FunFact } from '@/components/chrono/FunFact';
+import { Pomodoro } from '@/components/chrono/Pomodoro';
 import { isValidDate, calculateAll, DateInputValues, CalculationResults } from '@/lib/date-utils';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from "@/components/ui/separator";
@@ -23,7 +23,7 @@ import { Badge } from "@/components/ui/badge";
 export default function ChronoFlow() {
   const { toast } = useToast();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [activeTab, setActiveTab] = useState<'diff' | 'age'>('diff');
+  const [activeTab, setActiveTab] = useState<'diff' | 'age' | 'focus'>('diff');
   
   const [dob, setDob] = useState<DateInputValues>({ day: '', month: '', year: '' });
   const [fromDate, setFromDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
@@ -72,7 +72,7 @@ export default function ChronoFlow() {
   }, [theme]);
 
   useEffect(() => {
-    if (results) {
+    if (results && activeTab !== 'focus') {
       tickerRef.current = setInterval(() => {
         setResults(prev => {
           if (!prev) return null;
@@ -90,7 +90,7 @@ export default function ChronoFlow() {
     return () => {
       if (tickerRef.current) clearInterval(tickerRef.current);
     };
-  }, [results === null]);
+  }, [results === null, activeTab]);
 
   const handleCalculate = useCallback(() => {
     setError(null);
@@ -107,7 +107,7 @@ export default function ChronoFlow() {
         return;
       }
       setResults(calculateAll(birth));
-    } else {
+    } else if (activeTab === 'diff') {
       if (!isValidDate(fromDate.day, fromDate.month, fromDate.year) || 
           !isValidDate(toDate.day, toDate.month, toDate.year)) {
         setError("Invalid dates.");
@@ -185,16 +185,20 @@ export default function ChronoFlow() {
                 value={activeTab}
                 className="w-full" 
                 onValueChange={(v) => {
-                  setActiveTab(v as 'age' | 'diff');
+                  setActiveTab(v as 'age' | 'diff' | 'focus');
                   setError(null);
+                  if (v === 'focus') setResults(null);
                 }}
               >
-                <TabsList className="grid w-full grid-cols-2 mb-4 bg-muted p-1 rounded-lg h-9">
+                <TabsList className="grid w-full grid-cols-3 mb-4 bg-muted p-1 rounded-lg h-9">
                   <TabsTrigger value="diff" className="rounded-md text-[9px] sm:text-[10px] md:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
-                    Difference
+                    Diff
                   </TabsTrigger>
                   <TabsTrigger value="age" className="rounded-md text-[9px] sm:text-[10px] md:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
                     Age
+                  </TabsTrigger>
+                  <TabsTrigger value="focus" className="rounded-md text-[9px] sm:text-[10px] md:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
+                    Focus
                   </TabsTrigger>
                 </TabsList>
 
@@ -204,6 +208,12 @@ export default function ChronoFlow() {
                     <ChevronRight className="w-4 h-4 text-primary/30 rotate-90" />
                   </div>
                   <DateInput label="End Date" values={toDate} onChange={setToDate} error={activeTab === 'diff' ? error || undefined : undefined} />
+                  <Button 
+                    className="w-full h-11 mt-4 text-[10px] sm:text-[11px] md:text-xs font-black uppercase tracking-widest rounded-lg bg-primary hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 neon-glow"
+                    onClick={handleCalculate}
+                  >
+                    Process Data
+                  </Button>
                 </TabsContent>
 
                 <TabsContent value="age" className="space-y-4 mt-0">
@@ -213,15 +223,24 @@ export default function ChronoFlow() {
                     onChange={setDob} 
                     error={activeTab === 'age' ? error || undefined : undefined} 
                   />
+                  <Button 
+                    className="w-full h-11 mt-4 text-[10px] sm:text-[11px] md:text-xs font-black uppercase tracking-widest rounded-lg bg-primary hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 neon-glow"
+                    onClick={handleCalculate}
+                  >
+                    Calculate Age
+                  </Button>
+                </TabsContent>
+
+                <TabsContent value="focus" className="space-y-4 mt-0">
+                   <div className="p-4 bg-primary/5 rounded-xl border border-primary/10 space-y-2">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Status: Idle</p>
+                      <p className="text-[9px] text-muted-foreground leading-relaxed">The Focus Engine utilizes deep-work intervals to maximize cognitive output.</p>
+                   </div>
+                   <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/60 px-1 pt-2 uppercase tracking-widest">
+                     <Target className="w-3.5 h-3.5" /> Objective Tracking On
+                   </div>
                 </TabsContent>
               </Tabs>
-
-              <Button 
-                className="w-full h-11 mt-6 text-[10px] sm:text-[11px] md:text-xs font-black uppercase tracking-widest rounded-lg bg-primary hover:bg-primary/90 transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 neon-glow"
-                onClick={handleCalculate}
-              >
-                Process Data
-              </Button>
             </div>
 
             {/* Side Promo Card */}
@@ -234,7 +253,9 @@ export default function ChronoFlow() {
           </aside>
 
           <div className="flex-grow w-full min-w-0">
-            {results ? (
+            {activeTab === 'focus' ? (
+              <Pomodoro />
+            ) : results ? (
               <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
                 <div className="flex items-center gap-2.5 px-1">
                    <div className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(var(--accent),0.6)]" />
@@ -560,7 +581,7 @@ export default function ChronoFlow() {
                 <li className="hover:text-foreground cursor-pointer transition-colors">Age Processor</li>
                 <li className="hover:text-foreground cursor-pointer transition-colors">Date Delta</li>
                 <li className="hover:text-foreground cursor-pointer transition-colors">Zodiac Mapping</li>
-                <li className="hover:text-foreground cursor-pointer transition-colors">Leap Year ID</li>
+                <li className="hover:text-foreground cursor-pointer transition-colors">Focus Engine</li>
               </ul>
             </div>
 

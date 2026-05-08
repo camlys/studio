@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -26,6 +27,7 @@ export default function ChronoFlow() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [activeTab, setActiveTab] = useState<'diff' | 'age' | 'focus'>('diff');
   const [pomodoroMode, setPomodoroMode] = useState<TimerMode>('work');
+  const [isPomodoroSettingsOpen, setIsPomodoroSettingsOpen] = useState(false);
   
   const [dob, setDob] = useState<DateInputValues>({ day: '', month: '', year: '' });
   const [fromDate, setFromDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
@@ -184,7 +186,12 @@ export default function ChronoFlow() {
               <Button variant="ghost" size="sm" className="text-white hover:bg-white/10 text-xs font-bold gap-2">
                 <BarChart3 className="w-4 h-4" /> Report
               </Button>
-              <Button variant="ghost" size="sm" className="text-white hover:bg-white/10 text-xs font-bold gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-white hover:bg-white/10 text-xs font-bold gap-2"
+                onClick={() => setIsPomodoroSettingsOpen(true)}
+              >
                 <Settings className="w-4 h-4" /> Setting
               </Button>
               <Button variant="ghost" size="sm" className="text-white hover:bg-white/10 text-xs font-bold gap-2">
@@ -314,7 +321,11 @@ export default function ChronoFlow() {
           {/* Results Area */}
           <div className="flex-grow w-full min-w-0">
             {activeTab === 'focus' ? (
-              <Pomodoro onModeChange={setPomodoroMode} />
+              <Pomodoro 
+                onModeChange={setPomodoroMode} 
+                isExternalSettingsOpen={isPomodoroSettingsOpen}
+                onExternalSettingsOpenChange={setIsPomodoroSettingsOpen}
+              />
             ) : results ? (
               <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
                 <div className="flex items-center gap-2.5 px-1">

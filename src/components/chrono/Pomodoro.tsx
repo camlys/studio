@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
@@ -59,10 +60,11 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
 
 interface PomodoroProps {
   onModeChange?: (mode: TimerMode) => void;
-  openSettingsTrigger?: boolean;
+  isExternalSettingsOpen?: boolean;
+  onExternalSettingsOpenChange?: (open: boolean) => void;
 }
 
-export function Pomodoro({ onModeChange }: PomodoroProps) {
+export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSettingsOpenChange }: PomodoroProps) {
   const [settings, setSettings] = useState<PomodoroSettings>(DEFAULT_SETTINGS);
   const [mode, setMode] = useState<TimerMode>('work');
   const [timeLeft, setTimeLeft] = useState(DEFAULT_SETTINGS.workDuration * 60);
@@ -71,20 +73,37 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
   const [loadingMantra, setLoadingMantra] = useState(false);
   const [tasks, setTasks] = useState<{ id: string, text: string, completed: boolean }[]>([]);
   const [newTask, setNewTask] = useState('');
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [localSettingsOpen, setLocalSettingsOpen] = useState(false);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const pomodoroCountRef = useRef(0);
+
+  // Sync external dialog state
+  const isSettingsOpen = isExternalSettingsOpen !== undefined ? isExternalSettingsOpen : localSettingsOpen;
+  const setSettingsOpen = (open: boolean) => {
+    if (onExternalSettingsOpenChange) onExternalSettingsOpenChange(open);
+    setLocalSettingsOpen(open);
+  };
 
   // Load settings
   useEffect(() => {
     const savedSettings = localStorage.getItem('chrono_pomodoro_settings');
     if (savedSettings) {
-      const parsed = JSON.parse(savedSettings);
-      setSettings(parsed);
-      setTimeLeft(parsed.workDuration * 60);
+      try {
+        const parsed = JSON.parse(savedSettings);
+        setSettings(parsed);
+        // Only update time if timer is not active
+        if (!isActive) {
+          const duration = mode === 'work' ? parsed.workDuration : 
+                           mode === 'short-break' ? parsed.shortBreakDuration : 
+                           parsed.longBreakDuration;
+          setTimeLeft(duration * 60);
+        }
+      } catch (e) {
+        console.error("Failed to parse settings", e);
+      }
     }
-  }, []);
+  }, [mode, isActive]);
 
   // Sync Timer when settings change (if not active)
   useEffect(() => {
@@ -94,7 +113,7 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
                        settings.longBreakDuration;
       setTimeLeft(duration * 60);
     }
-  }, [settings, mode, isActive]);
+  }, [settings.workDuration, settings.shortBreakDuration, settings.longBreakDuration, mode, isActive]);
 
   const fetchMantra = useCallback(async (currentMode: TimerMode, currentTask?: string) => {
     setLoadingMantra(true);
@@ -226,7 +245,7 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
         <div className="flex items-center justify-between border-b border-white/30 pb-3">
           <h3 className="text-lg font-bold text-white uppercase tracking-widest text-xs">Focus Objectives</h3>
           
-          <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+          <Dialog open={isSettingsOpen} onOpenChange={setSettingsOpen}>
             <DialogTrigger asChild>
               <button className="bg-white/20 hover:bg-white/30 p-1.5 rounded transition-colors">
                 <Settings className="w-4 h-4 text-white" />
@@ -251,8 +270,9 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
                         <Input 
                           type="number" 
                           value={settings.workDuration} 
-                          onChange={(e) => saveSettings({...settings, workDuration: parseInt(e.target.value) || 1})}
+                          onChange={(e) => saveSettings({...settings, workDuration: parseInt(e.target.value, 10) || 0})}
                           className="bg-muted border-none h-10 font-bold"
+                          min={1}
                         />
                       </div>
                       <div className="space-y-1">
@@ -260,8 +280,9 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
                         <Input 
                           type="number" 
                           value={settings.shortBreakDuration} 
-                          onChange={(e) => saveSettings({...settings, shortBreakDuration: parseInt(e.target.value) || 1})}
+                          onChange={(e) => saveSettings({...settings, shortBreakDuration: parseInt(e.target.value, 10) || 0})}
                           className="bg-muted border-none h-10 font-bold"
+                          min={1}
                         />
                       </div>
                       <div className="space-y-1">
@@ -269,8 +290,9 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
                         <Input 
                           type="number" 
                           value={settings.longBreakDuration} 
-                          onChange={(e) => saveSettings({...settings, longBreakDuration: parseInt(e.target.value) || 1})}
+                          onChange={(e) => saveSettings({...settings, longBreakDuration: parseInt(e.target.value, 10) || 0})}
                           className="bg-muted border-none h-10 font-bold"
+                          min={1}
                         />
                       </div>
                     </div>
@@ -295,8 +317,9 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
                     <Input 
                       type="number" 
                       value={settings.longBreakInterval} 
-                      onChange={(e) => saveSettings({...settings, longBreakInterval: parseInt(e.target.value) || 1})}
+                      onChange={(e) => saveSettings({...settings, longBreakInterval: parseInt(e.target.value, 10) || 1})}
                       className="bg-muted border-none h-10 w-20 font-bold text-right"
+                      min={1}
                     />
                   </div>
                 </div>
@@ -359,7 +382,7 @@ export function Pomodoro({ onModeChange }: PomodoroProps) {
               </div>
               
               <div className="flex justify-end pt-4 border-t">
-                <Button onClick={() => setIsSettingsOpen(false)} className="bg-gray-800 text-white font-black text-[10px] uppercase tracking-[0.2em] px-8 rounded-md h-10">OK</Button>
+                <Button onClick={() => setSettingsOpen(false)} className="bg-gray-800 text-white font-black text-[10px] uppercase tracking-[0.2em] px-8 rounded-md h-10">OK</Button>
               </div>
             </DialogContent>
           </Dialog>

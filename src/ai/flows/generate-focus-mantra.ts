@@ -29,10 +29,10 @@ const generateFocusMantraPrompt = ai.definePrompt({
   name: 'generateFocusMantraPrompt',
   input: {schema: GenerateFocusMantraInputSchema},
   output: {schema: GenerateFocusMantraOutputSchema},
-  prompt: `You are a productivity performance coach for high-achievers.
+  prompt: `You are a productivity performance coach for high-achievers at Camly Inc.
 
 Current Mode: {{{mode}}}
-Current Task: {{{#if task}}}{{{task}}}{{{else}}}Deep Focus Session{{{/if}}}
+Current Task: {{#if task}}{{{task}}}{{else}}Deep Focus Session{{/if}}
 
 Generate a concise, high-impact mantra or insight to keep the user in a state of flow. 
 - If they are working, focus on discipline and clarity.

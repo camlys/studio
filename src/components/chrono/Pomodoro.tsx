@@ -9,15 +9,37 @@ import { Badge } from "@/components/ui/badge";
 import { generateFocusMantra } from '@/ai/flows/generate-focus-mantra';
 import { cn } from '@/lib/utils';
 
-type TimerMode = 'work' | 'short-break' | 'long-break';
+export type TimerMode = 'work' | 'short-break' | 'long-break';
 
-const MODE_CONFIG: Record<TimerMode, { label: string, duration: number, color: string, glow: string }> = {
-  work: { label: 'Focus Work', duration: 25 * 60, color: 'text-primary', glow: 'shadow-primary/20' },
-  'short-break': { label: 'Short Break', duration: 5 * 60, color: 'text-accent', glow: 'shadow-accent/20' },
-  'long-break': { label: 'Long Break', duration: 15 * 60, color: 'text-blue-500', glow: 'shadow-blue-500/20' },
+const MODE_CONFIG: Record<TimerMode, { label: string, duration: number, color: string, glow: string, bg: string }> = {
+  work: { 
+    label: 'Focus Work', 
+    duration: 25 * 60, 
+    color: 'text-primary', 
+    glow: 'shadow-primary/20',
+    bg: 'bg-primary/10'
+  },
+  'short-break': { 
+    label: 'Short Break', 
+    duration: 5 * 60, 
+    color: 'text-accent', 
+    glow: 'shadow-accent/20',
+    bg: 'bg-accent/10'
+  },
+  'long-break': { 
+    label: 'Long Break', 
+    duration: 15 * 60, 
+    color: 'text-indigo-400', 
+    glow: 'shadow-indigo-500/20',
+    bg: 'bg-indigo-500/10'
+  },
 };
 
-export function Pomodoro() {
+interface PomodoroProps {
+  onModeChange?: (mode: TimerMode) => void;
+}
+
+export function Pomodoro({ onModeChange }: PomodoroProps) {
   const [mode, setMode] = useState<TimerMode>('work');
   const [timeLeft, setTimeLeft] = useState(MODE_CONFIG['work'].duration);
   const [isActive, setIsActive] = useState(false);
@@ -56,7 +78,8 @@ export function Pomodoro() {
 
   useEffect(() => {
     fetchMantra(mode, tasks.find(t => !t.completed)?.text);
-  }, [mode, fetchMantra]);
+    if (onModeChange) onModeChange(mode);
+  }, [mode, fetchMantra, onModeChange]);
 
   const toggleTimer = () => setIsActive(!isActive);
 
@@ -69,6 +92,7 @@ export function Pomodoro() {
     setMode(newMode);
     setTimeLeft(MODE_CONFIG[newMode].duration);
     setIsActive(false);
+    if (onModeChange) onModeChange(newMode);
   };
 
   const formatTime = (seconds: number) => {
@@ -89,18 +113,21 @@ export function Pomodoro() {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
       <div className="flex items-center gap-2.5 px-1">
-        <div className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(var(--primary),0.6)]" />
-        <span className="text-[10px] uppercase font-black tracking-[0.25em] text-primary/80">Focus Performance Engine</span>
+        <div className={cn(
+          "w-2.5 h-2.5 rounded-full animate-pulse shadow-lg transition-all duration-700",
+          mode === 'work' ? 'bg-primary' : mode === 'short-break' ? 'bg-accent' : 'bg-indigo-400'
+        )} />
+        <span className="text-[10px] uppercase font-black tracking-[0.25em] text-foreground/80">Focus Performance Engine</span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Rectangle Timer Visualization */}
-        <div className="lg:col-span-2 glass-card !p-0 flex flex-col items-center justify-between relative overflow-hidden group min-h-[400px]">
+        <div className="lg:col-span-2 glass-card !p-0 flex flex-col items-center justify-between relative overflow-hidden group min-h-[450px]">
           {/* Background Pattern */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,_var(--tw-gradient-from)_0%,_transparent_50%)] from-primary/5 opacity-20 pointer-events-none" />
           
-          <div className="w-full p-8 flex flex-col items-center flex-grow justify-center space-y-8">
-            <div className="flex gap-2 bg-muted/30 p-1 rounded-xl border border-white/5">
+          <div className="w-full p-8 flex flex-col items-center flex-grow justify-center space-y-10">
+            <div className="flex gap-2 bg-muted/30 p-1.5 rounded-2xl border border-white/5">
               {(Object.keys(MODE_CONFIG) as TimerMode[]).map((m) => (
                 <Button
                   key={m}
@@ -108,8 +135,8 @@ export function Pomodoro() {
                   size="sm"
                   onClick={() => changeMode(m)}
                   className={cn(
-                    "rounded-lg text-[9px] uppercase font-black tracking-widest px-4 h-8 transition-all",
-                    mode === m && cn("bg-primary text-primary-foreground shadow-lg", MODE_CONFIG[m].glow)
+                    "rounded-xl text-[9px] uppercase font-black tracking-widest px-6 h-9 transition-all duration-300",
+                    mode === m && cn("bg-primary text-primary-foreground shadow-xl", MODE_CONFIG[m].glow)
                   )}
                 >
                   {MODE_CONFIG[m].label}
@@ -117,54 +144,54 @@ export function Pomodoro() {
               ))}
             </div>
 
-            <div className="text-center space-y-2 py-4">
+            {/* Separate Clock Background Area */}
+            <div className={cn(
+              "relative px-12 py-10 rounded-[4rem] transition-all duration-1000 ease-in-out border border-white/10 shadow-inner group-hover:scale-[1.02]",
+              mode === 'work' ? 'bg-primary/5' : mode === 'short-break' ? 'bg-accent/5' : 'bg-indigo-500/5'
+            )}>
+              <div className="absolute inset-0 bg-black/40 backdrop-blur-3xl rounded-[4rem] -z-10" />
               <div className={cn(
-                "text-8xl md:text-[10rem] font-black tracking-tighter tabular-nums transition-colors duration-500",
+                "text-8xl md:text-[11rem] font-black tracking-tighter tabular-nums transition-colors duration-1000 leading-none",
                 MODE_CONFIG[mode].color
               )}>
                 {formatTime(timeLeft)}
               </div>
-              <div className="flex items-center justify-center gap-2">
-                <Badge variant="outline" className="border-white/10 text-[10px] uppercase font-black tracking-[0.3em] px-4 py-1">
-                  {mode === 'work' ? 'Deep Work Phase' : 'Rejuvenation Phase'}
-                </Badge>
-              </div>
             </div>
 
-            <div className="flex gap-4 pt-4">
+            <div className="flex gap-4">
               <Button
                 size="lg"
                 onClick={toggleTimer}
                 className={cn(
-                  "h-14 px-12 rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl hover:scale-[1.02]",
+                  "h-16 px-14 rounded-3xl font-black uppercase tracking-widest transition-all shadow-2xl hover:scale-[1.05]",
                   isActive ? "bg-secondary text-secondary-foreground" : "bg-primary text-primary-foreground",
                   !isActive && MODE_CONFIG[mode].glow
                 )}
               >
-                {isActive ? <Pause className="w-5 h-5 mr-3" /> : <Play className="w-5 h-5 mr-3" />}
+                {isActive ? <Pause className="w-6 h-6 mr-3" /> : <Play className="w-6 h-6 mr-3" />}
                 {isActive ? 'Freeze' : 'Ignite'}
               </Button>
               <Button
                 variant="outline"
                 size="icon"
                 onClick={resetTimer}
-                className="w-14 h-14 rounded-2xl border-white/10 hover:bg-white/5 transition-all"
+                className="w-16 h-16 rounded-3xl border-white/10 hover:bg-white/10 transition-all"
               >
-                <RotateCcw className="w-5 h-5" />
+                <RotateCcw className="w-6 h-6" />
               </Button>
             </div>
           </div>
 
           {/* Linear Progress Indicator */}
           <div className="w-full px-8 pb-8">
-             <div className="space-y-2">
+             <div className="space-y-3">
                 <div className="flex justify-between text-[10px] font-black uppercase tracking-widest opacity-40">
                   <span>Cycle Progress</span>
                   <span>{Math.round(progress)}%</span>
                 </div>
-                <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                <div className="h-2.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
                   <div 
-                    className={cn("h-full transition-all duration-1000 ease-linear", mode === 'work' ? 'bg-primary' : 'bg-accent')}
+                    className={cn("h-full transition-all duration-1000 ease-linear", mode === 'work' ? 'bg-primary' : mode === 'short-break' ? 'bg-accent' : 'bg-indigo-400')}
                     style={{ width: `${progress}%` }}
                   />
                 </div>

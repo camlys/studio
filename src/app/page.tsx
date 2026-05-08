@@ -14,16 +14,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DateInput } from '@/components/chrono/DateInput';
 import { ResultCard } from '@/components/chrono/ResultCard';
 import { FunFact } from '@/components/chrono/FunFact';
-import { Pomodoro } from '@/components/chrono/Pomodoro';
+import { Pomodoro, TimerMode } from '@/components/chrono/Pomodoro';
 import { isValidDate, calculateAll, DateInputValues, CalculationResults } from '@/lib/date-utils';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { cn } from '@/lib/utils';
 
 export default function ChronoFlow() {
   const { toast } = useToast();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [activeTab, setActiveTab] = useState<'diff' | 'age' | 'focus'>('diff');
+  const [pomodoroMode, setPomodoroMode] = useState<TimerMode>('work');
   
   const [dob, setDob] = useState<DateInputValues>({ day: '', month: '', year: '' });
   const [fromDate, setFromDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
@@ -144,8 +146,19 @@ export default function ChronoFlow() {
     });
   };
 
+  const getAtmosphereClass = () => {
+    if (activeTab !== 'focus') return 'bg-background';
+    if (pomodoroMode === 'work') return 'bg-slate-950';
+    if (pomodoroMode === 'short-break') return 'bg-[#0a1a15]';
+    if (pomodoroMode === 'long-break') return 'bg-[#100c1a]';
+    return 'bg-background';
+  };
+
   return (
-    <div className="min-h-screen flex flex-col transition-colors duration-500 overflow-x-hidden bg-background">
+    <div className={cn(
+      "min-h-screen flex flex-col transition-colors duration-1000 overflow-x-hidden",
+      getAtmosphereClass()
+    )}>
       <nav className="sticky top-0 z-50 glass border-b border-border h-12 flex items-center px-4 md:px-6 justify-between">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center neon-glow">
@@ -233,7 +246,12 @@ export default function ChronoFlow() {
 
                 <TabsContent value="focus" className="space-y-4 mt-0">
                    <div className="p-4 bg-primary/5 rounded-xl border border-primary/10 space-y-2">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Status: Idle</p>
+                      <p className={cn(
+                        "text-[10px] font-bold uppercase tracking-widest",
+                        pomodoroMode === 'work' ? 'text-primary' : pomodoroMode === 'short-break' ? 'text-accent' : 'text-indigo-400'
+                      )}>
+                        Status: {pomodoroMode === 'work' ? 'Focusing' : 'Resting'}
+                      </p>
                       <p className="text-[9px] text-muted-foreground leading-relaxed">The Focus Engine utilizes deep-work intervals to maximize cognitive output.</p>
                    </div>
                    <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/60 px-1 pt-2 uppercase tracking-widest">
@@ -254,7 +272,7 @@ export default function ChronoFlow() {
 
           <div className="flex-grow w-full min-w-0">
             {activeTab === 'focus' ? (
-              <Pomodoro />
+              <Pomodoro onModeChange={setPomodoroMode} />
             ) : results ? (
               <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
                 <div className="flex items-center gap-2.5 px-1">

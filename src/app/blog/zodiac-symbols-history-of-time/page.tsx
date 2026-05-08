@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -8,9 +7,34 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Zodiac Symbols and the Ancient History of Time",
+  "image": "https://picsum.photos/seed/zodiac-history/1200/630",
+  "author": {
+    "@type": "Organization",
+    "name": "History & Culture Team"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ChronoFlow",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://chronoflow.app/logo.png"
+    }
+  },
+  "datePublished": "2024-05-25",
+  "description": "A deep dive into how ancient civilizations mapped the stars to our current chronological systems."
+};
+
 export default function ZodiacHistoryArticle() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       {/* Reading Progress Indicator */}
       <div className="fixed top-0 left-0 h-1 bg-primary w-full z-[60] origin-left animate-in fade-in" style={{ transform: 'scaleX(1.0)' }} />
 

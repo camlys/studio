@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -8,9 +7,34 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "How AI is Revolutionizing Personal Utilities: Beyond the Calculator",
+  "image": "https://picsum.photos/seed/ai-utility/1200/630",
+  "author": {
+    "@type": "Organization",
+    "name": "AI Insights Team"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ChronoFlow",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://chronoflow.app/logo.png"
+    }
+  },
+  "datePublished": "2024-05-22",
+  "description": "Discover how Genkit and LLMs are transforming simple calculators into intelligent lifestyle companions."
+};
+
 export default function AIRevolutionArticle() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       {/* Reading Progress Indicator */}
       <div className="fixed top-0 left-0 h-1 bg-primary w-full z-[60] origin-left animate-in fade-in" style={{ transform: 'scaleX(0.7)' }} />
 
@@ -149,7 +173,7 @@ export default function AIRevolutionArticle() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="space-y-1 text-center md:text-left">
               <p className="text-[10px] font-black uppercase tracking-widest text-primary">Authored By</p>
-              <p className="text-sm font-bold">ChronoFlow AI Insights Team</p>
+              <p className="text-sm font-bold">AI Insights Team</p>
             </div>
             <div className="flex gap-4">
                <Badge variant="outline" className="text-[9px] uppercase font-bold tracking-widest px-3 py-1">AI Safety Verified</Badge>

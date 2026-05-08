@@ -7,9 +7,34 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "The Ultimate Guide to Chronological Computation",
+  "image": "https://picsum.photos/seed/chrono-guide/1200/630",
+  "author": {
+    "@type": "Organization",
+    "name": "ChronoFlow Editorial"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ChronoFlow",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://chronoflow.app/logo.png"
+    }
+  },
+  "datePublished": "2024-05-20",
+  "description": "Explore the science behind high-precision time tracking and why every second counts in the modern era."
+};
+
 export default function UltimateGuideArticle() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       {/* Progress Bar (Visual Hack) */}
       <div className="fixed top-0 left-0 h-1 bg-primary w-full z-[60] origin-left animate-in fade-in" style={{ transform: 'scaleX(0.4)' }} />
 

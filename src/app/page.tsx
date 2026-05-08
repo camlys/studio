@@ -153,10 +153,9 @@ export default function ChronoFlow() {
       </nav>
 
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-6 md:py-8">
-        {/* Mobile View: Stacks (<480px) | 5-8 Inch/Desktop: Side-by-Side (>=480px) */}
         <div className="flex flex-col min-[480px]:flex-row gap-6 items-start">
           
-          <aside className="w-full min-[480px]:w-[160px] md:w-[220px] lg:w-[260px] shrink-0 space-y-4 min-[480px]:sticky min-[480px]:top-20">
+          <aside className="w-full min-[480px]:w-[220px] md:w-[260px] lg:w-[300px] shrink-0 space-y-4 min-[480px]:sticky min-[480px]:top-20">
             <div className="px-1">
               <h2 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-foreground/70 leading-none">
                 Chrono <span className="text-primary">Engine</span>
@@ -211,7 +210,6 @@ export default function ChronoFlow() {
           <div className="flex-grow w-full min-w-0">
             {results ? (
               <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
-                {/* Status Badge */}
                 <div className="flex items-center gap-2.5 px-1">
                    <div className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(var(--accent),0.6)]" />
                    <span className="text-[10px] uppercase font-black tracking-[0.25em] text-accent/80">Real-time Precision Feed</span>
@@ -224,7 +222,6 @@ export default function ChronoFlow() {
                   <ResultCard label="Countdown" value={results.nextBirthday} subLabel="Days to Birthday" />
                 </div>
 
-                {/* Atomic Time Section (Decreasing Magnitude) */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                   <ResultCard label="Total Days" value={results.totalDays} />
                   <ResultCard label="Total Hours" value={results.totalHours} className="border-primary/20" />

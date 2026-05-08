@@ -30,10 +30,10 @@ const BLOG_POSTS = [
   {
     title: "Zodiac Symbols and the History of Time",
     description: "A deep dive into how ancient civilizations mapped the stars to our current chronological systems.",
-    date: "May 15, 2024",
+    date: "May 25, 2024",
     author: "Culture Team",
-    readTime: "15 min read",
-    slug: "#",
+    readTime: "45 min read",
+    slug: "/blog/zodiac-symbols-history-of-time",
     category: "Culture"
   }
 ];
@@ -98,15 +98,15 @@ export default function BlogHub() {
               </div>
               <div className="p-8 space-y-4 flex flex-col justify-center">
                 <Badge className="w-fit bg-primary text-primary-foreground text-[10px]">LATEST UPDATE</Badge>
-                <h2 className="text-3xl font-black leading-tight tracking-tight">How AI is Revolutionizing Personal Utilities</h2>
+                <h2 className="text-3xl font-black leading-tight tracking-tight">Zodiac Symbols and the History of Time</h2>
                 <p className="text-muted-foreground text-sm line-clamp-3">
-                  The era of static tools is ending. Learn how generative AI and platforms like Genkit are turning simple utilities into proactive, intelligent lifestyle companions that understand context and human emotion.
+                  Delve into the ancient roots of our chronological systems. From the Babylonian star charts to modern astronomical precision, discover how the zodiac defined the way we measure our lives.
                 </p>
                 <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2">
-                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> AI Insights Team</span>
-                  <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> 30 min read</span>
+                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> Culture Team</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> 45 min read</span>
                 </div>
-                <Link href="/blog/ai-revolution-personal-utilities">
+                <Link href="/blog/zodiac-symbols-history-of-time">
                   <Button className="w-full md:w-fit mt-4 bg-primary text-primary-foreground font-bold uppercase tracking-widest text-[10px] h-10 px-8">
                     Read Full Article
                   </Button>

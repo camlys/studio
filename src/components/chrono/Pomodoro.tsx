@@ -94,6 +94,7 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const pomodoroCountRef = useRef(0);
 
+  // Load settings and tasks on mount
   useEffect(() => {
     const savedSettings = localStorage.getItem('chrono_pomodoro_settings');
     if (savedSettings) {
@@ -111,7 +112,21 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
         console.error("Failed to parse settings", e);
       }
     }
+
+    const savedTasks = localStorage.getItem('chrono_pomodoro_tasks');
+    if (savedTasks) {
+      try {
+        setTasks(JSON.parse(savedTasks));
+      } catch (e) {
+        console.error("Failed to parse tasks", e);
+      }
+    }
   }, []);
+
+  // Persist tasks whenever they change
+  useEffect(() => {
+    localStorage.setItem('chrono_pomodoro_tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
   const isSettingsOpen = isExternalSettingsOpen !== undefined ? isExternalSettingsOpen : localSettingsOpen;
   const setSettingsOpen = (open: boolean) => {
@@ -207,9 +222,18 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
   const addTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTask.trim()) return;
-    setTasks([...tasks, { id: Math.random().toString(36).substr(2, 9), text: newTask.trim(), completed: false }]);
+    const taskToAdd = { id: Math.random().toString(36).substr(2, 9), text: newTask.trim(), completed: false };
+    setTasks(prev => [...prev, taskToAdd]);
     setNewTask('');
     setIsAddingTask(false);
+  };
+
+  const toggleTask = (id: string) => {
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+  };
+
+  const deleteTask = (id: string) => {
+    setTasks(prev => prev.filter(t => t.id !== id));
   };
 
   const updateSettings = (newSettings: PomodoroSettings) => {
@@ -675,7 +699,7 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
               className="group flex items-center gap-3 bg-white rounded-md p-4 transition-all hover:translate-x-1 shadow-md"
             >
               <button
-                onClick={() => setTasks(tasks.map(t => t.id === task.id ? { ...t, completed: !t.completed } : t))}
+                onClick={() => toggleTask(task.id)}
                 className={cn(
                   "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all shrink-0",
                   task.completed ? "bg-accent border-accent text-white" : "border-gray-200 text-transparent hover:border-gray-400"
@@ -690,7 +714,7 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
                 {task.text}
               </span>
               <button
-                onClick={() => setTasks(tasks.filter(t => t.id !== task.id))}
+                onClick={() => deleteTask(task.id)}
                 className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-destructive"
               >
                 <X className="w-4 h-4" />

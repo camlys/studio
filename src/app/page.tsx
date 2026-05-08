@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Sun, Moon, RefreshCcw, Share2, Copy, Timer, ChevronRight, Github, Twitter, Mail, Cpu, Database, ShieldCheck, ExternalLink, Globe } from 'lucide-react';
+import Link from 'next/link';
+import { Sun, Moon, RefreshCcw, Share2, Copy, Timer, ChevronRight, Github, Twitter, Mail, Cpu, Database, ShieldCheck, ExternalLink, Globe, BookOpen } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DateInput } from '@/components/chrono/DateInput';
@@ -143,6 +144,11 @@ export default function ChronoFlow() {
           </h1>
         </div>
         <div className="flex items-center gap-1">
+          <Link href="/blog">
+            <Button variant="ghost" size="sm" className="hidden sm:flex rounded-full hover:bg-white/10 text-[10px] uppercase font-bold tracking-widest gap-2">
+              <BookOpen className="w-3.5 h-3.5" /> Insights
+            </Button>
+          </Link>
           <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full hover:bg-white/10 w-8 h-8">
             {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </Button>
@@ -155,7 +161,7 @@ export default function ChronoFlow() {
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-6 md:py-8">
         <div className="flex flex-col min-[480px]:flex-row gap-6 items-start">
           
-          <aside className="w-full min-[480px]:w-[220px] md:w-[260px] lg:w-[300px] shrink-0 space-y-4 min-[480px]:sticky min-[480px]:top-20">
+          <aside className="w-full min-[480px]:w-[110px] sm:w-[220px] md:w-[260px] lg:w-[300px] shrink-0 space-y-4 min-[480px]:sticky min-[480px]:top-20">
             <div className="px-1">
               <h2 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-foreground/70 leading-none">
                 Chrono <span className="text-primary">Engine</span>
@@ -172,10 +178,10 @@ export default function ChronoFlow() {
                 }}
               >
                 <TabsList className="grid w-full grid-cols-2 mb-4 bg-white/5 p-1 rounded-lg h-9">
-                  <TabsTrigger value="diff" className="rounded-md text-[10px] md:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
+                  <TabsTrigger value="diff" className="rounded-md text-[9px] sm:text-[10px] md:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
                     Difference
                   </TabsTrigger>
-                  <TabsTrigger value="age" className="rounded-md text-[10px] md:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
+                  <TabsTrigger value="age" className="rounded-md text-[9px] sm:text-[10px] md:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
                     Age
                   </TabsTrigger>
                 </TabsList>
@@ -199,7 +205,7 @@ export default function ChronoFlow() {
               </Tabs>
 
               <Button 
-                className="w-full h-10 mt-6 text-xs font-black uppercase tracking-widest rounded-lg bg-primary hover:bg-primary/90 transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 neon-glow"
+                className="w-full h-10 mt-6 text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-widest rounded-lg bg-primary hover:bg-primary/90 transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 neon-glow"
                 onClick={handleCalculate}
               >
                 Process Data
@@ -215,32 +221,32 @@ export default function ChronoFlow() {
                    <span className="text-[10px] uppercase font-black tracking-[0.25em] text-accent/80">Real-time Precision Feed</span>
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
                   <ResultCard label="Years" value={results.years} />
                   <ResultCard label="Months" value={results.months} />
                   <ResultCard label="Days" value={results.days} />
                   <ResultCard label="Countdown" value={results.nextBirthday} subLabel="Days to Birthday" />
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
                   <ResultCard label="Total Days" value={results.totalDays} />
                   <ResultCard label="Total Hours" value={results.totalHours} className="border-primary/20" />
                   <ResultCard label="Total Minutes" value={results.totalMinutes} className="border-primary/20" />
                   <ResultCard label="Total Seconds" value={results.totalSeconds} className="border-primary/20" />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
                   <ResultCard label="Zodiac Sign" value={results.zodiac} />
                   <ResultCard label="Leap Year" value={results.isLeapYear ? "Identified" : "None"} />
                 </div>
 
                 <FunFact years={results.years} months={results.months} days={results.days} />
 
-                <div className="flex flex-wrap gap-3 pt-2">
-                  <Button variant="secondary" size="sm" className="rounded-lg h-9 px-4 gap-2 text-xs font-semibold" onClick={handleShare}>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <Button variant="secondary" size="sm" className="rounded-lg h-9 px-4 gap-2 text-[10px] font-semibold" onClick={handleShare}>
                     <Share2 className="w-4 h-4" /> Share
                   </Button>
-                  <Button variant="secondary" size="sm" className="rounded-lg h-9 px-4 gap-2 text-xs font-semibold" onClick={handleShare}>
+                  <Button variant="secondary" size="sm" className="rounded-lg h-9 px-4 gap-2 text-[10px] font-semibold" onClick={handleShare}>
                     <Copy className="w-4 h-4" /> Copy Results
                   </Button>
                 </div>
@@ -294,12 +300,16 @@ export default function ChronoFlow() {
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Intelligence</h3>
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Knowledge</h3>
               <ul className="space-y-2 text-xs text-muted-foreground">
-                <li className="hover:text-foreground cursor-pointer transition-colors">Genkit AI Facts</li>
-                <li className="hover:text-foreground cursor-pointer transition-colors">Lunar Cycles</li>
-                <li className="hover:text-foreground cursor-pointer transition-colors">Planetary Time</li>
-                <li className="hover:text-foreground cursor-pointer transition-colors">Historical Logs</li>
+                <li className="hover:text-foreground cursor-pointer transition-colors">
+                  <Link href="/blog">Blog Hub</Link>
+                </li>
+                <li className="hover:text-foreground cursor-pointer transition-colors">
+                  <Link href="/blog/ultimate-guide-to-age-calculation">Chronology Guide</Link>
+                </li>
+                <li className="hover:text-foreground cursor-pointer transition-colors">AI Facts API</li>
+                <li className="hover:text-foreground cursor-pointer transition-colors">System Logs</li>
               </ul>
             </div>
 
@@ -311,13 +321,13 @@ export default function ChronoFlow() {
                   SYNC: ACTIVE
                 </div>
                 <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-mono">
-                  <Cpu className="w-3 h-3" /> V1.5.0-ALPHA
+                  <Cpu className="w-3 h-3" /> V1.6.0-BETA
                 </div>
                 <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-mono">
-                  <Database className="w-3 h-3" /> LOCAL STORAGE
+                  <Database className="w-3 h-3" /> PERSISTENT STORAGE
                 </div>
                 <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-mono">
-                  <ShieldCheck className="w-3 h-3" /> AES-256 SYNC
+                  <ShieldCheck className="w-3 h-3" /> E2E ENCRYPTION
                 </div>
               </div>
             </div>
@@ -327,7 +337,7 @@ export default function ChronoFlow() {
 
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-[9px] text-muted-foreground/60 uppercase tracking-[0.4em] font-black">
-              © 2024 ChronoFlow Operations • No Rights Reserved
+              © 2024 ChronoFlow Operations • Precision Utilities
             </p>
             <div className="flex gap-6">
               <span className="text-[9px] text-muted-foreground/60 hover:text-primary cursor-pointer uppercase tracking-widest transition-colors font-bold">Privacy Protocol</span>

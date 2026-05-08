@@ -29,6 +29,7 @@ export default function ChronoFlow() {
   const [pomodoroMode, setPomodoroMode] = useState<TimerMode>('work');
   const [pomodoroSettings, setPomodoroSettings] = useState<PomodoroSettings | null>(null);
   const [isPomodoroSettingsOpen, setIsPomodoroSettingsOpen] = useState(false);
+  const [isTimerActive, setIsTimerActive] = useState(false);
   
   const [dob, setDob] = useState<DateInputValues>({ day: '', month: '', year: '' });
   const [fromDate, setFromDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
@@ -72,9 +73,14 @@ export default function ChronoFlow() {
   }, [dob, fromDate, toDate]);
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-    localStorage.setItem('chrono_theme', theme);
-  }, [theme]);
+    const isOverriddenDark = isTimerActive && pomodoroSettings?.darkModeWhenRunning;
+    document.documentElement.classList.toggle('dark', isOverriddenDark || theme === 'dark');
+    
+    // Only persist the theme if it's not being temporarily overridden by the timer
+    if (!isOverriddenDark) {
+      localStorage.setItem('chrono_theme', theme);
+    }
+  }, [theme, isTimerActive, pomodoroSettings?.darkModeWhenRunning]);
 
   useEffect(() => {
     if (results && activeTab !== 'focus') {
@@ -149,7 +155,6 @@ export default function ChronoFlow() {
     });
   };
 
-  // Helper to adjust hex colors for atmospheric variety
   const adjustColor = (hex: string, percent: number) => {
     const num = parseInt(hex.replace("#",""), 16),
     amt = Math.round(2.55 * percent),
@@ -159,7 +164,6 @@ export default function ChronoFlow() {
     return "#" + (0x1000000 + (R<255?R<0?0:R:255)*0x10000 + (G<255?G<0?0:G:255)*0x100 + (B<255?B<0?0:B:255)).toString(16).slice(1);
   };
 
-  // Helper for hue rotation to get variety in break colors
   const rotateColor = (hex: string, angle: number) => {
     const r = parseInt(hex.slice(1, 3), 16) / 255;
     const g = parseInt(hex.slice(3, 5), 16) / 255;
@@ -199,8 +203,8 @@ export default function ChronoFlow() {
     const baseColor = pomodoroSettings?.themeColor || '#ba4949';
 
     if (pomodoroMode === 'work') return { backgroundColor: baseColor };
-    if (pomodoroMode === 'short-break') return { backgroundColor: rotateColor(baseColor, 40) }; // Rotate hue for variety
-    if (pomodoroMode === 'long-break') return { backgroundColor: adjustColor(rotateColor(baseColor, 80), -10) }; // Darker, rotated hue
+    if (pomodoroMode === 'short-break') return { backgroundColor: rotateColor(baseColor, 40) }; 
+    if (pomodoroMode === 'long-break') return { backgroundColor: adjustColor(rotateColor(baseColor, 80), -10) }; 
     
     return {};
   };
@@ -372,6 +376,7 @@ export default function ChronoFlow() {
               <Pomodoro 
                 onModeChange={setPomodoroMode} 
                 onSettingsChange={setPomodoroSettings}
+                onTimerActiveChange={setIsTimerActive}
                 isExternalSettingsOpen={isPomodoroSettingsOpen}
                 onExternalSettingsOpenChange={setIsPomodoroSettingsOpen}
               />

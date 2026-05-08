@@ -46,7 +46,7 @@ export type PomodoroSettings = {
   darkModeWhenRunning: boolean;
   reminderMode: 'last' | 'first';
   reminderTime: number;
-  themeColor: string; // Supports 'red', 'teal', 'blue', 'purple', 'orange' or hex codes
+  themeColor: string; 
 };
 
 const DEFAULT_SETTINGS: PomodoroSettings = {
@@ -67,17 +67,18 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
   darkModeWhenRunning: false,
   reminderMode: 'last',
   reminderTime: 0,
-  themeColor: '#ba4949', // Default Red
+  themeColor: '#ba4949', 
 };
 
 interface PomodoroProps {
   onModeChange?: (mode: TimerMode) => void;
   onSettingsChange?: (settings: PomodoroSettings) => void;
+  onTimerActiveChange?: (isActive: boolean) => void;
   isExternalSettingsOpen?: boolean;
   onExternalSettingsOpenChange?: (open: boolean) => void;
 }
 
-export function Pomodoro({ onModeChange, onSettingsChange, isExternalSettingsOpen, onExternalSettingsOpenChange }: PomodoroProps) {
+export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, isExternalSettingsOpen, onExternalSettingsOpenChange }: PomodoroProps) {
   const [settings, setSettings] = useState<PomodoroSettings>(DEFAULT_SETTINGS);
   const [mode, setMode] = useState<TimerMode>('work');
   const [timeLeft, setTimeLeft] = useState(DEFAULT_SETTINGS.workDuration * 60);
@@ -96,16 +97,6 @@ export function Pomodoro({ onModeChange, onSettingsChange, isExternalSettingsOpe
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
-        // Map old preset names to hex if necessary
-        const themeMap: Record<string, string> = {
-          'red': '#ba4949',
-          'teal': '#38858a',
-          'blue': '#397097'
-        };
-        if (parsed.themeColor && themeMap[parsed.themeColor]) {
-          parsed.themeColor = themeMap[parsed.themeColor];
-        }
-        
         const mergedSettings = { ...DEFAULT_SETTINGS, ...parsed };
         setSettings(mergedSettings);
         if (onSettingsChange) onSettingsChange(mergedSettings);
@@ -181,6 +172,12 @@ export function Pomodoro({ onModeChange, onSettingsChange, isExternalSettingsOpe
     fetchMantra(mode, tasks.find(t => !t.completed)?.text);
     if (onModeChange) onModeChange(mode);
   }, [mode, fetchMantra, onModeChange]);
+
+  useEffect(() => {
+    if (onTimerActiveChange) {
+      onTimerActiveChange(isActive);
+    }
+  }, [isActive, onTimerActiveChange]);
 
   const toggleTimer = () => setIsActive(!isActive);
 

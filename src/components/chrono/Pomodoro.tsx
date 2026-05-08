@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, RotateCcw, Brain, Zap, Target, Plus, Check, X, Settings, BarChart3, UserCircle, Clock, Volume2 } from 'lucide-react';
+import { Play, Pause, RotateCcw, Brain, Zap, Target, Plus, Check, X, Settings, BarChart3, UserCircle, Clock, Volume2, Palette, Bell, Share2, ExternalLink, Lock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -29,7 +29,7 @@ import { Separator } from '@/components/ui/separator';
 export type TimerMode = 'work' | 'short-break' | 'long-break';
 
 export type PomodoroSettings = {
-  workDuration: number; // in minutes
+  workDuration: number;
   shortBreakDuration: number;
   longBreakDuration: number;
   autoStartBreaks: boolean;
@@ -39,8 +39,13 @@ export type PomodoroSettings = {
   checkToBottom: boolean;
   alarmSound: string;
   alarmVolume: number;
+  alarmRepeat: number;
   focusSound: string;
   focusVolume: number;
+  hourFormat: '12' | '24';
+  darkModeWhenRunning: boolean;
+  reminderMode: 'last' | 'first';
+  reminderTime: number;
 };
 
 const DEFAULT_SETTINGS: PomodoroSettings = {
@@ -54,8 +59,13 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
   checkToBottom: true,
   alarmSound: 'kitchen',
   alarmVolume: 50,
+  alarmRepeat: 1,
   focusSound: 'none',
   focusVolume: 50,
+  hourFormat: '24',
+  darkModeWhenRunning: false,
+  reminderMode: 'last',
+  reminderTime: 0,
 };
 
 interface PomodoroProps {
@@ -78,14 +88,12 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const pomodoroCountRef = useRef(0);
 
-  // Load settings once on mount
   useEffect(() => {
     const savedSettings = localStorage.getItem('chrono_pomodoro_settings');
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
         setSettings(parsed);
-        // Set initial time based on loaded settings
         const duration = mode === 'work' ? parsed.workDuration : 
                          mode === 'short-break' ? parsed.shortBreakDuration : 
                          parsed.longBreakDuration;
@@ -94,9 +102,8 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
         console.error("Failed to parse settings", e);
       }
     }
-  }, []); // Run only on mount
+  }, []);
 
-  // Sync external dialog state
   const isSettingsOpen = isExternalSettingsOpen !== undefined ? isExternalSettingsOpen : localSettingsOpen;
   const setSettingsOpen = (open: boolean) => {
     if (onExternalSettingsOpenChange) {
@@ -154,7 +161,6 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
     };
   }, [isActive, timeLeft, handleTimerComplete]);
 
-  // Handle mode changes (UI state only)
   useEffect(() => {
     fetchMantra(mode, tasks.find(t => !t.completed)?.text);
     if (onModeChange) onModeChange(mode);
@@ -166,7 +172,7 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
     setMode(newMode);
     const duration = newMode === 'work' ? settings.workDuration : 
                      newMode === 'short-break' ? settings.shortBreakDuration : 
-                     settings.longBreakDuration;
+                     newMode === 'long-break' ? settings.longBreakDuration : DEFAULT_SETTINGS.workDuration;
     setTimeLeft(duration * 60);
     setIsActive(false);
   };
@@ -188,7 +194,6 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
     setSettings(newSettings);
     localStorage.setItem('chrono_pomodoro_settings', JSON.stringify(newSettings));
     
-    // Update current timer if not active
     if (!isActive) {
       const duration = mode === 'work' ? newSettings.workDuration : 
                        mode === 'short-break' ? newSettings.shortBreakDuration : 
@@ -204,7 +209,6 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
   return (
     <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 items-start justify-center py-4 animate-in fade-in duration-500">
       
-      {/* Timer Section */}
       <div className="w-full lg:w-[540px] space-y-6">
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 md:p-10 flex flex-col items-center transition-all duration-500 shadow-2xl">
           <div className="flex gap-1 mb-8">
@@ -228,7 +232,6 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
           </button>
         </div>
 
-        {/* Mantra Card */}
         <div className="text-center text-white space-y-4">
           <div className="space-y-1">
             <p className="text-xs opacity-60">#{tasks.filter(t => t.completed).length + 1}</p>
@@ -246,7 +249,6 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
         </div>
       </div>
 
-      {/* Task Column */}
       <div className="flex-grow w-full lg:max-w-[440px] space-y-4">
         <div className="flex items-center justify-between border-b border-white/30 pb-3">
           <h3 className="text-lg font-bold text-white uppercase tracking-widest text-xs">Focus Objectives</h3>
@@ -257,74 +259,74 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
                 <Settings className="w-4 h-4 text-white" />
               </button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
+            <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle className="text-center uppercase tracking-widest text-muted-foreground text-sm border-b pb-4">Setting</DialogTitle>
+                <DialogTitle className="text-center uppercase tracking-widest text-muted-foreground text-[10px] border-b pb-4">Setting</DialogTitle>
               </DialogHeader>
               
               <div className="space-y-8 py-4">
                 {/* Timer Settings */}
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-muted-foreground/60 text-[10px] font-black uppercase tracking-widest">
+                  <div className="flex items-center gap-2 text-muted-foreground/40 text-[9px] font-black uppercase tracking-widest">
                     <Clock className="w-3.5 h-3.5" /> Timer
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs font-bold text-muted-foreground">Time (minutes)</Label>
+                    <Label className="text-xs font-bold text-muted-foreground/80">Time (minutes)</Label>
                     <div className="grid grid-cols-3 gap-3">
                       <div className="space-y-1">
-                        <span className="text-[10px] text-muted-foreground font-bold">Pomodoro</span>
+                        <span className="text-[10px] text-muted-foreground/60 font-bold">Pomodoro</span>
                         <Input 
                           type="number" 
                           value={settings.workDuration} 
                           onChange={(e) => updateSettings({...settings, workDuration: parseInt(e.target.value, 10) || 0})}
-                          className="bg-muted border-none h-10 font-bold"
+                          className="bg-muted border-none h-10 font-bold text-sm"
                           min={1}
                         />
                       </div>
                       <div className="space-y-1">
-                        <span className="text-[10px] text-muted-foreground font-bold">Short Break</span>
+                        <span className="text-[10px] text-muted-foreground/60 font-bold">Short Break</span>
                         <Input 
                           type="number" 
                           value={settings.shortBreakDuration} 
                           onChange={(e) => updateSettings({...settings, shortBreakDuration: parseInt(e.target.value, 10) || 0})}
-                          className="bg-muted border-none h-10 font-bold"
+                          className="bg-muted border-none h-10 font-bold text-sm"
                           min={1}
                         />
                       </div>
                       <div className="space-y-1">
-                        <span className="text-[10px] text-muted-foreground font-bold">Long Break</span>
+                        <span className="text-[10px] text-muted-foreground/60 font-bold">Long Break</span>
                         <Input 
                           type="number" 
                           value={settings.longBreakDuration} 
                           onChange={(e) => updateSettings({...settings, longBreakDuration: parseInt(e.target.value, 10) || 0})}
-                          className="bg-muted border-none h-10 font-bold"
+                          className="bg-muted border-none h-10 font-bold text-sm"
                           min={1}
                         />
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between py-2 border-t pt-4">
-                    <Label className="text-xs font-bold text-muted-foreground">Auto Start Breaks</Label>
+                  <div className="flex items-center justify-between py-1 pt-2">
+                    <Label className="text-xs font-bold text-muted-foreground/80">Auto Start Breaks</Label>
                     <Switch 
                       checked={settings.autoStartBreaks} 
                       onCheckedChange={(v) => updateSettings({...settings, autoStartBreaks: v})} 
                     />
                   </div>
-                  <div className="flex items-center justify-between py-2">
-                    <Label className="text-xs font-bold text-muted-foreground">Auto Start Pomodoros</Label>
+                  <div className="flex items-center justify-between py-1">
+                    <Label className="text-xs font-bold text-muted-foreground/80">Auto Start Pomodoros</Label>
                     <Switch 
                       checked={settings.autoStartPomodoros} 
                       onCheckedChange={(v) => updateSettings({...settings, autoStartPomodoros: v})} 
                     />
                   </div>
-                  <div className="flex items-center justify-between py-2">
-                    <Label className="text-xs font-bold text-muted-foreground">Long Break interval</Label>
+                  <div className="flex items-center justify-between py-1">
+                    <Label className="text-xs font-bold text-muted-foreground/80">Long Break interval</Label>
                     <Input 
                       type="number" 
                       value={settings.longBreakInterval} 
                       onChange={(e) => updateSettings({...settings, longBreakInterval: parseInt(e.target.value, 10) || 1})}
-                      className="bg-muted border-none h-10 w-20 font-bold text-right"
+                      className="bg-muted border-none h-10 w-16 font-bold text-right text-sm"
                       min={1}
                     />
                   </div>
@@ -332,69 +334,183 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
 
                 <Separator />
 
-                {/* Task Settings */}
+                {/* Sound Settings */}
+                <div className="space-y-5">
+                  <div className="flex items-center gap-2 text-muted-foreground/40 text-[9px] font-black uppercase tracking-widest">
+                    <Volume2 className="w-3.5 h-3.5" /> Sound
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-bold text-muted-foreground/80">Alarm Sound</Label>
+                      <div className="flex items-center gap-2">
+                         <Select value={settings.alarmSound} onValueChange={(v) => updateSettings({...settings, alarmSound: v})}>
+                          <SelectTrigger className="w-[140px] bg-muted border-none text-xs font-bold">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="kitchen">Kitchen</SelectItem>
+                            <SelectItem value="bell">Bell</SelectItem>
+                            <SelectItem value="digital">Digital</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 pl-1">
+                      <span className="text-[10px] font-bold text-muted-foreground/40 w-5">{settings.alarmVolume}</span>
+                      <Slider 
+                        value={[settings.alarmVolume]} 
+                        max={100} 
+                        step={1} 
+                        onValueChange={([v]) => updateSettings({...settings, alarmVolume: v})}
+                        className="flex-grow"
+                      />
+                      <div className="flex items-center gap-2 ml-2">
+                         <span className="text-[9px] font-black text-muted-foreground/40 uppercase">repeat</span>
+                         <Input 
+                            type="number" 
+                            value={settings.alarmRepeat} 
+                            onChange={(e) => updateSettings({...settings, alarmRepeat: parseInt(e.target.value, 10) || 1})}
+                            className="bg-muted border-none h-8 w-12 font-bold text-center text-xs"
+                          />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-bold text-muted-foreground/80">Focus Sound</Label>
+                      <Select value={settings.focusSound} onValueChange={(v) => updateSettings({...settings, focusSound: v})}>
+                        <SelectTrigger className="w-[140px] bg-muted border-none text-xs font-bold">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">None</SelectItem>
+                          <SelectItem value="white-noise">White Noise</SelectItem>
+                          <SelectItem value="rain">Rain</SelectItem>
+                          <SelectItem value="waves">Waves</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-center gap-4 pl-1">
+                      <span className="text-[10px] font-bold text-muted-foreground/40 w-5">{settings.focusVolume}</span>
+                      <Slider 
+                        value={[settings.focusVolume]} 
+                        max={100} 
+                        step={1} 
+                        onValueChange={([v]) => updateSettings({...settings, focusVolume: v})}
+                        className="flex-grow"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Theme Settings */}
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-muted-foreground/60 text-[10px] font-black uppercase tracking-widest">
-                    <Check className="w-3.5 h-3.5" /> Task
+                  <div className="flex items-center gap-2 text-muted-foreground/40 text-[9px] font-black uppercase tracking-widest">
+                    <Palette className="w-3.5 h-3.5" /> Theme
                   </div>
+                  
                   <div className="flex items-center justify-between">
-                    <Label className="text-xs font-bold text-muted-foreground">Auto Check Tasks</Label>
-                    <Switch 
-                      checked={settings.autoCheckTasks} 
-                      onCheckedChange={(v) => updateSettings({...settings, autoCheckTasks: v})} 
-                    />
+                    <Label className="text-xs font-bold text-muted-foreground/80">Color Themes</     Label>
+                    <div className="flex gap-2">
+                       <div className="w-6 h-6 rounded-md bg-[#ba4949] cursor-pointer ring-offset-2 ring-primary/20" />
+                       <div className="w-6 h-6 rounded-md bg-[#38858a] cursor-pointer" />
+                       <div className="w-6 h-6 rounded-md bg-[#397097] cursor-pointer" />
+                    </div>
                   </div>
+
                   <div className="flex items-center justify-between">
-                    <Label className="text-xs font-bold text-muted-foreground">Check to Bottom</Label>
+                    <Label className="text-xs font-bold text-muted-foreground/80">Hour Format</Label>
+                    <Select value={settings.hourFormat} onValueChange={(v: '12' | '24') => updateSettings({...settings, hourFormat: v})}>
+                      <SelectTrigger className="w-[140px] bg-muted border-none text-xs font-bold">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="24">24-hour</SelectItem>
+                        <SelectItem value="12">12-hour</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs font-bold text-muted-foreground/80">Dark Mode when running</Label>
                     <Switch 
-                      checked={settings.checkToBottom} 
-                      onCheckedChange={(v) => updateSettings({...settings, checkToBottom: v})} 
+                      checked={settings.darkModeWhenRunning} 
+                      onCheckedChange={(v) => updateSettings({...settings, darkModeWhenRunning: v})} 
                     />
                   </div>
                 </div>
 
                 <Separator />
 
-                {/* Sound Settings */}
+                {/* Notification Settings */}
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-muted-foreground/60 text-[10px] font-black uppercase tracking-widest">
-                    <Volume2 className="w-3.5 h-3.5" /> Sound
+                  <div className="flex items-center gap-2 text-muted-foreground/40 text-[9px] font-black uppercase tracking-widest">
+                    <Bell className="w-3.5 h-3.5" /> Notification
                   </div>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-xs font-bold text-muted-foreground">Alarm Sound</Label>
-                      <Select value={settings.alarmSound} onValueChange={(v) => updateSettings({...settings, alarmSound: v})}>
-                        <SelectTrigger className="w-[140px] bg-muted border-none text-xs font-bold">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="kitchen">Kitchen</SelectItem>
-                          <SelectItem value="bell">Bell</SelectItem>
-                          <SelectItem value="digital">Digital</SelectItem>
-                        </SelectContent>
-                      </Select>
+                  
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs font-bold text-muted-foreground/80">Reminder</Label>
+                    <div className="flex items-center gap-2">
+                       <Select value={settings.reminderMode} onValueChange={(v: 'last' | 'first') => updateSettings({...settings, reminderMode: v})}>
+                          <SelectTrigger className="w-[80px] bg-muted border-none text-xs font-bold">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="last">Last</SelectItem>
+                            <SelectItem value="first">First</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Input 
+                          type="number" 
+                          value={settings.reminderTime} 
+                          onChange={(e) => updateSettings({...settings, reminderTime: parseInt(e.target.value, 10) || 0})}
+                          className="bg-muted border-none h-10 w-16 font-bold text-center text-xs"
+                          min={0}
+                        />
+                        <span className="text-[10px] font-bold text-muted-foreground/60">min</span>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <span className="text-[10px] font-bold text-muted-foreground/50 w-6">{settings.alarmVolume}</span>
-                      <Slider 
-                        value={[settings.alarmVolume]} 
-                        max={100} 
-                        step={1} 
-                        onValueChange={([v]) => updateSettings({...settings, alarmVolume: v})}
-                      />
-                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Integration Settings */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-muted-foreground/40 text-[9px] font-black uppercase tracking-widest">
+                    <Zap className="w-3.5 h-3.5" /> Integration
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs font-bold text-muted-foreground/80 flex items-center gap-1.5">
+                      Todoist <InfoIcon className="w-3 h-3 opacity-30" />
+                    </Label>
+                    <Button variant="outline" size="sm" className="h-8 text-[10px] uppercase tracking-widest font-black gap-2 opacity-60">
+                      Connect <Lock className="w-3 h-3" />
+                    </Button>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs font-bold text-muted-foreground/80 flex items-center gap-1.5">
+                      Webhook <InfoIcon className="w-3 h-3 opacity-30" />
+                    </Label>
+                    <Button variant="outline" size="sm" className="h-8 text-[10px] uppercase tracking-widest font-black gap-2 opacity-60">
+                      Add <Lock className="w-3 h-3" />
+                    </Button>
                   </div>
                 </div>
               </div>
               
               <div className="flex justify-end pt-4 border-t">
-                <Button onClick={() => setSettingsOpen(false)} className="bg-gray-800 text-white font-black text-[10px] uppercase tracking-[0.2em] px-8 rounded-md h-10">OK</Button>
+                <Button onClick={() => setSettingsOpen(false)} className="bg-[#444] hover:bg-[#333] text-white font-black text-[10px] uppercase tracking-[0.2em] px-10 rounded-md h-10 transition-all">OK</Button>
               </div>
             </DialogContent>
           </Dialog>
         </div>
 
-        {/* Task List */}
         <div className="space-y-3">
           {tasks.length === 0 && (
             <div className="bg-white/5 border border-dashed border-white/20 rounded-md p-8 text-center">
@@ -472,4 +588,25 @@ export function Pomodoro({ onModeChange, isExternalSettingsOpen, onExternalSetti
       </div>
     </div>
   );
+}
+
+function InfoIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 16v-4" />
+      <path d="M12 8h.01" />
+    </svg>
+  )
 }

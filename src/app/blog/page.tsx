@@ -3,20 +3,20 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Timer, ArrowLeft, Calendar, User, Clock, ChevronRight, Search, BookOpen, Sparkles } from 'lucide-react';
+import { Timer, ArrowLeft, Calendar, User, Clock, ChevronRight, Search, BookOpen, Sparkles, FileType } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
 const BLOG_POSTS = [
   {
-    title: "The Ultimate Guide to Chronological Computation",
-    description: "Explore the science behind high-precision time tracking and why every second counts in the modern era.",
-    date: "May 20, 2024",
-    author: "ChronoFlow Editorial",
-    readTime: "25 min read",
-    slug: "/blog/ultimate-guide-to-age-calculation",
-    category: "Technical Guide"
+    title: "The Ultimate Guide to Image and PDF Resizing Optimization",
+    description: "Master the art of digital asset management. Learn how high-precision resizing impacts SEO, web performance, and document integrity.",
+    date: "June 05, 2024",
+    author: "Camly Tech Ops",
+    readTime: "55 min read",
+    slug: "/blog/image-and-pdf-resizing-optimization",
+    category: "Asset Management"
   },
   {
     title: "How AI is Revolutionizing Personal Utilities",
@@ -26,6 +26,15 @@ const BLOG_POSTS = [
     readTime: "30 min read",
     slug: "/blog/ai-revolution-personal-utilities",
     category: "Technology"
+  },
+  {
+    title: "The Ultimate Guide to Chronological Computation",
+    description: "Explore the science behind high-precision time tracking and why every second counts in the modern era.",
+    date: "May 20, 2024",
+    author: "ChronoFlow Editorial",
+    readTime: "25 min read",
+    slug: "/blog/ultimate-guide-to-age-calculation",
+    category: "Technical Guide"
   },
   {
     title: "Zodiac Symbols and the History of Time",
@@ -48,14 +57,13 @@ export default function BlogHub() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground selection:bg-primary/30">
-      {/* Mini Nav */}
       <nav className="sticky top-0 z-50 glass border-b border-border h-12 flex items-center px-4 md:px-6 justify-between">
         <Link href="/" className="flex items-center gap-2 group">
           <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center neon-glow group-hover:scale-110 transition-transform">
             <Timer className="text-primary-foreground w-4 h-4" />
           </div>
           <h1 className="text-sm md:text-base font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-            CHRONOFLOW <span className="text-foreground/50 font-normal ml-2">BLOG</span>
+            CAMLY <span className="text-foreground/50 font-normal ml-2">INSIGHTS</span>
           </h1>
         </Link>
         <Link href="/">
@@ -71,10 +79,10 @@ export default function BlogHub() {
             Knowledge Center
           </Badge>
           <h1 className="text-4xl md:text-6xl font-black tracking-tighter">
-            Insights into <span className="text-primary">Time</span> & <span className="text-accent">Technology</span>
+            Digital <span className="text-primary">Optimization</span> & <span className="text-accent">Precision</span>
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
-            Exploring the intersection of chronological precision, generative AI, and the evolution of digital utility tools.
+            Exploring the intersection of file optimization, chronological precision, and the evolution of digital utility tools by Camly Inc.
           </p>
           
           <div className="max-w-md mx-auto relative pt-4">
@@ -94,21 +102,21 @@ export default function BlogHub() {
             <div className="grid md:grid-cols-2">
               <div className="bg-gradient-to-br from-primary/10 to-accent/10 h-64 md:h-full flex items-center justify-center relative">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_70%)] opacity-30" />
-                <Sparkles className="w-24 h-24 text-primary opacity-20 group-hover:scale-110 transition-transform duration-500" />
+                <FileType className="w-24 h-24 text-primary opacity-20 group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div className="p-8 space-y-4 flex flex-col justify-center">
-                <Badge className="w-fit bg-primary text-primary-foreground text-[10px]">LATEST UPDATE</Badge>
-                <h2 className="text-3xl font-black leading-tight tracking-tight">Zodiac Symbols and the History of Time</h2>
+                <Badge className="w-fit bg-primary text-primary-foreground text-[10px]">NEW COMPREHENSIVE GUIDE</Badge>
+                <h2 className="text-3xl font-black leading-tight tracking-tight">The Ultimate Guide to Image and PDF Resizing Optimization</h2>
                 <p className="text-muted-foreground text-sm line-clamp-3">
-                  Delve into the ancient roots of our chronological systems. From the Babylonian star charts to modern astronomical precision, discover how the zodiac defined the way we measure our lives.
+                  Dive deep into the mechanics of digital asset optimization. From lossy compression to vector scaling, understand how to maintain quality while maximizing performance.
                 </p>
                 <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2">
-                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> Culture Team</span>
-                  <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> 45 min read</span>
+                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> Camly Tech Ops</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> 55 min read</span>
                 </div>
-                <Link href="/blog/zodiac-symbols-history-of-time">
+                <Link href="/blog/image-and-pdf-resizing-optimization">
                   <Button className="w-full md:w-fit mt-4 bg-primary text-primary-foreground font-bold uppercase tracking-widest text-[10px] h-10 px-8">
-                    Read Full Article
+                    Read Whitepaper
                   </Button>
                 </Link>
               </div>
@@ -136,7 +144,7 @@ export default function BlogHub() {
 
       <footer className="py-12 glass border-t border-border text-center">
         <p className="text-[10px] uppercase font-black tracking-[0.4em] text-muted-foreground/60">
-          ChronoFlow Insights Hub • Powered by Precision
+          Camly Insights Hub • Precision in Every Pixel
         </p>
       </footer>
     </div>

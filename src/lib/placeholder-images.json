@@ -1,3 +1,10 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "resizer-guide",
+      "description": "A high-precision digital asset optimization concept showing image and PDF scaling.",
+      "imageUrl": "https://picsum.photos/seed/resizer-1/1200/630",
+      "imageHint": "digital optimization"
+    }
+  ]
 }

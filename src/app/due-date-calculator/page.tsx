@@ -50,6 +50,7 @@ export default function DueDateCalculator() {
   const [cycleCount, setCycleCount] = useState('1');
   const [result, setResult] = useState<Date | null>(null);
   const [stats, setSetstats] = useState<{ calDays: number; busDays: number } | null>(null);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   // Focus management refs
   const dayInputRef = useRef<HTMLInputElement>(null);
@@ -243,7 +244,7 @@ export default function DueDateCalculator() {
                       maxLength={4}
                     />
                   </div>
-                  <Popover>
+                  <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                     <PopoverTrigger asChild>
                       <Button variant="outline" className="h-11 w-11 rounded-xl p-0 shrink-0 border-border bg-muted/50 hover:bg-muted">
                         <CalendarIcon className="w-4 h-4 text-primary" />
@@ -260,6 +261,7 @@ export default function DueDateCalculator() {
                               month: format(date, 'MM'),
                               year: format(date, 'yyyy')
                             });
+                            setIsCalendarOpen(false);
                           }
                         }}
                         initialFocus

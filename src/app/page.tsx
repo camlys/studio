@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
@@ -298,13 +299,13 @@ function ChronoFlowContent() {
           </div>
         </div>
 
-        <div className="absolute left-1/2 -translate-x-1/2 flex items-center whitespace-nowrap">
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center whitespace-nowrap z-10">
            <DropdownMenu>
              <DropdownMenuTrigger asChild>
                <Button 
                  variant="ghost" 
                  className={cn(
-                   "rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] gap-2.5 transition-all group",
+                   "rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] gap-1.5 md:gap-2.5 transition-all group",
                    activeTab === 'focus' ? "text-white hover:bg-white/10" : "hover:bg-primary/5 text-primary/60 hover:text-primary"
                  )}
                >

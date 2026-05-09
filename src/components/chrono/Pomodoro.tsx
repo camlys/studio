@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, RotateCcw, Brain, Zap, Target, Plus, Check, X, Settings, BarChart3, UserCircle, Clock, Volume2, Palette, Bell, Share2, ExternalLink, Lock, Info as InfoIcon } from 'lucide-react';
+import { Play, Pause, RotateCcw, Brain, Zap, Target, Plus, Check, X, Settings, BarChart3, UserCircle, Clock, Volume2, Palette, Bell, Share2, ExternalLink, Lock, Info as InfoIcon, MousePointer2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -43,6 +43,7 @@ export type PomodoroSettings = {
   alarmRepeat: number;
   focusSound: string;
   focusVolume: number;
+  clickSoundEnabled: boolean;
   hourFormat: '12' | '24';
   darkModeWhenRunning: boolean;
   reminderMode: 'last' | 'first';
@@ -64,6 +65,7 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
   alarmRepeat: 1,
   focusSound: 'none',
   focusVolume: 50,
+  clickSoundEnabled: true,
   hourFormat: '24',
   darkModeWhenRunning: false,
   reminderMode: 'last',
@@ -78,10 +80,12 @@ const ALARM_SOUNDS: Record<string, string> = {
 };
 
 const FOCUS_SOUNDS: Record<string, string> = {
-  'white-noise': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', // Placeholder, using recognizable MP3s for prototype
+  'white-noise': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
   rain: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
   waves: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
 };
+
+const CLICK_SOUND_URL = 'https://cdn.pixabay.com/audio/2022/03/24/audio_71720d20d3.mp3';
 
 interface PomodoroProps {
   onModeChange?: (mode: TimerMode) => void;
@@ -108,7 +112,6 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
   const alarmAudioRef = useRef<HTMLAudioElement | null>(null);
   const focusAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Load settings and tasks on mount
   useEffect(() => {
     const savedSettings = localStorage.getItem('chrono_pomodoro_settings');
     if (savedSettings) {
@@ -137,7 +140,6 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
     }
   }, []);
 
-  // Persist tasks whenever they change
   useEffect(() => {
     localStorage.setItem('chrono_pomodoro_tasks', JSON.stringify(tasks));
   }, [tasks]);
@@ -166,7 +168,6 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
     audio.play().catch(e => console.error("Alarm playback failed", e));
     alarmAudioRef.current = audio;
 
-    // Handle repeat
     let repeats = 1;
     audio.onended = () => {
       if (repeats < settings.alarmRepeat) {
@@ -176,7 +177,13 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
     };
   }, [settings.alarmSound, settings.alarmVolume, settings.alarmRepeat]);
 
-  // Focus sound handling
+  const playClickSound = useCallback(() => {
+    if (!settings.clickSoundEnabled) return;
+    const audio = new Audio(CLICK_SOUND_URL);
+    audio.volume = settings.alarmVolume / 100;
+    audio.play().catch(e => console.error("Click sound playback failed", e));
+  }, [settings.clickSoundEnabled, settings.alarmVolume]);
+
   useEffect(() => {
     if (isActive && mode === 'work' && settings.focusSound !== 'none') {
       const soundUrl = FOCUS_SOUNDS[settings.focusSound];
@@ -273,7 +280,10 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
     }
   }, [isActive, onTimerActiveChange]);
 
-  const toggleTimer = () => setIsActive(!isActive);
+  const toggleTimer = () => {
+    playClickSound();
+    setIsActive(!isActive);
+  };
 
   const changeMode = (newMode: TimerMode) => {
     setMode(newMode);
@@ -374,7 +384,6 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
       
       <div className="w-full lg:w-[540px] space-y-6">
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 md:p-10 flex flex-col items-center transition-all duration-500 shadow-2xl relative overflow-hidden">
-          {/* Advanced Progress Bar Overlay */}
           <div className="absolute top-0 left-0 w-full h-1.5 bg-black/10">
             <div 
               className="h-full bg-white transition-all duration-1000 ease-linear shadow-[0_0_15px_rgba(255,255,255,0.8)]" 
@@ -459,7 +468,6 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
                     <Label className="text-xs font-bold text-muted-foreground/80">Duration</Label>
                     
                     <div className="space-y-4">
-                      {/* Work Duration */}
                       <div className="grid grid-cols-2 gap-4 items-center">
                         <span className="text-[11px] text-muted-foreground/60 font-bold uppercase">Pomodoro</span>
                         <div className="flex gap-2">
@@ -487,7 +495,6 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
                         </div>
                       </div>
 
-                      {/* Short Break Duration */}
                       <div className="grid grid-cols-2 gap-4 items-center">
                         <span className="text-[11px] text-muted-foreground/60 font-bold uppercase">Short Break</span>
                         <div className="flex gap-2">
@@ -515,7 +522,6 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
                         </div>
                       </div>
 
-                      {/* Long Break Duration */}
                       <div className="grid grid-cols-2 gap-4 items-center">
                         <span className="text-[11px] text-muted-foreground/60 font-bold uppercase">Long Break</span>
                         <div className="flex gap-2">
@@ -638,6 +644,16 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
                         className="flex-grow"
                       />
                     </div>
+                  </div>
+
+                  <div className="flex items-center justify-between py-1">
+                    <Label className="text-xs font-bold text-muted-foreground/80 flex items-center gap-2">
+                      <MousePointer2 className="w-3.5 h-3.5 opacity-40" /> Button Click Sound
+                    </Label>
+                    <Switch 
+                      checked={settings.clickSoundEnabled} 
+                      onCheckedChange={(v) => updateSettings({...settings, clickSoundEnabled: v})} 
+                    />
                   </div>
                 </div>
 

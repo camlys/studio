@@ -396,7 +396,7 @@ function ChronoFlowContent() {
                   </div>
                   <DateInput label="Target Timestamp" values={toDate} onChange={setToDate} error={activeTab === 'age' ? error || undefined : undefined} />
                   <Button 
-                    className="w-full h-12 mt-6 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow border border-border"
+                    className="w-full h-12 mt-6 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow border border-black dark:border-white"
                     onClick={handleCalculate}
                   >
                     Compute Age Results

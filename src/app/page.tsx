@@ -92,7 +92,7 @@ function ChronoFlowContent() {
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [activeTab, setActiveTab] = useState<'age' | 'focus'>('age');
+  const [activeTab, setActiveTab] = useState<'age' | 'focus' | 'calculator' | 'due-date'>('age');
   const [pomodoroMode, setPomodoroMode] = useState<TimerMode>('work');
   const [pomodoroSettings, setPomodoroSettings] = useState<PomodoroSettings | null>(null);
   const [isPomodoroSettingsOpen, setIsPomodoroSettingsOpen] = useState(false);
@@ -108,6 +108,8 @@ function ChronoFlowContent() {
   useEffect(() => {
     const tab = searchParams.get('tab');
     if (tab === 'focus') setActiveTab('focus');
+    else if (tab === 'calculator') setActiveTab('calculator');
+    else if (tab === 'due-date') setActiveTab('due-date');
     else setActiveTab('age');
   }, [searchParams]);
 
@@ -150,7 +152,7 @@ function ChronoFlowContent() {
   }, [theme, isTimerActive, pomodoroSettings?.darkModeWhenRunning]);
 
   useEffect(() => {
-    if (results && activeTab !== 'focus') {
+    if (results && activeTab === 'age') {
       tickerRef.current = setInterval(() => {
         setResults(prev => {
           if (!prev) return null;
@@ -361,17 +363,19 @@ function ChronoFlowContent() {
                 value={activeTab}
                 className="w-full" 
                 onValueChange={(v) => {
-                  setActiveTab(v as 'age' | 'focus');
+                  setActiveTab(v as any);
                   setError(null);
-                  if (v === 'focus') setResults(null);
+                  if (v !== 'age') setResults(null);
                 }}
               >
                 <TabsList className={cn(
-                  "grid w-full grid-cols-2 mb-6 rounded-xl h-10",
+                  "grid w-full grid-cols-4 mb-6 rounded-xl h-10",
                   activeTab === 'focus' ? "bg-white/10" : "bg-muted/50"
                 )}>
-                  <TabsTrigger value="age" className="text-[10px] md:text-xs font-black uppercase tracking-widest">Age</TabsTrigger>
-                  <TabsTrigger value="focus" className="text-[10px] md:text-xs font-black uppercase tracking-widest">Focus</TabsTrigger>
+                  <TabsTrigger value="age" className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Age</TabsTrigger>
+                  <TabsTrigger value="focus" className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Focus</TabsTrigger>
+                  <TabsTrigger value="calculator" className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Calc</TabsTrigger>
+                  <TabsTrigger value="due-date" className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Due</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="age" className="space-y-4 mt-0">
@@ -391,10 +395,24 @@ function ChronoFlowContent() {
                 </TabsContent>
 
                 <TabsContent value="focus" className="mt-0" />
+                <TabsContent value="calculator" className="mt-0">
+                   <div className="p-4 border border-dashed border-border/40 rounded-xl text-center space-y-2">
+                      <CalcIcon className="w-6 h-6 mx-auto text-muted-foreground/40" />
+                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Scientific ALU Engine</p>
+                      <p className="text-[9px] text-muted-foreground/40 italic">Module loading standby...</p>
+                   </div>
+                </TabsContent>
+                <TabsContent value="due-date" className="mt-0">
+                   <div className="p-4 border border-dashed border-border/40 rounded-xl text-center space-y-2">
+                      <CalendarDays className="w-6 h-6 mx-auto text-muted-foreground/40" />
+                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Milestone Inference Engine</p>
+                      <p className="text-[9px] text-muted-foreground/40 italic">Module loading standby...</p>
+                   </div>
+                </TabsContent>
               </Tabs>
             </div>
 
-            {activeTab !== 'focus' && (
+            {activeTab === 'age' && (
               <div className="space-y-3">
                 <div className="glass-card !p-4 border-accent/20 bg-accent/5 overflow-hidden relative group">
                   <div className="absolute -top-4 -right-4 w-12 h-12 bg-accent/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-1000" />
@@ -427,7 +445,7 @@ function ChronoFlowContent() {
                 isExternalSettingsOpen={isPomodoroSettingsOpen}
                 onExternalSettingsOpenChange={setIsPomodoroSettingsOpen}
               />
-            ) : results ? (
+            ) : activeTab === 'age' && results ? (
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
                 <div className="flex items-center justify-between px-2">
                    <div className="flex items-center gap-3">

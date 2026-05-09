@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { 
-  Sun, Moon, RefreshCcw, Share2, Copy, Timer, ChevronRight, 
+  Sun, Moon, Share2, Copy, Timer, ChevronRight, 
   Github, Twitter, Mail, Cpu, Database, ShieldCheck, 
   ExternalLink, Globe, BookOpen, Zap, Brain, Activity, 
   Lock, Star, ArrowRight, CheckCircle, Scale, HeartPulse, 
@@ -357,9 +357,6 @@ function ChronoFlowContent() {
             <>
               <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full hover:bg-accent/10 w-8 h-8">
                 {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              </Button>
-              <Button variant="ghost" size="icon" onClick={handleReset} className="rounded-full hover:bg-accent/10 w-8 h-8">
-                <RefreshCcw className="w-4 h-4" />
               </Button>
             </>
           )}

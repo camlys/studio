@@ -8,7 +8,7 @@ import {
   CalendarDays, Hourglass, ArrowRight,
   Settings, Database, Network, Globe,
   ExternalLink, BarChart3, Workflow, Info,
-  Briefcase, HeartPulse, Repeat, Star
+  Briefcase, HeartPulse, Repeat, Star, Baby, Microscope, Stethoscope
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,8 +18,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { Slider } from "@/components/ui/slider";
 import { cn } from '@/lib/utils';
-import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays, isValid, parseISO, isLeapYear } from 'date-fns';
+import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays, isValid, parseISO, isLeapYear, differenceInWeeks } from 'date-fns';
 import { getZodiacSign } from '@/lib/date-utils';
 
 const dueDateSchema = {
@@ -28,7 +29,7 @@ const dueDateSchema = {
   "name": "Professional Due Date Engine - India Edition",
   "applicationCategory": "Utility",
   "operatingSystem": "All",
-  "description": "High-precision milestone and project due date calculator optimized for Indian Standard Time (IST) and Indian business cycles.",
+  "description": "High-precision milestone and project due date calculator optimized for Indian Standard Time (IST) and biological/clinical protocols.",
   "offers": {
     "@type": "Offer",
     "price": "0",
@@ -36,7 +37,7 @@ const dueDateSchema = {
   }
 };
 
-type CalcMethod = 'standard' | 'business' | 'medical' | 'cycle';
+type CalcMethod = 'standard' | 'business' | 'medical' | 'cycle' | 'ivf' | 'crl' | 'conception';
 
 export default function DueDateCalculator() {
   const [method, setMethod] = useState<CalcMethod>('standard');
@@ -48,8 +49,11 @@ export default function DueDateCalculator() {
   const [duration, setDuration] = useState('30');
   const [unit, setUnit] = useState<'days' | 'weeks' | 'months'>('days');
   const [cycleCount, setCycleCount] = useState('1');
+  const [ivfType, setIvfType] = useState<'3-day' | '5-day'>('5-day');
+  const [crlValue, setCrlValue] = useState(10);
+  
   const [result, setResult] = useState<Date | null>(null);
-  const [stats, setSetstats] = useState<{ calDays: number; busDays: number } | null>(null);
+  const [stats, setSetstats] = useState<{ calDays: number; busDays: number; gestation?: string } | null>(null);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   // Focus management refs
@@ -95,29 +99,63 @@ export default function DueDateCalculator() {
     const num = parseInt(duration) || 0;
     const cycles = parseInt(cycleCount) || 1;
     let end: Date;
+    let gestationStr: string | undefined;
 
-    if (method === 'medical') {
-      end = addDays(start, 280);
-    } else if (method === 'business') {
-      end = addBusinessDays(start, num * cycles);
-    } else if (method === 'cycle') {
-      let tempDate = start;
-      for(let i = 0; i < cycles; i++) {
-        if (unit === 'weeks') tempDate = addWeeks(tempDate, num);
-        else if (unit === 'months') tempDate = addMonths(tempDate, num);
-        else tempDate = addDays(tempDate, num);
-      }
-      end = tempDate;
-    } else {
-      if (unit === 'weeks') end = addWeeks(start, num);
-      else if (unit === 'months') end = addMonths(start, num);
-      else end = addDays(start, num);
+    switch (method) {
+      case 'medical': // LMP
+        end = addDays(start, 280);
+        break;
+      case 'conception':
+        end = addDays(start, 266);
+        break;
+      case 'ivf':
+        end = addDays(start, ivfType === '3-day' ? 263 : 261);
+        break;
+      case 'crl':
+        // clinical: Gestational age (days) = CRL (mm) + 42
+        const gaDays = crlValue + 42;
+        end = addDays(start, 280 - gaDays);
+        break;
+      case 'business':
+        end = addBusinessDays(start, num * cycles);
+        break;
+      case 'cycle':
+        let tempDate = start;
+        for(let i = 0; i < cycles; i++) {
+          if (unit === 'weeks') tempDate = addWeeks(tempDate, num);
+          else if (unit === 'months') tempDate = addMonths(tempDate, num);
+          else tempDate = addDays(tempDate, num);
+        }
+        end = tempDate;
+        break;
+      default:
+        if (unit === 'weeks') end = addWeeks(start, num);
+        else if (unit === 'months') end = addMonths(start, num);
+        else end = addDays(start, num);
     }
 
     if (!isValid(end)) {
       setResult(null);
       setSetstats(null);
       return;
+    }
+
+    // Gestation string calculation for biological methods
+    if (['medical', 'ivf', 'crl', 'conception'].includes(method)) {
+      const today = new Date();
+      let lmpOrigin = start;
+      if (method === 'conception') lmpOrigin = addDays(start, -14);
+      if (method === 'ivf') lmpOrigin = addDays(start, ivfType === '3-day' ? -17 : -19);
+      if (method === 'crl') lmpOrigin = addDays(start, -(crlValue + 42));
+
+      const totalDiffDays = differenceInDays(today, lmpOrigin);
+      if (totalDiffDays >= 0) {
+        const weeks = Math.floor(totalDiffDays / 7);
+        const remainingDays = totalDiffDays % 7;
+        gestationStr = `${weeks}w ${remainingDays}d`;
+      } else {
+        gestationStr = "Pre-LMP";
+      }
     }
 
     setResult(end);
@@ -141,12 +179,12 @@ export default function DueDateCalculator() {
       }
     }
     
-    setSetstats({ calDays: totalCal, busDays: workDays });
+    setSetstats({ calDays: totalCal, busDays: workDays, gestation: gestationStr });
   };
 
   useEffect(() => {
     calculateDueDate();
-  }, [startValues, duration, unit, method, cycleCount]);
+  }, [startValues, duration, unit, method, cycleCount, ivfType, crlValue]);
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -184,13 +222,13 @@ export default function DueDateCalculator() {
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-8 md:py-16">
         <div className="mb-10 md:mb-12 space-y-3 text-center md:text-left">
           <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-3 py-1 font-black">
-            Tactical Planning Layer
+            Clinical & Tactical Planning Layer
           </Badge>
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.85]">
             Milestone <span className="text-primary">Inference</span> Engine
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed font-medium max-w-xl mx-auto md:mx-0">
-            Advanced due date synchronization for Indian project cycles, regional business workflows, and high-fidelity tactical planning.
+            Advanced due date synchronization for Indian corporate cycles, IVF protocols, clinical ultrasound dating, and IST tactical planning.
           </p>
         </div>
 
@@ -207,7 +245,10 @@ export default function DueDateCalculator() {
                   <SelectContent>
                     <SelectItem value="standard" className="flex items-center gap-2 text-xs"><CalendarIcon className="w-3 h-3 inline mr-2" /> Calendar Days</SelectItem>
                     <SelectItem value="business" className="flex items-center gap-2 text-xs"><Briefcase className="w-3 h-3 inline mr-2" /> Business Days</SelectItem>
-                    <SelectItem value="medical" className="flex items-center gap-2 text-xs"><HeartPulse className="w-3 h-3 inline mr-2" /> Medical / LMP</SelectItem>
+                    <SelectItem value="medical" className="flex items-center gap-2 text-xs"><Stethoscope className="w-3 h-3 inline mr-2" /> LMP (Last Period)</SelectItem>
+                    <SelectItem value="ivf" className="flex items-center gap-2 text-xs"><Microscope className="w-3 h-3 inline mr-2" /> IVF Transfer</SelectItem>
+                    <SelectItem value="crl" className="flex items-center gap-2 text-xs"><Baby className="w-3 h-3 inline mr-2" /> Ultrasound (CRL)</SelectItem>
+                    <SelectItem value="conception" className="flex items-center gap-2 text-xs"><Zap className="w-3 h-3 inline mr-2" /> Conception Date</SelectItem>
                     <SelectItem value="cycle" className="flex items-center gap-2 text-xs"><Repeat className="w-3 h-3 inline mr-2" /> Project Cycles</SelectItem>
                   </SelectContent>
                 </Select>
@@ -215,7 +256,11 @@ export default function DueDateCalculator() {
 
               <div className="space-y-1.5">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">
-                  {method === 'medical' ? 'Last Period (Origin)' : 'Execution Start (Origin)'}
+                  {method === 'medical' ? 'LMP Date (Origin)' : 
+                   method === 'ivf' ? 'Transfer Date (Origin)' :
+                   method === 'crl' ? 'Ultrasound Date (Origin)' :
+                   method === 'conception' ? 'Conception Date (Origin)' :
+                   'Execution Start (Origin)'}
                 </Label>
                 <div className="flex gap-2">
                   <div className="grid grid-cols-3 gap-1 flex-grow">
@@ -271,7 +316,40 @@ export default function DueDateCalculator() {
                 </div>
               </div>
 
-              {method !== 'medical' && (
+              {method === 'ivf' && (
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Embryo Age</Label>
+                  <Select value={ivfType} onValueChange={(v: any) => setIvfType(v)}>
+                    <SelectTrigger className="bg-muted/50 border-border h-11 rounded-xl focus:ring-2 focus:ring-primary/20 font-bold text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="3-day">3-Day Transfer</SelectItem>
+                      <SelectItem value="5-day">5-Day Transfer</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {method === 'crl' && (
+                <div className="space-y-4 pt-2">
+                  <div className="flex justify-between items-center">
+                    <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">CRL Measurement (mm)</Label>
+                    <span className="text-xs font-black text-primary">{crlValue} mm</span>
+                  </div>
+                  <Slider 
+                    value={[crlValue]} 
+                    min={1} 
+                    max={85} 
+                    step={1} 
+                    onValueChange={([v]) => setCrlValue(v)}
+                    className="py-2"
+                  />
+                  <p className="text-[8px] text-muted-foreground italic font-medium">Valid CRL range for precision dating: 1mm to 85mm.</p>
+                </div>
+              )}
+
+              {!['medical', 'ivf', 'crl', 'conception'].includes(method) && (
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Duration Vector</Label>
@@ -324,9 +402,15 @@ export default function DueDateCalculator() {
               <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 space-y-4">
                 <div className="glass-card !p-5 md:!p-8 border-accent/20 bg-accent/5 text-center relative overflow-hidden group">
                   <div className="absolute top-0 right-0 p-4 opacity-10">
-                    <Milestone className="w-12 h-12 md:w-16 md:h-16 text-accent group-hover:rotate-12 transition-transform duration-1000" />
+                    {['medical', 'ivf', 'crl', 'conception'].includes(method) ? (
+                      <Baby className="w-12 h-12 md:w-16 md:h-16 text-accent group-hover:rotate-12 transition-transform duration-1000" />
+                    ) : (
+                      <Milestone className="w-12 h-12 md:w-16 md:h-16 text-accent group-hover:rotate-12 transition-transform duration-1000" />
+                    )}
                   </div>
-                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-accent mb-3 block">Target Coordinate</span>
+                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-accent mb-3 block">
+                    {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Estimated Due Date' : 'Target Coordinate'}
+                  </span>
                   <div className="text-2xl md:text-4xl font-black tracking-tighter text-foreground mb-2 md:mb-3 tabular-nums">
                     {format(result, 'dd MMM, yyyy')}
                   </div>
@@ -337,18 +421,24 @@ export default function DueDateCalculator() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Calendar</span>
+                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">
+                      {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Duration' : 'Calendar'}
+                    </span>
                     <div className="text-lg md:text-xl font-black text-primary">
                       {stats?.calDays.toLocaleString('en-IN')}
                     </div>
                     <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Total Days</span>
                   </div>
                   <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Velocity</span>
+                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">
+                      {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Progress' : 'Velocity'}
+                    </span>
                     <div className="text-lg md:text-xl font-black text-accent uppercase">
-                      {stats?.busDays.toLocaleString('en-IN')}
+                      {stats?.gestation || stats?.busDays.toLocaleString('en-IN')}
                     </div>
-                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Work Days</span>
+                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">
+                      {stats?.gestation ? 'Weeks Gone' : 'Work Days'}
+                    </span>
                   </div>
                 </div>
 
@@ -376,7 +466,13 @@ export default function DueDateCalculator() {
                     {method === 'business' ? (
                       "Business mode excludes weekends. Synchronized with Indian corporate cycles and IST."
                     ) : method === 'medical' ? (
-                      "Gestational tracking mapped for standard 280-day obstetric milestones."
+                      "Standard 280-day obstetric milestones inferred from the Last Menstrual Period."
+                    ) : method === 'ivf' ? (
+                      `IVF synchronization calibrated for a ${ivfType} embryo transfer.`
+                    ) : method === 'crl' ? (
+                      `Ultrasound dating derived from a ${crlValue}mm Crown-Rump Length measurement.`
+                    ) : method === 'conception' ? (
+                      "Target coordinate derived from a fixed 266-day conception-to-birth vector."
                     ) : method === 'cycle' ? (
                       `Iterative mapping of ${cycleCount.toLocaleString('en-IN')} cycles across ${duration} ${unit}.`
                     ) : (
@@ -389,7 +485,7 @@ export default function DueDateCalculator() {
               <div className="h-[300px] md:h-[380px] glass-card !p-8 border-dashed border-border/40 flex flex-col items-center justify-center text-center opacity-40">
                 <Hourglass className="w-8 h-8 md:w-10 md:h-10 mb-5 animate-pulse" />
                 <h3 className="text-sm md:text-base font-black tracking-tight mb-2">Awaiting Parameters</h3>
-                <p className="text-[10px] md:text-[11px] font-medium max-w-[180px]">Define origin and duration vectors to initiate milestone synchronization.</p>
+                <p className="text-[10px] md:text-[11px] font-medium max-w-[180px]">Define origin and protocol vectors to initiate milestone synchronization.</p>
               </div>
             )}
 
@@ -416,7 +512,7 @@ export default function DueDateCalculator() {
             <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-6 py-1.5 font-black">Architecture Whitepaper</Badge>
             <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-none">The Science of <span className="text-primary">Deadlines</span></h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-medium">
-              We define the standard for high-fidelity chronological milestones through military-grade synchronization protocols in the Indian industry landscape.
+              We define the standard for high-fidelity chronological milestones through military-grade synchronization and clinical protocols.
             </p>
           </div>
 
@@ -425,9 +521,9 @@ export default function DueDateCalculator() {
               <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                  <Workflow className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-2xl font-black mb-4 tracking-tight">Project Velocity</h3>
+              <h3 className="text-2xl font-black mb-4 tracking-tight">Clinical Fidelity</h3>
               <p className="text-sm text-muted-foreground leading-relaxed opacity-80">
-                Mapping the net vector of speed and fidelity at which a piece of information moves from inception to milestone within Indian corporate cycles.
+                Implementing standard obstetric and IVF dating models with absolute parity, turning biological data into precise milestones.
               </p>
             </div>
             <div className="glass-card !p-8 md:!p-10 hover:translate-y-[-8px] transition-all group hover:border-accent/40">
@@ -436,7 +532,7 @@ export default function DueDateCalculator() {
               </div>
               <h3 className="text-2xl font-black mb-4 tracking-tight">Risk Mitigation</h3>
               <p className="text-sm text-muted-foreground leading-relaxed opacity-80">
-                Real-time validation of mathematical inputs prevents overflows and handles Indian calendar edge-cases with absolute parity.
+                Real-time validation of mathematical and biological inputs prevents overflows and handles edge-cases with sub-millisecond precision.
               </p>
             </div>
             <div className="glass-card !p-8 md:!p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40 sm:col-span-2 lg:col-span-1">

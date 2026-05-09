@@ -10,7 +10,7 @@ import {
   Star, ArrowRight, Scale, HeartPulse, 
   Coins, Milestone, LayoutGrid, Download,
   Calculator as CalcIcon, CalendarDays, Copy,
-  ArrowUpRight, Target
+  ArrowUpRight, Target, BarChart3, Settings
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

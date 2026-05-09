@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { 
   Sun, Moon, Share2, Copy, Timer, ChevronRight, 
   Github, Twitter, Mail, Cpu, Database, ShieldCheck, 
@@ -91,6 +91,7 @@ const breadcrumbSchema = {
 function ChronoFlowContent() {
   const { toast } = useToast();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [activeTab, setActiveTab] = useState<'age' | 'focus' | 'calculator' | 'due-date'>('age');
   const [pomodoroMode, setPomodoroMode] = useState<TimerMode>('work');
@@ -363,6 +364,14 @@ function ChronoFlowContent() {
                 value={activeTab}
                 className="w-full" 
                 onValueChange={(v) => {
+                  if (v === 'calculator') {
+                    router.push('/calculator');
+                    return;
+                  }
+                  if (v === 'due-date') {
+                    router.push('/due-date-calculator');
+                    return;
+                  }
                   setActiveTab(v as any);
                   setError(null);
                   if (v !== 'age') setResults(null);
@@ -396,18 +405,18 @@ function ChronoFlowContent() {
 
                 <TabsContent value="focus" className="mt-0" />
                 <TabsContent value="calculator" className="mt-0">
-                   <div className="p-4 border border-dashed border-border/40 rounded-xl text-center space-y-2">
+                   <Link href="/calculator" className="block p-4 border border-dashed border-border/40 rounded-xl text-center space-y-2 hover:bg-muted/50 transition-all">
                       <CalcIcon className="w-6 h-6 mx-auto text-muted-foreground/40" />
                       <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Scientific ALU Engine</p>
-                      <p className="text-[9px] text-muted-foreground/40 italic">Module loading standby...</p>
-                   </div>
+                      <p className="text-[9px] text-primary font-bold uppercase tracking-widest flex items-center justify-center gap-1">Open Engine <ArrowRight className="w-2.5 h-2.5" /></p>
+                   </Link>
                 </TabsContent>
                 <TabsContent value="due-date" className="mt-0">
-                   <div className="p-4 border border-dashed border-border/40 rounded-xl text-center space-y-2">
+                   <Link href="/due-date-calculator" className="block p-4 border border-dashed border-border/40 rounded-xl text-center space-y-2 hover:bg-muted/50 transition-all">
                       <CalendarDays className="w-6 h-6 mx-auto text-muted-foreground/40" />
                       <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Milestone Inference Engine</p>
-                      <p className="text-[9px] text-muted-foreground/40 italic">Module loading standby...</p>
-                   </div>
+                      <p className="text-[9px] text-primary font-bold uppercase tracking-widest flex items-center justify-center gap-1">Open Engine <ArrowRight className="w-2.5 h-2.5" /></p>
+                   </Link>
                 </TabsContent>
               </Tabs>
             </div>

@@ -351,7 +351,8 @@ export default function DueDateCalculator() {
           </p>
         </div>
 
-        <div className="flex flex-col min-[480px]:row items-start justify-center gap-4 md:gap-8 lg:gap-16">
+        {/* Unified Horizontal Layout for 5-8 inches (min-480px) and Desktop */}
+        <div className="flex flex-col min-[480px]:flex-row items-start justify-center gap-4 md:gap-8 lg:gap-16">
           
           <div className="w-full min-[480px]:flex-1 max-w-sm space-y-6">
             <div className="glass-card !p-4 md:!p-6 space-y-5 border-border/40 shadow-2xl">

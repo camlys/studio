@@ -346,8 +346,8 @@ export default function DueDateCalculator() {
               <Timer className="text-primary-foreground w-7 h-7" />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-lg font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
-                CHRONOFLOW
+              <h1 className="text-lg font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase font-roboto-slab">
+                CALCULATOR
               </h1>
               <span className="text-[7px] font-bold tracking-[0.3em] text-primary/60 uppercase mt-1">camly.org</span>
             </div>
@@ -818,8 +818,8 @@ export default function DueDateCalculator() {
                 <div className="w-14 h-14 rounded-xl flex items-center justify-center transition-all bg-primary neon-glow">
                   <Timer className="w-8 h-8 text-primary-foreground" />
                 </div>
-                <h2 className="text-xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
-                  CHRONOFLOW
+                <h2 className="text-xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase font-roboto-slab">
+                  CALCULATOR
                 </h2>
               </div>
               <p className="text-sm leading-relaxed max-w-xs font-medium text-muted-foreground">

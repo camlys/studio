@@ -286,10 +286,10 @@ function ChronoFlowContent() {
           </div>
           <div className="flex flex-col">
             <h1 className={cn(
-              "text-lg font-black tracking-tighter leading-none",
+              "text-lg font-black tracking-tighter leading-none font-roboto-slab uppercase",
               activeTab === 'focus' ? "text-white" : "bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent"
             )}>
-              CHRONOFLOW
+              CALCULATOR
             </h1>
             <Link href="https://camly.org" target="_blank" className={cn(
               "text-[7px] font-bold tracking-[0.3em] uppercase mt-1 flex items-center gap-1 transition-colors",
@@ -682,8 +682,8 @@ function ChronoFlowContent() {
                 <div className="w-14 h-14 rounded-xl flex items-center justify-center transition-all bg-primary neon-glow">
                   <Timer className="w-8 h-8 text-primary-foreground" />
                 </div>
-                <h2 className="text-xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
-                  CHRONOFLOW
+                <h2 className="text-xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase font-roboto-slab">
+                  CALCULATOR
                 </h2>
               </div>
               <p className="text-sm leading-relaxed max-w-xs font-medium text-muted-foreground">

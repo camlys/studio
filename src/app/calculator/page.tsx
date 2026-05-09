@@ -134,22 +134,22 @@ export default function PrecisionCalculator() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center neon-glow group-hover:scale-110 transition-transform">
               <Timer className="text-primary-foreground w-5 h-5" />
             </div>
-            <h1 className="text-sm md:text-lg font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
+            <h1 className="text-xs sm:text-lg font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
               CHRONOFLOW
             </h1>
           </Link>
         </div>
 
-        <div className="absolute left-1/2 -translate-x-1/2 flex items-center">
-           <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.2em] md:tracking-[0.3em] text-[8px] md:text-[10px] px-3 md:px-6 py-1 font-black">
-             Advanced Precision Hub
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center whitespace-nowrap">
+           <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.1em] md:tracking-[0.3em] text-[7px] md:text-[10px] px-2 md:px-6 py-1 font-black">
+             Precision Hub
            </Badge>
         </div>
 
         <div className="flex items-center gap-2">
           <Link href="/">
-            <Button variant="ghost" size="sm" className="rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest gap-2">
-              <ArrowLeft className="w-3 h-3" /> <span className="hidden sm:inline">Back to Engine</span>
+            <Button variant="ghost" size="sm" className="rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest gap-2 h-8 px-2 md:px-3">
+              <ArrowLeft className="w-3 h-3" /> <span className="hidden min-[480px]:inline">Back</span>
             </Button>
           </Link>
         </div>
@@ -230,10 +230,10 @@ export default function PrecisionCalculator() {
               </div>
 
               <div className="flex border-b border-border/20 bg-muted/30">
-                <button onClick={() => setIsRadians(!isRadians)} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 border-r border-border/10">
+                <button onClick={() => setIsRadians(!isRadians)} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 border-r border-border/10 transition-colors">
                   {isRadians ? 'Set Degrees' : 'Set Radians'}
                 </button>
-                <button onClick={() => setIsScientific(!isScientific)} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5">
+                <button onClick={() => setIsScientific(!isScientific)} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 transition-colors">
                   {isScientific ? 'Standard' : 'Scientific'}
                 </button>
               </div>
@@ -335,7 +335,7 @@ function CalcButton({ children, onClick, className }: { children: React.ReactNod
     <button 
       onClick={onClick}
       className={cn(
-        "h-9 flex items-center justify-center text-xs font-bold transition-all hover:bg-white/5 active:scale-95 rounded-sm",
+        "h-12 flex items-center justify-center text-xs font-bold transition-all active:bg-white/10 active:scale-95 rounded-sm focus:outline-none focus:bg-transparent select-none",
         className
       )}
     >

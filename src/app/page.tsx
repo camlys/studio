@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -235,7 +236,7 @@ export default function ChronoFlow() {
           </h1>
         </div>
 
-        <div className="absolute left-1/2 -translate-x-1/2 flex items-center">
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center whitespace-nowrap">
            <Link href="/calculator">
              <Button 
                variant="ghost" 
@@ -245,7 +246,7 @@ export default function ChronoFlow() {
                )}
              >
                <Cpu className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
-               <span className="hidden sm:inline">Precision Calculator</span>
+               <span className="hidden min-[480px]:inline">Precision Calculator</span>
              </Button>
            </Link>
         </div>

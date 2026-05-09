@@ -6,6 +6,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
+  userScalable: false,
 };
 
 export const metadata: Metadata = {
@@ -23,6 +24,11 @@ export const metadata: Metadata = {
     email: false,
     address: false,
     telephone: false,
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'ChronoFlow',
   },
   openGraph: {
     title: 'ChronoFlow | Premium Age Calculator',

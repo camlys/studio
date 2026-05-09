@@ -1,10 +1,10 @@
 /* TEAM */
-  Organization: Camly Inc
-  Site: https://camly.org
-  Location: India
+    Camly Operations Team
+    Site: https://camly.org
+    Twitter: @camly
 
 /* SITE */
-  Last update: 2024/06/01
-  Standards: HTML5, CSS3, Next.js, Tailwind CSS
-  Components: ShadCN UI
-  Software: ChronoFlow High-Precision Engine
+    Last update: 2024/05/28
+    Standards: HTML5, CSS3, Next.js, Genkit
+    Components: ShadCN UI
+    Software: Firebase Studio High-Precision Engine

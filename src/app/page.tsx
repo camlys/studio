@@ -404,7 +404,7 @@ function ChronoFlowContent() {
                   </div>
                   <DateInput label="Target Timestamp" values={toDate} onChange={setToDate} error={activeTab === 'diff' ? error || undefined : undefined} />
                   <Button 
-                    className="w-full h-12 mt-6 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow"
+                    className="w-full h-12 mt-6 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow border border-white/20"
                     onClick={handleCalculate}
                   >
                     Execute Differential Sync
@@ -419,7 +419,7 @@ function ChronoFlowContent() {
                     error={activeTab === 'age' ? error || undefined : undefined} 
                   />
                   <Button 
-                    className="w-full h-12 mt-6 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow"
+                    className="w-full h-12 mt-6 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow border border-white/20"
                     onClick={handleCalculate}
                   >
                     Compute Life Duration

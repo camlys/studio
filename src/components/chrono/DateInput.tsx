@@ -42,7 +42,7 @@ export function DateInput({ label, values, onChange, error }: DateInputProps) {
           placeholder="DD"
           value={values.day}
           onChange={(e) => handleInputChange('day', e.target.value)}
-          className="text-center text-xs h-8 bg-white/5 border-white/5 glass focus:neon-glow rounded-md px-0.5"
+          className="text-center text-xs h-8 bg-white/5 border-white/20 glass focus:neon-glow rounded-md px-0.5"
           maxLength={2}
         />
         <Input
@@ -50,7 +50,7 @@ export function DateInput({ label, values, onChange, error }: DateInputProps) {
           placeholder="MM"
           value={values.month}
           onChange={(e) => handleInputChange('month', e.target.value)}
-          className="text-center text-xs h-8 bg-white/5 border-white/5 glass focus:neon-glow rounded-md px-0.5"
+          className="text-center text-xs h-8 bg-white/5 border-white/20 glass focus:neon-glow rounded-md px-0.5"
           maxLength={2}
         />
         <Input
@@ -58,7 +58,7 @@ export function DateInput({ label, values, onChange, error }: DateInputProps) {
           placeholder="YYYY"
           value={values.year}
           onChange={(e) => handleInputChange('year', e.target.value)}
-          className="text-center text-xs h-8 bg-white/5 border-white/5 glass focus:neon-glow rounded-md px-0.5"
+          className="text-center text-xs h-8 bg-white/5 border-white/20 glass focus:neon-glow rounded-md px-0.5"
           maxLength={4}
         />
       </div>

@@ -42,7 +42,7 @@ export function DateInput({ label, values, onChange, error }: DateInputProps) {
           placeholder="DD"
           value={values.day}
           onChange={(e) => handleInputChange('day', e.target.value)}
-          className="text-center text-xs h-8 bg-white/5 border border-black dark:border-white focus:neon-glow rounded-md px-0.5 transition-colors"
+          className="text-center text-xs h-8 bg-white/5 border border-black dark:border-white rounded-md px-0.5 transition-colors focus:border-primary"
           maxLength={2}
         />
         <Input
@@ -50,7 +50,7 @@ export function DateInput({ label, values, onChange, error }: DateInputProps) {
           placeholder="MM"
           value={values.month}
           onChange={(e) => handleInputChange('month', e.target.value)}
-          className="text-center text-xs h-8 bg-white/5 border border-black dark:border-white focus:neon-glow rounded-md px-0.5 transition-colors"
+          className="text-center text-xs h-8 bg-white/5 border border-black dark:border-white rounded-md px-0.5 transition-colors focus:border-primary"
           maxLength={2}
         />
         <Input
@@ -58,7 +58,7 @@ export function DateInput({ label, values, onChange, error }: DateInputProps) {
           placeholder="YYYY"
           value={values.year}
           onChange={(e) => handleInputChange('year', e.target.value)}
-          className="text-center text-xs h-8 bg-white/5 border border-black dark:border-white focus:neon-glow rounded-md px-0.5 transition-colors"
+          className="text-center text-xs h-8 bg-white/5 border border-black dark:border-white rounded-md px-0.5 transition-colors focus:border-primary"
           maxLength={4}
         />
       </div>

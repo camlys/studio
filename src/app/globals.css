@@ -22,7 +22,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 195 10% 85%;
     --input: 195 10% 85%;
-    --ring: 195 100% 65%;
+    --ring: 195 100% 45%;
     --radius: 1rem;
   }
 
@@ -83,5 +83,5 @@
 }
 
 .date-input-field:focus {
-  @apply ring-2 ring-primary border-transparent outline-none transition-all duration-300;
+  @apply ring-0 border-primary outline-none transition-all duration-300;
 }

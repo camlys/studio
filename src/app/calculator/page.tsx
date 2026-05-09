@@ -358,52 +358,52 @@ export default function PrecisionCalculator() {
               <div className="p-0.5 grid grid-cols-5 gap-0.5 bg-muted/10">
                 {isScientific && (
                   <>
-                    <CalcButton onClick={() => handleScientific('sin')} className="text-primary/70 text-[10px]">sin</CalcButton>
-                    <CalcButton onClick={() => handleScientific('cos')} className="text-primary/70 text-[10px]">cos</CalcButton>
-                    <CalcButton onClick={() => handleScientific('tan')} className="text-primary/70 text-[10px]">tan</CalcButton>
-                    <CalcButton onClick={() => handleScientific('log')} className="text-primary/70 text-[10px]">log</CalcButton>
-                    <CalcButton onClick={() => handleScientific('ln')} className="text-primary/70 text-[10px]">ln</CalcButton>
+                    <CalcButton onClick={() => handleScientific('sin')} className="text-primary/70 text-sm">sin</CalcButton>
+                    <CalcButton onClick={() => handleScientific('cos')} className="text-primary/70 text-sm">cos</CalcButton>
+                    <CalcButton onClick={() => handleScientific('tan')} className="text-primary/70 text-sm">tan</CalcButton>
+                    <CalcButton onClick={() => handleScientific('log')} className="text-primary/70 text-sm">log</CalcButton>
+                    <CalcButton onClick={() => handleScientific('ln')} className="text-primary/70 text-sm">ln</CalcButton>
                     
-                    <CalcButton onClick={() => handleScientific('sinh')} className="text-accent/70 text-[9px]">sinh</CalcButton>
-                    <CalcButton onClick={() => handleScientific('cosh')} className="text-accent/70 text-[9px]">cosh</CalcButton>
-                    <CalcButton onClick={() => handleScientific('tanh')} className="text-accent/70 text-[9px]">tanh</CalcButton>
-                    <CalcButton onClick={() => handleScientific('log2')} className="text-accent/70 text-[9px]">log2</CalcButton>
-                    <CalcButton onClick={() => handleScientific('inv')} className="text-accent/70 text-[10px]">1/x</CalcButton>
+                    <CalcButton onClick={() => handleScientific('sinh')} className="text-accent/70 text-xs">sinh</CalcButton>
+                    <CalcButton onClick={() => handleScientific('cosh')} className="text-accent/70 text-xs">cosh</CalcButton>
+                    <CalcButton onClick={() => handleScientific('tanh')} className="text-accent/70 text-xs">tanh</CalcButton>
+                    <CalcButton onClick={() => handleScientific('log2')} className="text-accent/70 text-xs">log2</CalcButton>
+                    <CalcButton onClick={() => handleScientific('inv')} className="text-accent/70 text-xs">1/x</CalcButton>
 
-                    <CalcButton onClick={() => handleScientific('asin')} className="text-muted-foreground text-[8px]">asin</CalcButton>
-                    <CalcButton onClick={() => handleScientific('acos')} className="text-muted-foreground text-[8px]">acos</CalcButton>
-                    <CalcButton onClick={() => handleScientific('atan')} className="text-muted-foreground text-[8px]">atan</CalcButton>
-                    <CalcButton onClick={() => handleScientific('pi')} className="text-muted-foreground text-[10px]">π</CalcButton>
-                    <CalcButton onClick={() => handleScientific('e')} className="text-muted-foreground text-[10px]">e</CalcButton>
+                    <CalcButton onClick={() => handleScientific('asin')} className="text-muted-foreground text-[10px]">asin</CalcButton>
+                    <CalcButton onClick={() => handleScientific('acos')} className="text-muted-foreground text-[10px]">acos</CalcButton>
+                    <CalcButton onClick={() => handleScientific('atan')} className="text-muted-foreground text-[10px]">atan</CalcButton>
+                    <CalcButton onClick={() => handleScientific('pi')} className="text-muted-foreground text-sm">π</CalcButton>
+                    <CalcButton onClick={() => handleScientific('e')} className="text-muted-foreground text-sm">e</CalcButton>
 
-                    <CalcButton onClick={() => handleScientific('sqrt')} className="text-primary/70 text-[10px]">√</CalcButton>
-                    <CalcButton onClick={() => handleScientific('pow2')} className="text-primary/70 text-[10px]">x²</CalcButton>
-                    <CalcButton onClick={() => handleOperator('^')} className="text-primary/70 text-[10px]">xʸ</CalcButton>
-                    <CalcButton onClick={() => handleScientific('abs')} className="text-primary/70 text-[10px]">|x|</CalcButton>
-                    <CalcButton onClick={() => handleScientific('fact')} className="text-primary/70 text-[10px]">n!</CalcButton>
+                    <CalcButton onClick={() => handleScientific('sqrt')} className="text-primary/70 text-base">√</CalcButton>
+                    <CalcButton onClick={() => handleScientific('pow2')} className="text-primary/70 text-base">x²</CalcButton>
+                    <CalcButton onClick={() => handleOperator('^')} className="text-primary/70 text-base">xʸ</CalcButton>
+                    <CalcButton onClick={() => handleScientific('abs')} className="text-primary/70 text-base">|x|</CalcButton>
+                    <CalcButton onClick={() => handleScientific('fact')} className="text-primary/70 text-base">n!</CalcButton>
                   </>
                 )}
-                <CalcButton onClick={clear} className="bg-destructive/10 text-destructive font-black text-[10px]">AC</CalcButton>
-                <CalcButton onClick={() => setDisplay(prev => prev.length > 1 ? prev.slice(0, -1) : '0')} className="bg-muted/30 text-[10px]">C</CalcButton>
-                <CalcButton onClick={() => handleScientific('sign')} className="bg-muted/30 text-[10px]">+/-</CalcButton>
-                <CalcButton onClick={() => handleOperator('mod')} className="bg-accent/10 text-accent text-[10px]">mod</CalcButton>
-                <CalcButton onClick={() => handleOperator('/')} className="bg-accent/10 text-accent text-[10px]">÷</CalcButton>
+                <CalcButton onClick={clear} className="bg-destructive/10 text-destructive font-black text-sm">AC</CalcButton>
+                <CalcButton onClick={() => setDisplay(prev => prev.length > 1 ? prev.slice(0, -1) : '0')} className="bg-muted/30 text-base">C</CalcButton>
+                <CalcButton onClick={() => handleScientific('sign')} className="bg-muted/30 text-base">+/-</CalcButton>
+                <CalcButton onClick={() => handleOperator('mod')} className="bg-accent/10 text-accent text-sm">mod</CalcButton>
+                <CalcButton onClick={() => handleOperator('/')} className="bg-accent/10 text-accent text-lg">÷</CalcButton>
 
-                {[7,8,9].map(n => <CalcButton key={n} onClick={() => handleNumber(n.toString())}>{n}</CalcButton>)}
-                <CalcButton onClick={() => handleMemory('MC')} className="bg-muted/30 text-[9px]">MC</CalcButton>
-                <CalcButton onClick={() => handleOperator('*')} className="bg-accent/10 text-accent text-[10px]">×</CalcButton>
+                {[7,8,9].map(n => <CalcButton key={n} onClick={() => handleNumber(n.toString())} className="text-lg">{n}</CalcButton>)}
+                <CalcButton onClick={() => handleMemory('MC')} className="bg-muted/30 text-xs">MC</CalcButton>
+                <CalcButton onClick={() => handleOperator('*')} className="bg-accent/10 text-accent text-lg">×</CalcButton>
                 
-                {[4,5,6].map(n => <CalcButton key={n} onClick={() => handleNumber(n.toString())}>{n}</CalcButton>)}
-                <CalcButton onClick={() => handleMemory('MR')} className="bg-muted/30 text-[9px]">MR</CalcButton>
-                <CalcButton onClick={() => handleOperator('-')} className="bg-accent/10 text-accent text-[10px]">-</CalcButton>
+                {[4,5,6].map(n => <CalcButton key={n} onClick={() => handleNumber(n.toString())} className="text-lg">{n}</CalcButton>)}
+                <CalcButton onClick={() => handleMemory('MR')} className="bg-muted/30 text-xs">MR</CalcButton>
+                <CalcButton onClick={() => handleOperator('-')} className="bg-accent/10 text-accent text-lg">-</CalcButton>
                 
-                {[1,2,3].map(n => <CalcButton key={n} onClick={() => handleNumber(n.toString())}>{n}</CalcButton>)}
-                <CalcButton onClick={() => handleMemory('M+')} className="bg-muted/30 text-[9px]">M+</CalcButton>
-                <CalcButton onClick={() => handleOperator('+')} className="bg-accent/10 text-accent text-[10px]">+</CalcButton>
+                {[1,2,3].map(n => <CalcButton key={n} onClick={() => handleNumber(n.toString())} className="text-lg">{n}</CalcButton>)}
+                <CalcButton onClick={() => handleMemory('M+')} className="bg-muted/30 text-xs">M+</CalcButton>
+                <CalcButton onClick={() => handleOperator('+')} className="bg-accent/10 text-accent text-lg">+</CalcButton>
                 
-                <CalcButton onClick={() => handleNumber('0')} className="col-span-2">0</CalcButton>
-                <CalcButton onClick={() => handleNumber('.')}>.</CalcButton>
-                <CalcButton onClick={calculate} className="bg-primary text-primary-foreground font-black col-span-2 text-[10px]">=</CalcButton>
+                <CalcButton onClick={() => handleNumber('0')} className="col-span-2 text-lg">0</CalcButton>
+                <CalcButton onClick={() => handleNumber('.')} className="text-lg">.</CalcButton>
+                <CalcButton onClick={calculate} className="bg-primary text-primary-foreground font-black col-span-2 text-xl">=</CalcButton>
               </div>
             </div>
 
@@ -628,7 +628,7 @@ function CalcButton({ children, onClick, className }: { children: React.ReactNod
     <button 
       onClick={onClick}
       className={cn(
-        "h-12 flex items-center justify-center text-xs font-bold transition-all active:bg-white/10 active:scale-95 rounded-sm focus:outline-none focus:bg-transparent select-none",
+        "h-12 flex items-center justify-center font-black transition-all active:bg-white/10 active:scale-95 rounded-sm focus:outline-none focus:bg-transparent select-none",
         className
       )}
     >

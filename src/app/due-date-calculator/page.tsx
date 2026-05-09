@@ -18,7 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from '@/lib/utils';
-import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, nextDay, addBusinessDays } from 'date-fns';
+import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays } from 'date-fns';
 import { getZodiacSign } from '@/lib/date-utils';
 
 const dueDateSchema = {
@@ -128,21 +128,22 @@ export default function DueDateCalculator() {
       </nav>
 
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-8 md:py-16">
+        {/* Heading Section: Moved above the container for desktop hierarchy */}
+        <div className="mb-12 md:mb-16 space-y-4 text-center md:text-left">
+          <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-3 py-1 font-black">
+            Tactical Planning Layer
+          </Badge>
+          <h2 className="text-4xl md:text-7xl font-black tracking-tighter leading-[0.85]">
+            Milestone <span className="text-primary">Inference</span> Engine
+          </h2>
+          <p className="text-muted-foreground text-sm md:text-base leading-relaxed font-medium max-w-2xl mx-auto md:mx-0">
+            Advanced due date synchronization for project cycles, business workflows, and high-fidelity tactical planning.
+          </p>
+        </div>
+
         <div className="flex flex-col md:flex-row items-start justify-center gap-12 lg:gap-24">
           
-          <div className="flex-grow max-w-md space-y-8 pt-4">
-            <div className="space-y-4">
-              <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-3 py-1 font-black">
-                Tactical Planning Layer
-              </Badge>
-              <h2 className="text-4xl md:text-7xl font-black tracking-tighter leading-[0.85]">
-                Milestone <span className="text-primary">Inference</span> Engine
-              </h2>
-              <p className="text-muted-foreground text-sm md:text-base leading-relaxed font-medium">
-                Advanced due date synchronization for project cycles, business workflows, and high-fidelity tactical planning.
-              </p>
-            </div>
-
+          <div className="flex-grow w-full max-w-md space-y-8">
             <div className="glass-card !p-8 space-y-6 border-border/40 shadow-2xl">
               <div className="space-y-2">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Method of Sync</Label>
@@ -184,7 +185,7 @@ export default function DueDateCalculator() {
                   </div>
                   <div className="space-y-2">
                     <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Unit of Sync</Label>
-                    <Select value={unit} onValueChange={(v: any) => setUnit(v)}>
+                    <Select value={unit} onValueChange={(v) => setUnit(v as 'days' | 'weeks' | 'months')}>
                       <SelectTrigger className="bg-muted/50 border-border h-12 rounded-xl focus:ring-2 focus:ring-primary/20 font-bold">
                         <SelectValue />
                       </SelectTrigger>
@@ -400,4 +401,3 @@ export default function DueDateCalculator() {
     </div>
   );
 }
-

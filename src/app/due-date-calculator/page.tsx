@@ -364,6 +364,19 @@ export default function DueDateCalculator() {
                </Button>
              </DropdownMenuTrigger>
              <DropdownMenuContent align="end" className="w-56 glass border-border/40 backdrop-blur-xl">
+               <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/5 rounded-lg m-1 mb-0">
+                 <Link href="https://camly.org" target="_blank" className="flex items-center gap-3 w-full px-2 py-2">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Globe className="w-4 h-4 text-primary" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-primary">camly.org</span>
+                      <span className="text-[7px] font-bold text-muted-foreground uppercase">Global Infrastructure</span>
+                    </div>
+                    <ExternalLink className="w-2.5 h-2.5 ml-auto opacity-30" />
+                 </Link>
+               </DropdownMenuItem>
+               <DropdownMenuSeparator className="bg-border/10 mx-2" />
                <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-40 px-3 py-2">Mission Control</DropdownMenuLabel>
                <DropdownMenuSeparator className="bg-border/20" />
                <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 rounded-lg m-1">
@@ -760,7 +773,7 @@ export default function DueDateCalculator() {
           <div className="text-center space-y-4">
             <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[10px] px-6 py-1.5 font-black">Architecture Whitepaper</Badge>
             <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-none">The Science of <span className="text-primary">Chronology</span></h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-xl leading-relaxed font-medium">
+            <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-medium">
               We define the global standard for high-fidelity chronological milestones through military-grade synchronization and clinical protocols.
             </p>
           </div>

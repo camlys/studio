@@ -209,6 +209,19 @@ export default function PrecisionCalculator() {
                </Button>
              </DropdownMenuTrigger>
              <DropdownMenuContent align="end" className="w-56 glass border-border/40 backdrop-blur-xl">
+               <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/5 rounded-lg m-1 mb-0">
+                 <Link href="https://camly.org" target="_blank" className="flex items-center gap-3 w-full px-2 py-2">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Globe className="w-4 h-4 text-primary" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-primary">camly.org</span>
+                      <span className="text-[7px] font-bold text-muted-foreground uppercase">Global Infrastructure</span>
+                    </div>
+                    <ExternalLink className="w-2.5 h-2.5 ml-auto opacity-30" />
+                 </Link>
+               </DropdownMenuItem>
+               <DropdownMenuSeparator className="bg-border/10 mx-2" />
                <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-40 px-3 py-2">Mission Control</DropdownMenuLabel>
                <DropdownMenuSeparator className="bg-border/20" />
                <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 rounded-lg m-1">

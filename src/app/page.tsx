@@ -389,11 +389,6 @@ function ChronoFlowContent() {
 
                 <TabsContent value="age" className="space-y-4 mt-0">
                   <DateInput label="Date of Birth" values={fromDate} onChange={setFromDate} />
-                  <div className="flex justify-center -my-3">
-                    <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center border border-primary/10">
-                      <Workflow className="w-3.5 h-3.5 text-primary/40" />
-                    </div>
-                  </div>
                   <DateInput label="Target Timestamp" values={toDate} onChange={setToDate} error={activeTab === 'age' ? error || undefined : undefined} />
                   <Button 
                     className="w-full h-12 mt-6 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow border border-black dark:border-white"

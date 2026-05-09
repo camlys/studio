@@ -208,6 +208,17 @@ export default function PrecisionCalculator() {
                    </div>
                  </Link>
                </DropdownMenuItem>
+               <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 rounded-lg m-1">
+                 <Link href="/?tab=focus" className="flex items-center gap-3 w-full px-2 py-2">
+                   <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                     <Timer className="w-4 h-4 text-primary" />
+                   </div>
+                   <div className="flex flex-col">
+                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Focus Mode</span>
+                     <span className="text-[8px] font-bold text-muted-foreground uppercase">Pomodoro Engine</span>
+                   </div>
+                 </Link>
+               </DropdownMenuItem>
              </DropdownMenuContent>
            </DropdownMenu>
         </div>
@@ -485,7 +496,7 @@ export default function PrecisionCalculator() {
             </div>
             <div className="pt-4">
                <Link href="https://camly.org" target="_blank">
-                 <Button className="h-16 px-12 bg-primary text-primary-foreground font-black text-xs uppercase tracking-widest rounded-2xl shadow-2xl hover:scale-105 transition-all group">
+                 <Button className="h-16 px-12 bg-primary text-primary-foreground font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all group">
                    Explore Camly Ecosystem <ExternalLink className="ml-2 w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                  </Button>
                </Link>

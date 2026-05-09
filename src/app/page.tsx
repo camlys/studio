@@ -10,7 +10,8 @@ import {
   Star, ArrowRight, Scale, HeartPulse, 
   Coins, Milestone, LayoutGrid, Download,
   Calculator as CalcIcon, CalendarDays, Copy,
-  ArrowUpRight, Target, BarChart3, Settings
+  ArrowUpRight, Target, BarChart3, Settings,
+  FileType
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -316,18 +317,16 @@ function ChronoFlowContent() {
                <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/5 rounded-lg m-1 mb-0">
                  <Link href="https://camly.org" target="_blank" className="flex items-center gap-3 w-full px-2 py-2">
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Globe className="w-4 h-4 text-primary" />
+                      <FileType className="w-4 h-4 text-primary" />
                     </div>
                     <div className="flex flex-col">
                       <span className="text-[10px] font-black uppercase tracking-widest text-primary">camly.org</span>
-                      <span className="text-[7px] font-bold text-muted-foreground uppercase">Global Infrastructure</span>
+                      <span className="text-[7px] font-bold text-muted-foreground uppercase">Image & PDF Resizer</span>
                     </div>
                     <ExternalLink className="w-2.5 h-2.5 ml-auto opacity-30" />
                  </Link>
                </DropdownMenuItem>
                <DropdownMenuSeparator className="bg-border/10 mx-2" />
-               <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-40 px-3 py-2">Mission Control</DropdownMenuLabel>
-               <DropdownMenuSeparator className="bg-border/20" />
                <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 rounded-lg m-1">
                  <Link href="/calculator" className="flex items-center gap-3 w-full px-2 py-2">
                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -674,44 +673,32 @@ function ChronoFlowContent() {
         )}
       </main>
 
-      <footer className={cn(
-        "relative mt-auto pt-24 pb-12 px-6 transition-colors duration-700 border-t",
-        activeTab === 'focus' ? "bg-black/20 text-white border-white/10" : "glass border-border/40"
-      )}>
+      <footer className="relative mt-auto pt-24 pb-12 px-6 transition-colors duration-700 border-t glass border-border/40">
         <div className="container max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-20">
             <div className="col-span-2 lg:col-span-2 space-y-6">
               <div className="flex items-center gap-3">
-                <div className={cn(
-                  "w-14 h-14 rounded-xl flex items-center justify-center transition-all",
-                  activeTab === 'focus' ? "bg-white/20" : "bg-primary neon-glow"
-                )}>
-                  <Timer className={cn("w-8 h-8", activeTab === 'focus' ? "text-white" : "text-primary-foreground")} />
+                <div className="w-14 h-14 rounded-xl flex items-center justify-center transition-all bg-primary neon-glow">
+                  <Timer className="w-8 h-8 text-primary-foreground" />
                 </div>
-                <h2 className={cn(
-                  "text-xl font-black tracking-tighter",
-                  activeTab === 'focus' ? "text-white" : "bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent"
-                )}>
+                <h2 className="text-xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
                   CHRONOFLOW
                 </h2>
               </div>
-              <p className={cn(
-                "text-sm leading-relaxed max-w-xs font-medium",
-                activeTab === 'focus' ? "text-white/60" : "text-muted-foreground"
-              )}>
+              <p className="text-sm leading-relaxed max-w-xs font-medium text-muted-foreground">
                 Defining the standard for high-precision chronological computation. 
                 Camly Inc's flagship engine for professional and tactical time management.
               </p>
               <div className="flex gap-5">
-                <Button variant="ghost" size="icon" className={cn("w-9 h-9 rounded-xl", activeTab === 'focus' ? "hover:bg-white/10 text-white" : "hover:bg-accent/10 shadow-sm border border-border/50")}><Github className="w-4 h-4" /></Button>
-                <Button variant="ghost" size="icon" className={cn("w-9 h-9 rounded-xl", activeTab === 'focus' ? "hover:bg-white/10 text-white" : "hover:bg-accent/10 shadow-sm border border-border/50")}><Twitter className="w-4 h-4" /></Button>
-                <Button variant="ghost" size="icon" className={cn("w-9 h-9 rounded-xl", activeTab === 'focus' ? "hover:bg-white/10 text-white" : "hover:bg-accent/10 shadow-sm border border-border/50")}><Globe className="w-4 h-4" /></Button>
+                <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-accent/10 shadow-sm border border-border/50"><Github className="w-4 h-4" /></Button>
+                <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-accent/10 shadow-sm border border-border/50"><Twitter className="w-4 h-4" /></Button>
+                <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-accent/10 shadow-sm border border-border/50"><Globe className="w-4 h-4" /></Button>
               </div>
             </div>
 
             <div className="space-y-6">
-              <h3 className={cn("text-[11px] font-black uppercase tracking-[0.3em]", activeTab === 'focus' ? "text-white" : "text-primary")}>Operations</h3>
-              <ul className={cn("space-y-3 text-xs font-bold", activeTab === 'focus' ? "text-white/60" : "text-muted-foreground")}>
+              <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-primary">Operations</h3>
+              <ul className="space-y-3 text-xs font-bold text-muted-foreground">
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                   <ChevronRight className="w-3 h-3 opacity-30" />
                   <Link href="/due-date-calculator">Due Date Engine</Link>
@@ -728,8 +715,8 @@ function ChronoFlowContent() {
             </div>
 
             <div className="space-y-6">
-              <h3 className={cn("text-[11px] font-black uppercase tracking-[0.3em]", activeTab === 'focus' ? "text-white" : "text-primary")}>Intelligence</h3>
-              <ul className={cn("space-y-3 text-xs font-bold", activeTab === 'focus' ? "text-white/60" : "text-muted-foreground")}>
+              <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-primary">Intelligence</h3>
+              <ul className="space-y-3 text-xs font-bold text-muted-foreground">
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                   <ChevronRight className="w-3 h-3 opacity-30" />
                   <Link href="/blog">Knowledge Hub</Link>
@@ -741,25 +728,25 @@ function ChronoFlowContent() {
             </div>
 
             <div className="space-y-6">
-              <h3 className={cn("text-[11px] font-black uppercase tracking-[0.3em]", activeTab === 'focus' ? "text-white" : "text-primary")}>Architecture</h3>
+              <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-primary">Architecture</h3>
               <div className="space-y-4">
-                <div className={cn("flex items-center gap-2.5 text-[10px] font-black tracking-widest", activeTab === 'focus' ? "text-accent" : "text-accent")}>
-                  <div className={cn("w-2 h-2 rounded-full animate-pulse", activeTab === 'focus' ? "bg-accent" : "bg-accent")} />
+                <div className="flex items-center gap-2.5 text-[10px] font-black tracking-widest text-accent">
+                  <div className="w-2 h-2 rounded-full animate-pulse bg-accent" />
                   CAMLY-SYNC-01: ONLINE
                 </div>
               </div>
             </div>
           </div>
 
-          <Separator className={cn("mb-10", activeTab === 'focus' ? "bg-white/10" : "bg-border/60")} />
+          <Separator className="mb-10 bg-border/60" />
 
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className={cn("text-[10px] uppercase tracking-[0.5em] font-black", activeTab === 'focus' ? "text-white/30" : "text-muted-foreground/40")}>
+            <p className="text-[10px] uppercase tracking-[0.5em] font-black text-muted-foreground/40">
               © 2024 Camly Inc • Defining High-Precision Velocity
             </p>
             <div className="flex gap-8">
-              <Link href="/privacy-protocol" className={cn("text-[10px] uppercase tracking-[0.2em] transition-colors font-black", activeTab === 'focus' ? "text-white/40 hover:text-white" : "text-muted-foreground/40 hover:text-primary")}>Privacy Protocol</Link>
-              <Link href="/terms-of-sync" className={cn("text-[10px] uppercase tracking-[0.2em] transition-colors font-black", activeTab === 'focus' ? "text-white/40 hover:text-white" : "text-muted-foreground/40 hover:text-primary")}>Terms of Sync</Link>
+              <Link href="/privacy-protocol" className="text-[10px] uppercase tracking-[0.2em] transition-colors font-black text-muted-foreground/40 hover:text-primary">Privacy Protocol</Link>
+              <Link href="/terms-of-sync" className="text-[10px] uppercase tracking-[0.2em] transition-colors font-black text-muted-foreground/40 hover:text-primary">Terms of Sync</Link>
             </div>
           </div>
         </div>

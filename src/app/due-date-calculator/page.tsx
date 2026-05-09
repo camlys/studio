@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
-  ArrowLeft, Calendar, Clock, Timer, Zap, 
+  ArrowLeft, Calendar as CalendarIcon, Clock, Timer, Zap, 
   ShieldCheck, Cpu, Target, Milestone, 
   CalendarDays, Hourglass, ArrowRight,
   Settings, Database, Network, Globe,
@@ -16,8 +16,10 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import { cn } from '@/lib/utils';
-import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays, isValid } from 'date-fns';
+import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays, isValid, parseISO } from 'date-fns';
 import { getZodiacSign } from '@/lib/date-utils';
 
 const dueDateSchema = {
@@ -52,7 +54,7 @@ export default function DueDateCalculator() {
       return;
     }
 
-    const start = new Date(startDate);
+    const start = parseISO(startDate);
     if (!isValid(start)) {
       setResult(null);
       setSetstats(null);
@@ -94,7 +96,6 @@ export default function DueDateCalculator() {
     let curr = new Date(start);
     const target = new Date(end);
     
-    // Safety check for massive calculations
     if (totalCal < 10000) {
       if (curr < target) {
         while (curr < target) {
@@ -150,21 +151,21 @@ export default function DueDateCalculator() {
       </nav>
 
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-8 md:py-16">
-        <div className="mb-10 md:mb-12 space-y-3 text-center min-[480px]:text-left">
+        <div className="mb-10 md:mb-12 space-y-3 text-center md:text-left">
           <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-3 py-1 font-black">
             Tactical Planning Layer
           </Badge>
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.85]">
             Milestone <span className="text-primary">Inference</span> Engine
           </h2>
-          <p className="text-muted-foreground text-sm leading-relaxed font-medium max-w-xl mx-auto min-[480px]:mx-0">
+          <p className="text-muted-foreground text-sm leading-relaxed font-medium max-w-xl mx-auto md:mx-0">
             Advanced due date synchronization for Indian project cycles, regional business workflows, and high-fidelity tactical planning.
           </p>
         </div>
 
         <div className="flex flex-col min-[480px]:flex-row items-start justify-center gap-4 md:gap-8 lg:gap-16">
           
-          <div className="w-full min-[480px]:flex-1 space-y-6">
+          <div className="w-full min-[480px]:flex-1 max-w-sm space-y-6">
             <div className="glass-card !p-4 md:!p-6 space-y-5 border-border/40 shadow-2xl">
               <div className="space-y-1.5">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Method of Sync</Label>
@@ -173,7 +174,7 @@ export default function DueDateCalculator() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="standard" className="flex items-center gap-2 text-xs"><Calendar className="w-3 h-3 inline mr-2" /> Calendar Days</SelectItem>
+                    <SelectItem value="standard" className="flex items-center gap-2 text-xs"><CalendarIcon className="w-3 h-3 inline mr-2" /> Calendar Days</SelectItem>
                     <SelectItem value="business" className="flex items-center gap-2 text-xs"><Briefcase className="w-3 h-3 inline mr-2" /> Business Days</SelectItem>
                     <SelectItem value="medical" className="flex items-center gap-2 text-xs"><HeartPulse className="w-3 h-3 inline mr-2" /> Medical / LMP</SelectItem>
                     <SelectItem value="cycle" className="flex items-center gap-2 text-xs"><Repeat className="w-3 h-3 inline mr-2" /> Project Cycles</SelectItem>
@@ -185,12 +186,32 @@ export default function DueDateCalculator() {
                 <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">
                   {method === 'medical' ? 'Last Period (Origin)' : 'Execution Start (Origin)'}
                 </Label>
-                <Input 
-                  type="date" 
-                  value={startDate} 
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="bg-muted/50 border-border h-11 rounded-xl focus:ring-2 focus:ring-primary/20 font-bold text-sm"
-                />
+                <div className="flex gap-2">
+                  <Input 
+                    type="text"
+                    placeholder="YYYY-MM-DD"
+                    value={startDate} 
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="bg-muted/50 border-border h-11 rounded-xl focus:ring-2 focus:ring-primary/20 font-bold text-sm flex-grow"
+                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="h-11 w-11 rounded-xl p-0 shrink-0 border-border bg-muted/50 hover:bg-muted">
+                        <CalendarIcon className="w-4 h-4 text-primary" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="end">
+                      <Calendar
+                        mode="single"
+                        selected={isValid(parseISO(startDate)) ? parseISO(startDate) : undefined}
+                        onSelect={(date) => {
+                          if (date) setStartDate(format(date, 'yyyy-MM-dd'));
+                        }}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </div>
 
               {method !== 'medical' && (
@@ -241,7 +262,7 @@ export default function DueDateCalculator() {
             </div>
           </div>
 
-          <div className="w-full min-[480px]:flex-1 space-y-5">
+          <div className="w-full min-[480px]:flex-1 max-w-[380px] space-y-5">
             {result && isValid(result) ? (
               <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 space-y-4">
                 <div className="glass-card !p-5 md:!p-8 border-accent/20 bg-accent/5 text-center relative overflow-hidden group">

@@ -10,6 +10,15 @@ import { Separator } from "@/components/ui/separator";
 
 const BLOG_POSTS = [
   {
+    title: "The 9000-Word Masterclass on Pregnancy Due Date Calculation",
+    description: "The definitive clinical guide to high-precision maternity chronology, ultrasound dating, and IVF milestone synchronization.",
+    date: "August 15, 2024",
+    author: "Clinical Ops Team",
+    readTime: "180 min read",
+    slug: "/blog/ultimate-pregnancy-due-date-masterclass",
+    category: "Clinical Masterclass"
+  },
+  {
     title: "The 9000-Word Masterclass on Age Calculation",
     description: "The definitive enterprise-grade guide to high-precision chronology, algorithmic aging, and the future of temporal tracking.",
     date: "August 01, 2024",
@@ -53,15 +62,6 @@ const BLOG_POSTS = [
     readTime: "30 min read",
     slug: "/blog/ai-revolution-personal-utilities",
     category: "Technology"
-  },
-  {
-    title: "The Ultimate Guide to Chronological Computation",
-    description: "Explore the science behind high-precision time tracking and why every second counts in the modern era.",
-    date: "May 20, 2024",
-    author: "ChronoFlow Editorial",
-    readTime: "25 min read",
-    slug: "/blog/ultimate-guide-to-age-calculation",
-    category: "Technical Guide"
   }
 ];
 
@@ -164,25 +164,25 @@ export default function BlogHub() {
         </header>
 
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Featured Post - The 9000 Word Age Calculator Masterpiece */}
+          {/* Featured Post - The 9000 Word Pregnancy Masterpiece */}
           <div className="md:col-span-2 glass border border-border rounded-3xl overflow-hidden group hover:border-primary/30 transition-all">
             <div className="grid md:grid-cols-2">
-              <div className="bg-gradient-to-br from-primary/10 to-accent/10 h-64 md:h-full flex items-center justify-center relative">
+              <div className="bg-gradient-to-br from-accent/10 to-primary/10 h-64 md:h-full flex items-center justify-center relative">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_70%)] opacity-30" />
-                <BookOpen className="w-24 h-24 text-primary opacity-20 group-hover:scale-110 transition-transform duration-500" />
+                <BookOpen className="w-24 h-24 text-accent opacity-20 group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div className="p-8 space-y-4 flex flex-col justify-center">
-                <Badge className="w-fit bg-primary text-primary-foreground text-[10px]">9000-WORD CHRONOLOGY MASTERCLASS</Badge>
-                <h2 className="text-3xl font-black leading-tight tracking-tight">The Definitive Guide to Age Calculation & Temporal Logic</h2>
+                <Badge className="w-fit bg-accent text-accent-foreground text-[10px]">9000-WORD CLINICAL MASTERCLASS</Badge>
+                <h2 className="text-3xl font-black leading-tight tracking-tight">The Definitive Guide to Pregnancy Due Date & Biological Logic</h2>
                 <p className="text-muted-foreground text-sm line-clamp-3">
-                  An exhaustive technical and historical analysis of how we define and calculate age in the modern era. From leap year algorithms to atomic-sync protocols.
+                  An exhaustive technical analysis of maternity chronology. From Naegele’s Rule to ultrasound CRL precision and IVF embryo transfer dating.
                 </p>
                 <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2">
-                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> Chronos Engineering</span>
+                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> Clinical Ops Team</span>
                   <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> 180 min read</span>
                 </div>
-                <Link href="/blog/ultimate-age-calculator-masterclass">
-                  <Button className="w-full md:w-fit mt-4 bg-primary text-primary-foreground font-bold uppercase tracking-widest text-[10px] h-10 px-8">
+                <Link href="/blog/ultimate-pregnancy-due-date-masterclass">
+                  <Button className="w-full md:w-fit mt-4 bg-accent text-accent-foreground font-bold uppercase tracking-widest text-[10px] h-10 px-8">
                     Access Masterclass
                   </Button>
                 </Link>

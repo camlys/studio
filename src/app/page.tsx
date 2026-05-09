@@ -9,7 +9,8 @@ import {
   ExternalLink, Globe, BookOpen, Zap, Brain, Activity, 
   Lock, Star, ArrowRight, CheckCircle, Scale, HeartPulse, 
   Coins, Milestone, Server, Layers, BarChart3, Target, Settings, UserCircle,
-  Clock, ArrowUpRight, FileText, Workflow, Calculator as CalcIcon, CalendarDays
+  Clock, ArrowUpRight, FileText, Workflow, Calculator as CalcIcon, CalendarDays,
+  LayoutGrid
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -22,6 +23,14 @@ import { useToast } from '@/hooks/use-toast';
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { cn } from '@/lib/utils';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const homeSchema = {
   "@context": "https://schema.org",
@@ -261,18 +270,46 @@ function ChronoFlowContent() {
         </div>
 
         <div className="absolute left-1/2 -translate-x-1/2 flex items-center whitespace-nowrap">
-           <Link href="/calculator">
-             <Button 
-               variant="ghost" 
-               className={cn(
-                 "rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] gap-2.5 transition-all group",
-                 activeTab === 'focus' ? "text-white hover:bg-white/10" : "hover:bg-primary/5 text-primary/60 hover:text-primary"
-               )}
-             >
-               <Cpu className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
-               <span className="hidden min-[480px]:inline">Precision Calculator</span>
-             </Button>
-           </Link>
+           <DropdownMenu>
+             <DropdownMenuTrigger asChild>
+               <Button 
+                 variant="ghost" 
+                 className={cn(
+                   "rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] gap-2.5 transition-all group",
+                   activeTab === 'focus' ? "text-white hover:bg-white/10" : "hover:bg-primary/5 text-primary/60 hover:text-primary"
+                 )}
+               >
+                 <LayoutGrid className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
+                 <span className="hidden min-[480px]:inline">Operational Tools</span>
+               </Button>
+             </DropdownMenuTrigger>
+             <DropdownMenuContent align="center" className="w-56 glass border-border/40 backdrop-blur-xl">
+               <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-40 px-3 py-2">Mission Control</DropdownMenuLabel>
+               <DropdownMenuSeparator className="bg-border/20" />
+               <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 rounded-lg m-1">
+                 <Link href="/calculator" className="flex items-center gap-3 w-full px-2 py-2">
+                   <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                     <CalcIcon className="w-4 h-4 text-primary" />
+                   </div>
+                   <div className="flex flex-col">
+                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Calculator Engine</span>
+                     <span className="text-[8px] font-bold text-muted-foreground uppercase">Precision ALU</span>
+                   </div>
+                 </Link>
+               </DropdownMenuItem>
+               <DropdownMenuItem asChild className="cursor-pointer focus:bg-accent/10 rounded-lg m-1">
+                 <Link href="/due-date-calculator" className="flex items-center gap-3 w-full px-2 py-2">
+                   <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                     <CalendarDays className="w-4 h-4 text-accent" />
+                   </div>
+                   <div className="flex flex-col">
+                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Due Date Engine</span>
+                     <span className="text-[8px] font-bold text-muted-foreground uppercase">Tactical Planning</span>
+                   </div>
+                 </Link>
+               </DropdownMenuItem>
+             </DropdownMenuContent>
+           </DropdownMenu>
         </div>
 
         <div className="flex items-center gap-2">

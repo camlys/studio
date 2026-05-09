@@ -9,7 +9,8 @@ import {
   Settings, Database, Network, Globe,
   ExternalLink, BarChart3, Workflow, Info,
   Briefcase, HeartPulse, Repeat, Star, Baby, Microscope, Stethoscope,
-  TrendingUp, Flag, Layers, LayoutGrid, Download
+  TrendingUp, Flag, Layers, LayoutGrid, Download,
+  Calculator as CalcIcon
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,14 @@ import { cn } from '@/lib/utils';
 import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays, isValid, getQuarter, getDayOfYear, getISOWeek } from 'date-fns';
 import { getZodiacSign } from '@/lib/date-utils';
 import { toPng } from 'html-to-image';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const dueDateSchema = {
   "@context": "https://schema.org",
@@ -277,6 +286,46 @@ export default function DueDateCalculator() {
           </Link>
         </div>
 
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center whitespace-nowrap">
+           <DropdownMenu>
+             <DropdownMenuTrigger asChild>
+               <Button 
+                 variant="ghost" 
+                 className="rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] gap-2.5 transition-all group hover:bg-primary/5 text-primary/60 hover:text-primary"
+               >
+                 <LayoutGrid className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
+                 <span className="hidden min-[480px]:inline">Operational Tools</span>
+               </Button>
+             </DropdownMenuTrigger>
+             <DropdownMenuContent align="center" className="w-56 glass border-border/40 backdrop-blur-xl">
+               <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-40 px-3 py-2">Mission Control</DropdownMenuLabel>
+               <DropdownMenuSeparator className="bg-border/20" />
+               <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 rounded-lg m-1">
+                 <Link href="/calculator" className="flex items-center gap-3 w-full px-2 py-2">
+                   <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                     <CalcIcon className="w-4 h-4 text-primary" />
+                   </div>
+                   <div className="flex flex-col">
+                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Calculator Engine</span>
+                     <span className="text-[8px] font-bold text-muted-foreground uppercase">Precision ALU</span>
+                   </div>
+                 </Link>
+               </DropdownMenuItem>
+               <DropdownMenuItem asChild className="cursor-pointer focus:bg-accent/10 rounded-lg m-1">
+                 <Link href="/due-date-calculator" className="flex items-center gap-3 w-full px-2 py-2">
+                   <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                     <CalendarDays className="w-4 h-4 text-accent" />
+                   </div>
+                   <div className="flex flex-col">
+                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Due Date Engine</span>
+                     <span className="text-[8px] font-bold text-muted-foreground uppercase">Tactical Planning</span>
+                   </div>
+                 </Link>
+               </DropdownMenuItem>
+             </DropdownMenuContent>
+           </DropdownMenu>
+        </div>
+
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="hidden min-[480px]:flex border-accent/20 text-accent uppercase tracking-widest text-[8px] px-3 h-6 items-center gap-1.5 font-bold">
             <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" /> IST SYNCED
@@ -302,7 +351,7 @@ export default function DueDateCalculator() {
           </p>
         </div>
 
-        <div className="flex flex-col min-[480px]:flex-row items-start justify-center gap-4 md:gap-8 lg:gap-16">
+        <div className="flex flex-col min-[480px]:row items-start justify-center gap-4 md:gap-8 lg:gap-16">
           
           <div className="w-full min-[480px]:flex-1 max-w-sm space-y-6">
             <div className="glass-card !p-4 md:!p-6 space-y-5 border-border/40 shadow-2xl">

@@ -238,12 +238,12 @@ function ChronoFlowContent() {
         "sticky top-0 z-50 h-14 flex items-center px-4 md:px-6 justify-between transition-colors duration-700",
         activeTab === 'focus' ? "bg-black/5 border-b border-white/10" : "glass border-b border-border"
       )}>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <div className={cn(
-            "w-8 h-8 rounded-lg flex items-center justify-center transition-all",
+            "w-12 h-12 rounded-lg flex items-center justify-center transition-all",
             activeTab === 'focus' ? "bg-white/20" : "bg-primary neon-glow"
           )}>
-            <Timer className={cn("w-5 h-5", activeTab === 'focus' ? "text-white" : "text-primary-foreground")} />
+            <Timer className={cn("w-7 h-7", activeTab === 'focus' ? "text-white" : "text-primary-foreground")} />
           </div>
           <h1 className={cn(
             "text-lg font-black tracking-tighter",
@@ -543,12 +543,12 @@ function ChronoFlowContent() {
         <div className="container max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-20">
             <div className="col-span-2 lg:col-span-2 space-y-6">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <div className={cn(
-                  "w-9 h-9 rounded-xl flex items-center justify-center transition-all",
+                  "w-14 h-14 rounded-xl flex items-center justify-center transition-all",
                   activeTab === 'focus' ? "bg-white/20" : "bg-primary neon-glow"
                 )}>
-                  <Timer className={cn("w-5 h-5", activeTab === 'focus' ? "text-white" : "text-primary-foreground")} />
+                  <Timer className={cn("w-8 h-8", activeTab === 'focus' ? "text-white" : "text-primary-foreground")} />
                 </div>
                 <h2 className={cn(
                   "text-xl font-black tracking-tighter",

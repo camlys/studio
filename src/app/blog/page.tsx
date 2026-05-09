@@ -102,9 +102,9 @@ export default function BlogHub() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }}
       />
       <nav className="sticky top-0 z-50 glass border-b border-border h-12 flex items-center px-4 md:px-6 justify-between">
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center neon-glow group-hover:scale-110 transition-transform">
-            <Timer className="text-primary-foreground w-4 h-4" />
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center neon-glow group-hover:scale-110 transition-transform">
+            <Timer className="text-primary-foreground w-7 h-7" />
           </div>
           <h1 className="text-sm md:text-base font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
             CAMLY <span className="text-foreground/50 font-normal ml-2">INSIGHTS</span>

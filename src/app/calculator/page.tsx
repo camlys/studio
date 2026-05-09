@@ -150,10 +150,10 @@ export default function PrecisionCalculator() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(calculatorSchema) }}
       />
       <nav className="relative glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between">
-        <div className="flex items-center gap-2">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center neon-glow group-hover:scale-110 transition-transform">
-              <Timer className="text-primary-foreground w-5 h-5" />
+        <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center neon-glow group-hover:scale-110 transition-transform">
+              <Timer className="text-primary-foreground w-7 h-7" />
             </div>
             <h1 className="text-[10px] sm:text-lg font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
               CHRONOFLOW
@@ -443,9 +443,9 @@ export default function PrecisionCalculator() {
       <footer className="mt-auto py-12 glass border-t border-border/40">
         <div className="container max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
           <div className="space-y-4 text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start gap-2">
-              <div className="w-6 h-6 bg-primary rounded-md flex items-center justify-center">
-                <Timer className="text-primary-foreground w-3.5 h-3.5" />
+            <div className="flex items-center justify-center md:justify-start gap-3">
+              <div className="w-12 h-12 bg-primary rounded-md flex items-center justify-center">
+                <Timer className="text-primary-foreground w-7 h-7" />
               </div>
               <h2 className="text-sm font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
                 CHRONOFLOW

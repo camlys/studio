@@ -17,7 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from '@/lib/utils';
-import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays } from 'date-fns';
+import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays, isValid } from 'date-fns';
 import { getZodiacSign } from '@/lib/date-utils';
 
 const dueDateSchema = {
@@ -46,7 +46,19 @@ export default function DueDateCalculator() {
   const [stats, setSetstats] = useState<{ calDays: number; busDays: number } | null>(null);
 
   const calculateDueDate = () => {
+    if (!startDate) {
+      setResult(null);
+      setSetstats(null);
+      return;
+    }
+
     const start = new Date(startDate);
+    if (!isValid(start)) {
+      setResult(null);
+      setSetstats(null);
+      return;
+    }
+
     const num = parseInt(duration) || 0;
     const cycles = parseInt(cycleCount) || 1;
     let end: Date;
@@ -69,6 +81,12 @@ export default function DueDateCalculator() {
       else end = addDays(start, num);
     }
 
+    if (!isValid(end)) {
+      setResult(null);
+      setSetstats(null);
+      return;
+    }
+
     setResult(end);
 
     const totalCal = Math.abs(differenceInDays(end, start));
@@ -76,10 +94,18 @@ export default function DueDateCalculator() {
     let curr = new Date(start);
     const target = new Date(end);
     
-    if (totalCal < 5000) {
-      while (curr < target) {
-        if (!isWeekend(curr)) workDays++;
-        curr = addDays(curr, 1);
+    // Safety check for massive calculations
+    if (totalCal < 10000) {
+      if (curr < target) {
+        while (curr < target) {
+          if (!isWeekend(curr)) workDays++;
+          curr = addDays(curr, 1);
+        }
+      } else {
+        while (curr > target) {
+          if (!isWeekend(curr)) workDays++;
+          curr = addDays(curr, -1);
+        }
       }
     }
     
@@ -96,7 +122,7 @@ export default function DueDateCalculator() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(dueDateSchema) }}
       />
-      <nav className="relative z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between">
+      <nav className="relative z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between transition-colors">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center neon-glow group-hover:scale-110 transition-transform">
@@ -216,7 +242,7 @@ export default function DueDateCalculator() {
           </div>
 
           <div className="w-full min-[480px]:flex-1 space-y-5">
-            {result ? (
+            {result && isValid(result) ? (
               <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 space-y-4">
                 <div className="glass-card !p-5 md:!p-8 border-accent/20 bg-accent/5 text-center relative overflow-hidden group">
                   <div className="absolute top-0 right-0 p-4 opacity-10">

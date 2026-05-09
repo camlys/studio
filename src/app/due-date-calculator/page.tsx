@@ -10,7 +10,7 @@ import {
   ExternalLink, Workflow, 
   Briefcase, Baby, Microscope, Stethoscope,
   Flag, LayoutGrid, Download,
-  Calculator as CalcIcon
+  Calculator as CalcIcon, Timer
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

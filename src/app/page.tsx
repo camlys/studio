@@ -400,7 +400,7 @@ function ChronoFlowContent() {
           )}>
             <div className={cn(
               "glass-card !p-6 shadow-2xl transition-all duration-700",
-              activeTab === 'focus' ? "bg-transparent border-none shadow-none" : "border-border"
+              activeTab === 'focus' ? "bg-transparent border-none shadow-none" : "border-black dark:border-white border"
             )}>
               <Tabs 
                 value={activeTab}

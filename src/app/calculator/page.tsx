@@ -330,7 +330,7 @@ export default function PrecisionCalculator() {
           </div>
 
           <div className="w-full max-w-[420px] flex flex-col gap-4 order-1 md:order-2">
-            <div className="w-full glass-card !p-0 overflow-hidden shadow-2xl border-border/40">
+            <div className="w-full glass-card !p-0 overflow-hidden shadow-2xl border-black dark:border-white border">
               <div className="bg-black/5 dark:bg-black/20 p-4 text-right space-y-1 border-b border-border/40 min-h-[90px] flex flex-col justify-end">
                 <div className="flex justify-between items-center mb-1">
                   <div className="flex gap-1.5">

@@ -442,7 +442,7 @@ export default function DueDateCalculator() {
         <div className="flex flex-col min-[480px]:flex-row items-start justify-center gap-6 md:gap-8 lg:gap-16">
           
           <div className="w-full min-[480px]:flex-1 max-w-sm space-y-6">
-            <div className="glass-card !p-4 md:!p-6 space-y-5 border-border/40 shadow-2xl">
+            <div className="glass-card !p-4 md:!p-6 space-y-5 border-black dark:border-white border shadow-2xl">
               <div className="space-y-1.5">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Method of Sync</Label>
                 <Select value={method} onValueChange={(v: any) => setMethod(v)}>
@@ -762,7 +762,7 @@ export default function DueDateCalculator() {
                    </div>
                 </div>
                 <h3 className="text-xl font-black tracking-tight mb-3">Awaiting Temporal Coordinates</h3>
-                <p className="text-xs font-medium max-w-[240px] leading-relaxed">Input origin and protocol parameters to initiate high-precision milestone synchronization.</p>
+                <p className="text-xs font-medium max-w-[240px] font-medium leading-relaxed">Input origin and protocol parameters to initiate high-precision milestone synchronization.</p>
               </div>
             )}
           </div>

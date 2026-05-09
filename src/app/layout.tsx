@@ -1,5 +1,12 @@
-import type {Metadata} from 'next';
+import type {Metadata, Viewport} from 'next';
 import './globals.css';
+
+export const viewport: Viewport = {
+  themeColor: '#00b4d8',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://chronoflow.app'),
@@ -8,7 +15,7 @@ export const metadata: Metadata = {
     template: '%s | ChronoFlow'
   },
   description: 'A high-precision age and date difference calculator. Features real-time tracking, zodiac mapping, and AI-driven chronological insights.',
-  keywords: ['age calculator', 'date difference', 'birthday countdown', 'chronological engine', 'time tracker', 'precision calculator', 'zodiac sign calculator', 'due date engine'],
+  keywords: ['age calculator', 'date difference', 'birthday countdown', 'chronological engine', 'time tracker', 'precision calculator', 'zodiac sign calculator', 'due date engine', 'pregnancy calculator'],
   authors: [{ name: 'Camly Operations Team' }],
   creator: 'Camly Inc',
   publisher: 'Camly Inc',
@@ -19,7 +26,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'ChronoFlow | Premium Age Calculator',
-    description: 'High-precision chronological computation engine for professional and personal use.',
+    description: 'High-precision chronological computation engine for professional and tactical use.',
     url: 'https://chronoflow.app',
     siteName: 'ChronoFlow',
     locale: 'en_US',

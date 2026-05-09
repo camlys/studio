@@ -77,6 +77,17 @@ const faqSchema = {
   ]
 };
 
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+    "@type": "ListItem",
+    "position": 1,
+    "name": "Home",
+    "item": "https://chronoflow.app"
+  }]
+};
+
 function ChronoFlowContent() {
   const { toast } = useToast();
   const searchParams = useSearchParams();
@@ -241,6 +252,10 @@ function ChronoFlowContent() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <nav className={cn(
         "relative z-50 h-14 flex items-center px-4 md:px-6 justify-between transition-colors duration-700",

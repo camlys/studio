@@ -31,11 +31,32 @@ const calculatorSchema = {
   "applicationCategory": "Calculator",
   "operatingSystem": "All",
   "description": "Professional scientific calculator with hyperbolic functions, logs, and physics constants.",
+  "browserRequirements": "Requires JavaScript",
+  "softwareVersion": "2.4.1",
   "offers": {
     "@type": "Offer",
     "price": "0",
     "priceCurrency": "USD"
   }
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://chronoflow.app"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Scientific Calculator",
+      "item": "https://chronoflow.app/calculator"
+    }
+  ]
 };
 
 export default function PrecisionCalculator() {
@@ -156,6 +177,10 @@ export default function PrecisionCalculator() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(calculatorSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <nav className="relative glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between">
         <div className="flex items-center gap-3">

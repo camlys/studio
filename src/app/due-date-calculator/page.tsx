@@ -42,11 +42,32 @@ const dueDateSchema = {
   "applicationCategory": "Utility",
   "operatingSystem": "All",
   "description": "High-precision milestone and project due date calculator optimized for Indian Standard Time (IST) and biological/clinical protocols.",
+  "softwareVersion": "3.1.2",
+  "browserRequirements": "Requires JavaScript",
   "offers": {
     "@type": "Offer",
     "price": "0",
     "priceCurrency": "INR"
   }
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://chronoflow.app"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Due Date Engine",
+      "item": "https://chronoflow.app/due-date-calculator"
+    }
+  ]
 };
 
 type CalcMethod = 'standard' | 'business' | 'medical' | 'cycle' | 'ivf' | 'crl' | 'conception';
@@ -270,6 +291,10 @@ export default function DueDateCalculator() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(dueDateSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <nav className="relative z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between transition-colors">
         <div className="flex items-center gap-3">

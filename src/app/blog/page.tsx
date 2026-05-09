@@ -87,6 +87,25 @@ const blogSchema = {
   }))
 };
 
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://chronoflow.app"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Insights Hub",
+      "item": "https://chronoflow.app/blog"
+    }
+  ]
+};
+
 export default function BlogHub() {
   const [search, setSearch] = useState('');
 
@@ -100,6 +119,10 @@ export default function BlogHub() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <nav className="relative z-50 glass border-b border-border h-12 flex items-center px-4 md:px-6 justify-between">
         <Link href="/" className="flex items-center gap-3 group">

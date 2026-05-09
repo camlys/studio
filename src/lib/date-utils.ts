@@ -1,4 +1,4 @@
-import { intervalToDuration, differenceInDays, differenceInWeeks, differenceInHours, differenceInMinutes, differenceInSeconds, addYears, isLeapYear } from 'date-fns';
+import { intervalToDuration, differenceInDays, differenceInWeeks, differenceInHours, differenceInMinutes, differenceInSeconds, addYears, isLeapYear, format } from 'date-fns';
 
 export type DateInputValues = {
   day: string;
@@ -17,6 +17,9 @@ export type CalculationResults = {
   totalSeconds: number;
   zodiac: string;
   nextBirthday: number;
+  nextBirthdayDate: string;
+  previousBirthdayDate: string;
+  daysSincePrevious: number;
   isLeapYear: boolean;
 };
 
@@ -64,13 +67,19 @@ export function getZodiacSign(day: number, month: number): string {
 export function calculateAll(startDate: Date, endDate: Date = new Date()): CalculationResults {
   const duration = intervalToDuration({ start: startDate, end: endDate });
   
-  // Next Birthday Calculation
-  const today = new Date();
-  let nextBday = new Date(today.getFullYear(), startDate.getMonth(), startDate.getDate());
-  if (nextBday < today) {
+  // Next Birthday Calculation relative to endDate
+  let nextBday = new Date(endDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+  if (nextBday < endDate) {
     nextBday = addYears(nextBday, 1);
   }
-  const daysToNextBday = differenceInDays(nextBday, today);
+  const daysToNextBday = differenceInDays(nextBday, endDate);
+
+  // Previous Birthday Calculation relative to endDate
+  let prevBday = new Date(endDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+  if (prevBday > endDate) {
+    prevBday = addYears(prevBday, -1);
+  }
+  const daysSincePrevBday = differenceInDays(endDate, prevBday);
 
   return {
     years: duration.years || 0,
@@ -83,6 +92,9 @@ export function calculateAll(startDate: Date, endDate: Date = new Date()): Calcu
     totalSeconds: Math.abs(differenceInSeconds(endDate, startDate)),
     zodiac: getZodiacSign(startDate.getDate(), startDate.getMonth() + 1),
     nextBirthday: daysToNextBday,
+    nextBirthdayDate: format(nextBday, 'dd MMM, yyyy'),
+    previousBirthdayDate: format(prevBday, 'dd MMM, yyyy'),
+    daysSincePrevious: daysSincePrevBday,
     isLeapYear: isLeapYear(startDate),
   };
 }

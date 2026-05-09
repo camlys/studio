@@ -463,19 +463,24 @@ function ChronoFlowContent() {
                   <ResultCard label="Years" value={results.years} delay="0s" />
                   <ResultCard label="Months" value={results.months} delay="0.1s" />
                   <ResultCard label="Days" value={results.days} delay="0.2s" />
-                  <ResultCard label="Countdown" value={results.nextBirthday} subLabel="Days to Milestone" delay="0.3s" />
-                </div>
-
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  <ResultCard label="Total Days" value={results.totalDays} className="border-primary/10" delay="0.4s" />
-                  <ResultCard label="Total Hours" value={results.totalHours} className="border-primary/10" delay="0.5s" />
-                  <ResultCard label="Total Minutes" value={results.totalMinutes} className="border-primary/10" delay="0.6s" />
-                  <ResultCard label="Total Seconds" value={results.totalSeconds} className="border-primary/10" delay="0.7s" />
+                  <ResultCard label="Days To Birthday" value={results.nextBirthday} subLabel="Milestone Countdown" delay="0.3s" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <ResultCard label="Celestial Mapping" value={results.zodiac} subLabel="Zodiac Alignment" delay="0.8s" />
-                  <ResultCard label="Gregorian Check" value={results.isLeapYear ? "Leap Identified" : "Standard Cycle"} delay="0.9s" />
+                  <ResultCard label="Previous Birthday" value={results.previousBirthdayDate} subLabel={`${results.daysSincePrevious} Days Elapsed`} delay="0.4s" />
+                  <ResultCard label="Next Birthday" value={results.nextBirthdayDate} subLabel={`${results.nextBirthday} Days Target`} delay="0.5s" />
+                </div>
+
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  <ResultCard label="Total Days" value={results.totalDays} className="border-primary/10" delay="0.6s" />
+                  <ResultCard label="Total Hours" value={results.totalHours} className="border-primary/10" delay="0.7s" />
+                  <ResultCard label="Total Minutes" value={results.totalMinutes} className="border-primary/10" delay="0.8s" />
+                  <ResultCard label="Total Seconds" value={results.totalSeconds} className="border-primary/10" delay="0.9s" />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <ResultCard label="Celestial Mapping" value={results.zodiac} subLabel="Zodiac Alignment" delay="1.0s" />
+                  <ResultCard label="Gregorian Check" value={results.isLeapYear ? "Leap Identified" : "Standard Cycle"} delay="1.1s" />
                 </div>
 
                 <FunFact years={results.years} months={results.months} days={results.days} />

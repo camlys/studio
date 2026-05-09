@@ -6,6 +6,7 @@ import { Timer, ArrowLeft, Calendar, User, Clock, ChevronRight, Search, BookOpen
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 const BLOG_POSTS = [
   {
@@ -188,10 +189,62 @@ export default function BlogHub() {
         </section>
       </main>
 
-      <footer className="py-12 glass border-t border-border text-center">
-        <p className="text-[10px] uppercase font-black tracking-[0.4em] text-muted-foreground/60">
-          Camly Insights Hub • Precision in Every Pixel • © 2024 Camly Inc
-        </p>
+      <footer className="mt-auto py-16 glass border-t border-border/40">
+        <div className="container max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-primary rounded flex items-center justify-center">
+                  <Timer className="text-primary-foreground w-6 h-6" />
+                </div>
+                <h2 className="text-xs font-black tracking-widest uppercase">ChronoFlow Hub</h2>
+              </div>
+              <p className="text-[10px] text-muted-foreground leading-relaxed uppercase tracking-wider max-w-[200px]">
+                Expert insights on file optimization, chronological precision, and the evolution of digital tools.
+              </p>
+            </div>
+            
+            <div className="space-y-4">
+              <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-primary">Operations</h4>
+              <ul className="text-[10px] space-y-3 font-bold text-muted-foreground/60">
+                <li className="hover:text-primary transition-colors">
+                  <Link href="/due-date-calculator">Due Date Engine</Link>
+                </li>
+                <li className="hover:text-primary transition-colors">
+                  <Link href="/calculator">Scientific ALU</Link>
+                </li>
+                <li className="hover:text-primary transition-colors">
+                  <Link href="/?tab=focus">Focus Mode</Link>
+                </li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-primary">Intelligence</h4>
+              <ul className="text-[10px] space-y-3 font-bold text-muted-foreground/60">
+                <li className="hover:text-primary transition-colors">
+                  <Link href="/blog">Knowledge Center</Link>
+                </li>
+                <li className="hover:text-primary transition-colors">
+                  <Link href="/privacy-protocol">Privacy Layer</Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <Separator className="mb-8 opacity-20" />
+
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-[10px] uppercase font-black tracking-[0.5em] text-muted-foreground/40 text-center md:text-left">
+              © 2024 Camly Inc • Precision in Every Pixel
+            </p>
+            <div className="flex gap-6">
+               <Link href="https://camly.org" target="_blank" className="text-[10px] font-black text-primary/40 hover:text-primary flex items-center gap-1.5 uppercase tracking-widest transition-colors">
+                 camly.org <ExternalLink className="w-3 h-3" />
+               </Link>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -470,19 +469,22 @@ export default function PrecisionCalculator() {
           
           <div className="flex justify-center gap-12">
             <div className="space-y-4 text-center">
-              <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">Operations</h4>
-              <ul className="text-[10px] space-y-2 font-bold text-muted-foreground/60">
-                <li className="hover:text-primary transition-colors">
-                  <Link href="/calculator">ALU Engine</Link>
+              <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-primary">Operations</h4>
+              <ul className="text-[10px] space-y-3 font-bold text-muted-foreground/60">
+                <li className="hover:text-primary transition-colors flex items-center justify-center gap-2">
+                  <Link href="/due-date-calculator">Due Date Engine</Link>
                 </li>
-                <li className="hover:text-primary transition-colors">
+                <li className="hover:text-primary transition-colors flex items-center justify-center gap-2">
+                  <Link href="/calculator">Scientific ALU</Link>
+                </li>
+                <li className="hover:text-primary transition-colors flex items-center justify-center gap-2">
                   <Link href="/?tab=focus">Pomodoro Focus</Link>
                 </li>
               </ul>
             </div>
             <div className="space-y-4 text-center">
-              <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">Security</h4>
-              <ul className="text-[10px] space-y-2 font-bold text-muted-foreground/60">
+              <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-primary">Security</h4>
+              <ul className="text-[10px] space-y-3 font-bold text-muted-foreground/60">
                 <li className="hover:text-primary cursor-pointer transition-colors">Sovereignty</li>
                 <li className="hover:text-primary cursor-pointer transition-colors">Audits</li>
               </ul>

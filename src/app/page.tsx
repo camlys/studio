@@ -92,13 +92,12 @@ function ChronoFlowContent() {
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [activeTab, setActiveTab] = useState<'diff' | 'age' | 'focus'>('diff');
+  const [activeTab, setActiveTab] = useState<'age' | 'focus'>('age');
   const [pomodoroMode, setPomodoroMode] = useState<TimerMode>('work');
   const [pomodoroSettings, setPomodoroSettings] = useState<PomodoroSettings | null>(null);
   const [isPomodoroSettingsOpen, setIsPomodoroSettingsOpen] = useState(false);
   const [isTimerActive, setIsTimerActive] = useState(false);
   
-  const [dob, setDob] = useState<DateInputValues>({ day: '', month: '', year: '' });
   const [fromDate, setFromDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
   const [toDate, setToDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
   
@@ -109,14 +108,10 @@ function ChronoFlowContent() {
   useEffect(() => {
     const tab = searchParams.get('tab');
     if (tab === 'focus') setActiveTab('focus');
-    else if (tab === 'age') setActiveTab('age');
-    else if (tab === 'diff') setActiveTab('diff');
+    else setActiveTab('age');
   }, [searchParams]);
 
   useEffect(() => {
-    const savedDob = localStorage.getItem('chrono_dob');
-    if (savedDob) setDob(JSON.parse(savedDob));
-    
     const savedFrom = localStorage.getItem('chrono_from');
     if (savedFrom) setFromDate(JSON.parse(savedFrom));
     
@@ -141,10 +136,9 @@ function ChronoFlowContent() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('chrono_dob', JSON.stringify(dob));
     localStorage.setItem('chrono_from', JSON.stringify(fromDate));
     localStorage.setItem('chrono_to', JSON.stringify(toDate));
-  }, [dob, fromDate, toDate]);
+  }, [fromDate, toDate]);
 
   useEffect(() => {
     const isOverriddenDark = isTimerActive && pomodoroSettings?.darkModeWhenRunning;
@@ -181,17 +175,6 @@ function ChronoFlowContent() {
     if (tickerRef.current) clearInterval(tickerRef.current);
 
     if (activeTab === 'age') {
-      if (!isValidDate(dob.day, dob.month, dob.year)) {
-        setError("Invalid date.");
-        return;
-      }
-      const birth = new Date(parseInt(dob.year), parseInt(dob.month) - 1, parseInt(dob.day));
-      if (birth > new Date()) {
-        setError("Future date.");
-        return;
-      }
-      setResults(calculateAll(birth));
-    } else if (activeTab === 'diff') {
       if (!isValidDate(fromDate.day, fromDate.month, fromDate.year) || 
           !isValidDate(toDate.day, toDate.month, toDate.year)) {
         setError("Invalid dates.");
@@ -201,10 +184,9 @@ function ChronoFlowContent() {
       const end = new Date(parseInt(toDate.year), parseInt(toDate.month) - 1, parseInt(toDate.day));
       setResults(calculateAll(start, end));
     }
-  }, [activeTab, dob, fromDate, toDate]);
+  }, [activeTab, fromDate, toDate]);
 
   const handleReset = () => {
-    setDob({ day: '', month: '', year: '' });
     setFromDate({ day: '', month: '', year: '' });
     const now = new Date();
     setToDate({
@@ -218,9 +200,7 @@ function ChronoFlowContent() {
 
   const handleShare = () => {
     if (!results) return;
-    const text = activeTab === 'age' 
-      ? `I am ${results.years}y, ${results.months}m, ${results.days}d old!`
-      : `Difference: ${results.years}y, ${results.months}m, ${results.days}d.`;
+    const text = `Age Metrics: ${results.years}y, ${results.months}m, ${results.days}d. Calculated via ChronoFlow.`;
     navigator.clipboard.writeText(text);
     toast({
       title: "Copied!",
@@ -381,48 +361,32 @@ function ChronoFlowContent() {
                 value={activeTab}
                 className="w-full" 
                 onValueChange={(v) => {
-                  setActiveTab(v as 'age' | 'diff' | 'focus');
+                  setActiveTab(v as 'age' | 'focus');
                   setError(null);
                   if (v === 'focus') setResults(null);
                 }}
               >
                 <TabsList className={cn(
-                  "grid w-full grid-cols-3 mb-6 rounded-xl h-10",
+                  "grid w-full grid-cols-2 mb-6 rounded-xl h-10",
                   activeTab === 'focus' ? "bg-white/10" : "bg-muted/50"
                 )}>
-                  <TabsTrigger value="diff" className="text-[10px] md:text-xs font-black uppercase tracking-widest">Diff</TabsTrigger>
                   <TabsTrigger value="age" className="text-[10px] md:text-xs font-black uppercase tracking-widest">Age</TabsTrigger>
                   <TabsTrigger value="focus" className="text-[10px] md:text-xs font-black uppercase tracking-widest">Focus</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="diff" className="space-y-4 mt-0">
+                <TabsContent value="age" className="space-y-4 mt-0">
                   <DateInput label="Date of Birth" values={fromDate} onChange={setFromDate} />
                   <div className="flex justify-center -my-3">
                     <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center border border-primary/10">
                       <Workflow className="w-3.5 h-3.5 text-primary/40" />
                     </div>
                   </div>
-                  <DateInput label="Target Timestamp" values={toDate} onChange={setToDate} error={activeTab === 'diff' ? error || undefined : undefined} />
+                  <DateInput label="Target Timestamp" values={toDate} onChange={setToDate} error={activeTab === 'age' ? error || undefined : undefined} />
                   <Button 
                     className="w-full h-12 mt-6 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow border border-border"
                     onClick={handleCalculate}
                   >
-                    Execute Differential Sync
-                  </Button>
-                </TabsContent>
-
-                <TabsContent value="age" className="space-y-4 mt-0">
-                  <DateInput 
-                    label="Origin Point (DOB)" 
-                    values={dob} 
-                    onChange={setDob} 
-                    error={activeTab === 'age' ? error || undefined : undefined} 
-                  />
-                  <Button 
-                    className="w-full h-12 mt-6 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow border border-border"
-                    onClick={handleCalculate}
-                  >
-                    Compute Life Duration
+                    Compute Age Results
                   </Button>
                 </TabsContent>
 

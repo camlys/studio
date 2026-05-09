@@ -10,7 +10,7 @@ import {
   ExternalLink, Globe, BookOpen, Zap, Brain, Activity, 
   Lock, Star, ArrowRight, CheckCircle, Scale, HeartPulse, 
   Coins, Milestone, Server, Layers, BarChart3, Target, Settings, UserCircle,
-  Clock, ArrowUpRight, FileText, Workflow, Calculator as CalcIcon
+  Clock, ArrowUpRight, FileText, Workflow, Calculator as CalcIcon, CalendarDays
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -395,7 +395,7 @@ function ChronoFlowContent() {
             )}
           </aside>
 
-          <div className="flex-grow w-full min-w-0">
+          <div className="flex-grow w-full min-0">
             {activeTab === 'focus' ? (
               <Pomodoro 
                 onModeChange={setPomodoroMode} 
@@ -468,22 +468,34 @@ function ChronoFlowContent() {
 
         {activeTab !== 'focus' && (
           <div className="mt-32 space-y-40">
-            {/* Brand Synchronization Section */}
-            <section className="container max-w-4xl mx-auto text-center space-y-12 py-12">
-              <div className="space-y-4">
-                <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-4 py-1.5 font-black">Global Infrastructure</Badge>
-                <h3 className="text-3xl md:text-5xl font-black tracking-tighter">Synchronize with <span className="text-primary">Camly.org</span></h3>
-                <p className="text-muted-foreground text-sm md:text-lg leading-relaxed max-w-2xl mx-auto font-medium">
-                  Access the complete suite of high-precision digital assets and enterprise utility protocols. Defining the next decade of computational velocity.
-                </p>
-              </div>
-              <div className="pt-4">
-                <Link href="https://camly.org" target="_blank">
-                  <Button className="h-16 px-12 bg-primary text-primary-foreground font-black text-xs uppercase tracking-widest rounded-2xl shadow-2xl hover:scale-105 transition-all group">
-                    Explore Camly Ecosystem <ExternalLink className="ml-2 w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                  </Button>
-                </Link>
-              </div>
+            <section className="container max-w-4xl mx-auto py-12">
+               <div className="flex flex-col md:flex-row items-center gap-8">
+                  <div className="flex-1 space-y-4">
+                     <Badge variant="outline" className="border-accent/30 text-accent uppercase tracking-[0.3em] text-[10px] px-4 py-1.5 font-black">Professional Utility</Badge>
+                     <h3 className="text-3xl font-black tracking-tight">Milestone Planning</h3>
+                     <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
+                        Access our specialized high-precision due date engine for tactical project management.
+                     </p>
+                     <Link href="/due-date-calculator">
+                        <Button variant="link" className="p-0 h-auto text-primary font-black uppercase tracking-widest text-[10px] gap-2">
+                           Open Due Date Engine <ArrowUpRight className="w-3 h-3" />
+                        </Button>
+                     </Link>
+                  </div>
+                  <div className="w-full md:w-px h-px md:h-32 bg-border/40" />
+                  <div className="flex-grow space-y-4 text-center md:text-left">
+                    <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-4 py-1.5 font-black">Global Infrastructure</Badge>
+                    <h3 className="text-3xl md:text-5xl font-black tracking-tighter">Synchronize with <span className="text-primary">Camly.org</span></h3>
+                    <p className="text-muted-foreground text-sm md:text-lg leading-relaxed max-w-2xl mx-auto md:mx-0 font-medium">
+                      Access the complete suite of high-precision digital assets and enterprise utility protocols.
+                    </p>
+                    <Link href="https://camly.org" target="_blank">
+                      <Button className="h-12 px-8 bg-primary text-primary-foreground font-black text-[10px] uppercase tracking-widest rounded-xl shadow-xl hover:scale-105 transition-all group">
+                        Explore Camly Ecosystem <ExternalLink className="ml-2 w-3.5 h-3.5" />
+                      </Button>
+                    </Link>
+                  </div>
+               </div>
             </section>
 
             <section className="space-y-20">
@@ -602,14 +614,15 @@ function ChronoFlowContent() {
               <ul className={cn("space-y-3 text-xs font-bold", activeTab === 'focus' ? "text-white/60" : "text-muted-foreground")}>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                   <ChevronRight className="w-3 h-3 opacity-30" />
+                  <Link href="/due-date-calculator">Due Date Engine</Link>
+                </li>
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                  <ChevronRight className="w-3 h-3 opacity-30" />
                   <Link href="/calculator">Precision Calculator</Link>
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />
                    <Link href="/?tab=focus">Pomodoro Focus</Link>
-                </li>
-                <li className="hover:text-primary cursor-pointer transition-colors flex items-center gap-2">
-                   <ChevronRight className="w-3 h-3 opacity-30" /> Celestial Mapping
                 </li>
               </ul>
             </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { 
   ArrowLeft, Calendar as CalendarIcon, Clock, Timer, Zap, 
@@ -51,6 +51,11 @@ export default function DueDateCalculator() {
   const [result, setResult] = useState<Date | null>(null);
   const [stats, setSetstats] = useState<{ calDays: number; busDays: number } | null>(null);
 
+  // Focus management refs
+  const dayInputRef = useRef<HTMLInputElement>(null);
+  const monthInputRef = useRef<HTMLInputElement>(null);
+  const yearInputRef = useRef<HTMLInputElement>(null);
+
   const handleInputChange = (field: 'day' | 'month' | 'year', value: string) => {
     const numericValue = value.replace(/\D/g, '');
     let finalValue = numericValue;
@@ -59,6 +64,13 @@ export default function DueDateCalculator() {
     if (field === 'year' && numericValue.length > 4) finalValue = numericValue.slice(0, 4);
     
     setStartValues(prev => ({ ...prev, [field]: finalValue }));
+
+    // Auto-tab logic: Move focus when digits are filled
+    if (field === 'day' && finalValue.length === 2) {
+      monthInputRef.current?.focus();
+    } else if (field === 'month' && finalValue.length === 2) {
+      yearInputRef.current?.focus();
+    }
   };
 
   const calculateDueDate = () => {
@@ -181,9 +193,9 @@ export default function DueDateCalculator() {
           </p>
         </div>
 
-        <div className="flex flex-col min-[480px]:row items-start justify-center gap-4 md:gap-8 lg:gap-16 sm:flex-row">
+        <div className="flex flex-col min-[480px]:flex-row items-start justify-center gap-4 md:gap-8 lg:gap-16">
           
-          <div className="w-full sm:flex-1 max-w-sm space-y-6">
+          <div className="w-full min-[480px]:flex-1 max-w-sm space-y-6">
             <div className="glass-card !p-4 md:!p-6 space-y-5 border-border/40 shadow-2xl">
               <div className="space-y-1.5">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Method of Sync</Label>
@@ -207,6 +219,7 @@ export default function DueDateCalculator() {
                 <div className="flex gap-2">
                   <div className="grid grid-cols-3 gap-1 flex-grow">
                     <Input 
+                      ref={dayInputRef}
                       placeholder="DD"
                       value={startValues.day} 
                       onChange={(e) => handleInputChange('day', e.target.value)}
@@ -214,6 +227,7 @@ export default function DueDateCalculator() {
                       maxLength={2}
                     />
                     <Input 
+                      ref={monthInputRef}
                       placeholder="MM"
                       value={startValues.month} 
                       onChange={(e) => handleInputChange('month', e.target.value)}
@@ -221,6 +235,7 @@ export default function DueDateCalculator() {
                       maxLength={2}
                     />
                     <Input 
+                      ref={yearInputRef}
                       placeholder="YYYY"
                       value={startValues.year} 
                       onChange={(e) => handleInputChange('year', e.target.value)}
@@ -302,7 +317,7 @@ export default function DueDateCalculator() {
             </div>
           </div>
 
-          <div className="w-full sm:flex-1 max-w-[380px] space-y-5">
+          <div className="w-full min-[480px]:flex-1 max-w-[380px] space-y-5">
             {result && isValid(result) ? (
               <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 space-y-4">
                 <div className="glass-card !p-5 md:!p-8 border-accent/20 bg-accent/5 text-center relative overflow-hidden group">

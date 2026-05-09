@@ -9,7 +9,8 @@ import {
   ExternalLink, Globe, Zap, Activity, 
   Star, ArrowRight, Scale, HeartPulse, 
   Coins, Milestone, LayoutGrid, Download,
-  Calculator as CalcIcon, CalendarDays, Copy
+  Calculator as CalcIcon, CalendarDays, Copy,
+  ArrowUpRight
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

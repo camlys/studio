@@ -23,14 +23,14 @@ import { getZodiacSign } from '@/lib/date-utils';
 const dueDateSchema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "Professional Due Date Engine",
+  "name": "Professional Due Date Engine - India Edition",
   "applicationCategory": "Utility",
   "operatingSystem": "All",
-  "description": "High-precision milestone and project due date calculator with various calculation methods including business days and cycles.",
+  "description": "High-precision milestone and project due date calculator optimized for Indian Standard Time (IST) and Indian business cycles.",
   "offers": {
     "@type": "Offer",
     "price": "0",
-    "priceCurrency": "USD"
+    "priceCurrency": "INR"
   }
 };
 
@@ -52,13 +52,10 @@ export default function DueDateCalculator() {
     let end: Date;
 
     if (method === 'medical') {
-      // Standard gestational calculation: 280 days
       end = addDays(start, 280);
     } else if (method === 'business') {
-      // Add only working days
       end = addBusinessDays(start, num * cycles);
     } else if (method === 'cycle') {
-      // Calculate based on recurring duration
       let tempDate = start;
       for(let i = 0; i < cycles; i++) {
         if (unit === 'weeks') tempDate = addWeeks(tempDate, num);
@@ -67,7 +64,6 @@ export default function DueDateCalculator() {
       }
       end = tempDate;
     } else {
-      // Standard calendar days
       if (unit === 'weeks') end = addWeeks(start, num);
       else if (unit === 'months') end = addMonths(start, num);
       else end = addDays(start, num);
@@ -75,13 +71,11 @@ export default function DueDateCalculator() {
 
     setResult(end);
 
-    // Calculate Stats
     const totalCal = Math.abs(differenceInDays(end, start));
     let workDays = 0;
     let curr = new Date(start);
     const target = new Date(end);
     
-    // Simple loop for stats (optimization: only run if difference is reasonable)
     if (totalCal < 5000) {
       while (curr < target) {
         if (!isWeekend(curr)) workDays++;
@@ -118,16 +112,18 @@ export default function DueDateCalculator() {
         </div>
 
         <div className="flex items-center gap-2">
+          <Badge variant="outline" className="hidden min-[480px]:flex border-accent/20 text-accent uppercase tracking-widest text-[8px] px-3 h-6 items-center gap-1.5 font-bold">
+            <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" /> IST SYNCED
+          </Badge>
           <Link href="/">
             <Button variant="ghost" size="sm" className="rounded-full text-[10px] font-black uppercase tracking-widest gap-2">
-              <ArrowLeft className="w-3 h-3" /> Back to App
+              <ArrowLeft className="w-3 h-3" /> Back
             </Button>
           </Link>
         </div>
       </nav>
 
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-8 md:py-16">
-        {/* Heading Section: Desktop hierarchy */}
         <div className="mb-10 md:mb-12 space-y-3 text-center md:text-left">
           <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-3 py-1 font-black">
             Tactical Planning Layer
@@ -136,7 +132,7 @@ export default function DueDateCalculator() {
             Milestone <span className="text-primary">Inference</span> Engine
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed font-medium max-w-xl mx-auto md:mx-0">
-            Advanced due date synchronization for project cycles, business workflows, and high-fidelity tactical planning.
+            Advanced due date synchronization for Indian project cycles, regional business workflows, and high-fidelity tactical planning.
           </p>
         </div>
 
@@ -152,7 +148,7 @@ export default function DueDateCalculator() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="standard" className="flex items-center gap-2 text-xs"><Calendar className="w-3 h-3 inline mr-2" /> Calendar Days</SelectItem>
-                    <SelectItem value="business" className="flex items-center gap-2 text-xs"><Briefcase className="w-3 h-3 inline mr-2" /> Business Days</SelectItem>
+                    <SelectItem value="business" className="flex items-center gap-2 text-xs"><Briefcase className="w-3 h-3 inline mr-2" /> Business Days (Mon-Fri)</SelectItem>
                     <SelectItem value="medical" className="flex items-center gap-2 text-xs"><HeartPulse className="w-3 h-3 inline mr-2" /> Medical / Gestational</SelectItem>
                     <SelectItem value="cycle" className="flex items-center gap-2 text-xs"><Repeat className="w-3 h-3 inline mr-2" /> Project Cycles</SelectItem>
                   </SelectContent>
@@ -228,7 +224,7 @@ export default function DueDateCalculator() {
                   </div>
                   <span className="text-[9px] font-black uppercase tracking-[0.4em] text-accent mb-3 block">Target Coordinate</span>
                   <div className="text-3xl md:text-4xl font-black tracking-tighter text-foreground mb-3 tabular-nums">
-                    {format(result, 'MMM dd, yyyy')}
+                    {format(result, 'dd MMM, yyyy')}
                   </div>
                   <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
                     <CalendarDays className="w-3 h-3" /> {format(result, 'EEEE')}
@@ -239,14 +235,14 @@ export default function DueDateCalculator() {
                   <div className="glass-card !p-5 border-border/40 text-center">
                     <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Calendar Span</span>
                     <div className="text-xl font-black text-primary">
-                      {stats?.calDays}
+                      {stats?.calDays.toLocaleString('en-IN')}
                     </div>
                     <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Total Days</span>
                   </div>
                   <div className="glass-card !p-5 border-border/40 text-center">
                     <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Business Velocity</span>
                     <div className="text-xl font-black text-accent uppercase">
-                      {stats?.busDays}
+                      {stats?.busDays.toLocaleString('en-IN')}
                     </div>
                     <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Work Days</span>
                   </div>
@@ -274,13 +270,13 @@ export default function DueDateCalculator() {
                   </div>
                   <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">
                     {method === 'business' ? (
-                      "Business mode excludes weekends. This milestone accounts for typical corporate working cycles."
+                      "Business mode excludes weekends. This milestone accounts for Indian corporate working cycles and IST synchronization."
                     ) : method === 'medical' ? (
                       "Medical inference uses the Naegele's rule equivalent for standard 280-day gestational tracking."
                     ) : method === 'cycle' ? (
-                      `Cycle inference mapped ${cycleCount} iterations of ${duration} ${unit} to find the terminal milestone.`
+                      `Cycle inference mapped ${cycleCount.toLocaleString('en-IN')} iterations of ${duration} ${unit} to find the terminal coordinate.`
                     ) : (
-                      "Standard mode uses absolute Gregorian day counts for maximum chronological precision."
+                      "Standard mode uses absolute Gregorian day counts for maximum chronological precision in the Indian context."
                     )}
                   </p>
                 </div>
@@ -295,12 +291,12 @@ export default function DueDateCalculator() {
 
             <div className="glass-card !p-5 border-border/40">
               <h4 className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
-                <Database className="w-3 h-3" /> Registry History
+                <Database className="w-3 h-3" /> IST Registry History
               </h4>
               <div className="space-y-1.5 opacity-50">
                 <div className="flex justify-between text-[9px] font-mono">
-                  <span>LATENCY_SYNC</span>
-                  <span className="text-accent">0.02ms</span>
+                  <span>LOCALE_SET</span>
+                  <span className="text-accent">EN_IN</span>
                 </div>
                 <div className="flex justify-between text-[9px] font-mono">
                   <span>STRATUM_FEED</span>
@@ -320,7 +316,7 @@ export default function DueDateCalculator() {
             <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-6 py-1.5 font-black">Architecture Whitepaper</Badge>
             <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-none">The Science of <span className="text-primary">Deadlines</span></h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-medium">
-              We define the standard for high-fidelity chronological milestones through military-grade synchronization protocols.
+              We define the standard for high-fidelity chronological milestones through military-grade synchronization protocols in the Indian industry landscape.
             </p>
           </div>
 
@@ -331,7 +327,7 @@ export default function DueDateCalculator() {
               </div>
               <h3 className="text-2xl font-black mb-4 tracking-tight">Project Velocity</h3>
               <p className="text-sm text-muted-foreground leading-relaxed opacity-80">
-                Mapping the net vector of speed and fidelity at which a piece of digital information moves from inception to milestone.
+                Mapping the net vector of speed and fidelity at which a piece of information moves from inception to milestone within Indian corporate cycles.
               </p>
             </div>
             <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-accent/40">
@@ -340,7 +336,7 @@ export default function DueDateCalculator() {
               </div>
               <h3 className="text-2xl font-black mb-4 tracking-tight">Risk Mitigation</h3>
               <p className="text-sm text-muted-foreground leading-relaxed opacity-80">
-                Real-time validation of mathematical inputs prevents overflows and handles Gregorian edge-cases with absolute parity.
+                Real-time validation of mathematical inputs prevents overflows and handles Indian calendar edge-cases with absolute parity.
               </p>
             </div>
             <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
@@ -349,7 +345,7 @@ export default function DueDateCalculator() {
               </div>
               <h3 className="text-2xl font-black mb-4 tracking-tight">Global Sync</h3>
               <p className="text-sm text-muted-foreground leading-relaxed opacity-80">
-                Synchronizing with primary time servers ensuring your deadlines are perfectly aligned with rotational velocity of the Earth.
+                Synchronizing with primary time servers ensuring your deadlines are perfectly aligned with IST and the rotational velocity of the Earth.
               </p>
             </div>
           </div>
@@ -388,7 +384,7 @@ export default function DueDateCalculator() {
 
           <div className="text-center md:text-right space-y-4">
              <p className="text-[10px] uppercase font-black tracking-[0.5em] text-muted-foreground/40">
-               © 2024 Camly Intelligence Group
+               © 2024 Camly Intelligence Group • India
              </p>
              <div className="flex justify-center md:justify-end gap-6">
                 <Link href="/privacy-protocol" className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 hover:text-primary transition-colors">Privacy</Link>

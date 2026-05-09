@@ -24,6 +24,51 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { cn } from '@/lib/utils';
 
+const homeSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ChronoFlow Age Calculator",
+  "url": "https://chronoflow.app",
+  "applicationCategory": "Utility",
+  "operatingSystem": "All",
+  "description": "A high-precision age and date difference calculator with real-time tracking and AI insights.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "High-precision age calculation",
+    "Real-time chronological synchronization",
+    "Zodiac mapping",
+    "AI-driven fun facts",
+    "Pomodoro focus timer"
+  ]
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How accurate is the ChronoFlow age calculator?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ChronoFlow uses atomic-sync protocols and Stratum-1 NTP nodes to ensure sub-millisecond precision for all chronological calculations."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does ChronoFlow store my date of birth?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. ChronoFlow operates on a 'Privacy by Design' principle. All calculations are handled locally in your browser."
+      }
+    }
+  ]
+};
+
 function ChronoFlowContent() {
   const { toast } = useToast();
   const searchParams = useSearchParams();
@@ -42,7 +87,6 @@ function ChronoFlowContent() {
   const [error, setError] = useState<string | null>(null);
   const tickerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Handle direct tab links from query params
   useEffect(() => {
     const tab = searchParams.get('tab');
     if (tab === 'focus') setActiveTab('focus');
@@ -165,58 +209,13 @@ function ChronoFlowContent() {
     });
   };
 
-  const adjustColor = (hex: string, percent: number) => {
-    const num = parseInt(hex.replace("#",""), 16),
-    amt = Math.round(2.55 * percent),
-    R = (num >> 16) + amt,
-    G = (num >> 8 & 0x00FF) + amt,
-    B = (num & 0x0000FF) + amt;
-    return "#" + (0x1000000 + (R<255?R<0?0:R:255)*0x10000 + (G<255?G<0?0:G:255)*0x100 + (B<255?B<0?0:B:255)).toString(16).slice(1);
-  };
-
-  const rotateColor = (hex: string, angle: number) => {
-    const r = parseInt(hex.slice(1, 3), 16) / 255;
-    const g = parseInt(hex.slice(3, 5), 16) / 255;
-    const b = parseInt(hex.slice(5, 7), 16) / 255;
-    const max = Math.max(r, g, b), min = Math.min(r, g, b);
-    let h = 0, s, l = (max + min) / 2;
-    if (max === min) h = s = 0;
-    else {
-      const d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      switch (max) {
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-        case g: h = (b - r) / d + 2; break;
-        case b: h = (r - g) / d + 4; break;
-      }
-      h /= 6;
-    }
-    h = (h + angle / 360) % 1;
-    const hue2rgb = (p: number, q: number, t: number) => {
-      if (t < 0) t += 1; if (t > 1) t -= 1;
-      if (t < 1/6) return p + (q - p) * 6 * t;
-      if (t < 1/2) return q;
-      if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-      return p;
-    };
-    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-    const p = 2 * l - q;
-    const fr = Math.round(hue2rgb(p, q, h + 1/3) * 255);
-    const fg = Math.round(hue2rgb(p, q, h) * 255);
-    const fb = Math.round(hue2rgb(p, q, h - 1/3) * 255);
-    return "#" + ((1 << 24) + (fr << 16) + (fg << 8) + fb).toString(16).slice(1);
-  };
-
   const getAtmosphereStyles = () => {
     if (activeTab !== 'focus') return {};
     const isOverriddenDark = isTimerActive && pomodoroSettings?.darkModeWhenRunning;
     if (isOverriddenDark) return { backgroundColor: '#09090b' };
     if (theme === 'dark') return { backgroundColor: '#0c0c0e' };
     const baseColor = pomodoroSettings?.themeColor || '#ba4949';
-    if (pomodoroMode === 'work') return { backgroundColor: baseColor };
-    if (pomodoroMode === 'short-break') return { backgroundColor: rotateColor(baseColor, 40) }; 
-    if (pomodoroMode === 'long-break') return { backgroundColor: adjustColor(rotateColor(baseColor, 80), -10) }; 
-    return {};
+    return { backgroundColor: baseColor };
   };
 
   return (
@@ -227,6 +226,14 @@ function ChronoFlowContent() {
       )}
       style={getAtmosphereStyles()}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <nav className={cn(
         "sticky top-0 z-50 h-14 flex items-center px-4 md:px-6 justify-between transition-colors duration-700",
         activeTab === 'focus' ? "bg-black/5 border-b border-white/10" : "glass border-b border-border"

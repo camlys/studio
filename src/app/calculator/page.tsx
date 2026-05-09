@@ -16,6 +16,20 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from '@/lib/utils';
 
+const calculatorSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Scientific Inference Engine",
+  "applicationCategory": "Calculator",
+  "operatingSystem": "All",
+  "description": "Professional scientific calculator with hyperbolic functions, logs, and physics constants.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+
 export default function PrecisionCalculator() {
   const [display, setDisplay] = useState('0');
   const [expression, setExpression] = useState('');
@@ -131,6 +145,10 @@ export default function PrecisionCalculator() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(calculatorSchema) }}
+      />
       <nav className="relative glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2 group">

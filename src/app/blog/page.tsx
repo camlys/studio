@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -64,6 +65,28 @@ const BLOG_POSTS = [
   }
 ];
 
+const blogSchema = {
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "ChronoFlow Insights Hub",
+  "description": "Expert insights on file optimization, chronological precision, and the evolution of digital utility tools.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Camly Inc"
+  },
+  "blogPost": BLOG_POSTS.map(post => ({
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "description": post.description,
+    "datePublished": post.date,
+    "author": {
+      "@type": "Person",
+      "name": post.author
+    },
+    "url": `https://chronoflow.app${post.slug}`
+  }))
+};
+
 export default function BlogHub() {
   const [search, setSearch] = useState('');
 
@@ -74,6 +97,10 @@ export default function BlogHub() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground selection:bg-primary/30">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }}
+      />
       <nav className="sticky top-0 z-50 glass border-b border-border h-12 flex items-center px-4 md:px-6 justify-between">
         <Link href="/" className="flex items-center gap-2 group">
           <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center neon-glow group-hover:scale-110 transition-transform">

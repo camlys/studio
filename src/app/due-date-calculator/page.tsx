@@ -12,7 +12,7 @@ import {
   Flag, LayoutGrid, Download,
   Calculator as CalcIcon, Timer,
   Clock, Dna, Activity, Scaling, HeartPulse, Sparkles,
-  FileType
+  FileType, Github, Twitter, ChevronRight
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
+import { InstallPWA } from '@/components/chrono/InstallPWA';
 import { cn } from '@/lib/utils';
 import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays, isValid, getQuarter, getDayOfYear, getISOWeek, differenceInHours, differenceInMinutes, differenceInSeconds } from 'date-fns';
 import { getZodiacSign } from '@/lib/date-utils';
@@ -809,47 +810,82 @@ export default function DueDateCalculator() {
         </section>
       </main>
 
-      <footer className="mt-auto py-16 glass border-t border-border/40">
-        <div className="container max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
-          <div className="space-y-4 text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start gap-3">
-              <div className="w-14 h-14 bg-primary rounded-xl flex items-center justify-center shadow-lg">
-                <Timer className="text-primary-foreground w-8 h-8" />
+      <footer className="relative mt-auto pt-24 pb-12 px-6 transition-colors duration-700 border-t glass border-border/40">
+        <div className="container max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-20">
+            <div className="col-span-2 lg:col-span-2 space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-14 h-14 rounded-xl flex items-center justify-center transition-all bg-primary neon-glow">
+                  <Timer className="w-8 h-8 text-primary-foreground" />
+                </div>
+                <h2 className="text-xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
+                  CHRONOFLOW
+                </h2>
               </div>
-              <h2 className="text-xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
-                CHRONOFLOW
-              </h2>
+              <p className="text-sm leading-relaxed max-w-xs font-medium text-muted-foreground">
+                Defining the standard for high-precision chronological computation. 
+                Camly Inc's flagship engine for professional and tactical time management.
+              </p>
+              <div className="flex gap-5">
+                <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-accent/10 shadow-sm border border-border/50"><Github className="w-4 h-4" /></Button>
+                <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-accent/10 shadow-sm border border-border/50"><Twitter className="w-4 h-4" /></Button>
+                <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-accent/10 shadow-sm border border-border/50"><Globe className="w-4 h-4" /></Button>
+              </div>
             </div>
-            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] leading-relaxed max-w-[240px]">
-              Defining high-precision velocity for professional and tactical computational systems.
-            </p>
-          </div>
-          
-          <div className="flex justify-center gap-12">
-            <div className="space-y-4 text-center">
-              <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-primary">Operations</h4>
-              <ul className="text-[10px] space-y-3 font-bold text-muted-foreground/60 uppercase tracking-widest">
-                <li className="hover:text-primary transition-colors cursor-pointer">
+
+            <div className="space-y-6">
+              <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-primary">Operations</h3>
+              <ul className="space-y-3 text-xs font-bold text-muted-foreground">
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                  <ChevronRight className="w-3 h-3 opacity-30" />
                   <Link href="/due-date-calculator">Due Date</Link>
                 </li>
-                <li className="hover:text-primary transition-colors cursor-pointer">
-                  <Link href="/calculator">Scientific ALU</Link>
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                  <ChevronRight className="w-3 h-3 opacity-30" />
+                  <Link href="/calculator">Precision Calculator</Link>
                 </li>
-                <li className="hover:text-primary transition-colors cursor-pointer">
-                  <Link href="/?tab=focus">Pomodoro Focus</Link>
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                   <ChevronRight className="w-3 h-3 opacity-30" />
+                   <Link href="/?tab=focus">Pomodoro Focus</Link>
                 </li>
               </ul>
             </div>
+
+            <div className="space-y-6">
+              <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-primary">Intelligence</h3>
+              <ul className="space-y-3 text-xs font-bold text-muted-foreground">
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                  <ChevronRight className="w-3 h-3 opacity-30" />
+                  <Link href="/blog">Knowledge Hub</Link>
+                </li>
+                <li className="hover:text-primary cursor-pointer transition-colors flex items-center gap-2">
+                   <ChevronRight className="w-3 h-3 opacity-30" /> Fun Facts API
+                </li>
+              </ul>
+            </div>
+
+            <div className="space-y-6">
+              <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-primary">Architecture</h3>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2.5 text-[10px] font-black tracking-widest text-accent">
+                  <div className="w-2 h-2 rounded-full animate-pulse bg-accent" />
+                  CAMLY-SYNC-01: ONLINE
+                </div>
+                <InstallPWA />
+              </div>
+            </div>
           </div>
 
-          <div className="text-center md:text-right space-y-4">
-             <p className="text-[10px] uppercase font-black tracking-[0.5em] text-muted-foreground/40">
-               © 2024 Camly Intelligence Group • India
-             </p>
-             <div className="flex justify-center md:justify-end gap-6">
-                <Link href="/privacy-protocol" className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 hover:text-primary transition-colors">Privacy</Link>
-                <Link href="/terms-of-sync" className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 hover:text-primary transition-colors">Terms</Link>
-             </div>
+          <Separator className="mb-10 bg-border/60" />
+
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <p className="text-[10px] uppercase tracking-[0.5em] font-black text-muted-foreground/40">
+              © 2024 Camly Inc • Defining High-Precision Velocity
+            </p>
+            <div className="flex gap-8">
+              <Link href="/privacy-protocol" className="text-[10px] uppercase tracking-[0.2em] transition-colors font-black text-muted-foreground/40 hover:text-primary">Privacy Protocol</Link>
+              <Link href="/terms-of-sync" className="text-[10px] uppercase tracking-[0.2em] transition-colors font-black text-muted-foreground/40 hover:text-primary">Terms of Sync</Link>
+            </div>
           </div>
         </div>
       </footer>

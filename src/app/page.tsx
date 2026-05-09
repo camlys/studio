@@ -19,6 +19,7 @@ import { DateInput } from '@/components/chrono/DateInput';
 import { ResultCard } from '@/components/chrono/ResultCard';
 import { FunFact } from '@/components/chrono/FunFact';
 import { Pomodoro, TimerMode, PomodoroSettings } from '@/components/chrono/Pomodoro';
+import { InstallPWA } from '@/components/chrono/InstallPWA';
 import { isValidDate, calculateAll, DateInputValues, CalculationResults } from '@/lib/date-utils';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from "@/components/ui/separator";
@@ -734,6 +735,7 @@ function ChronoFlowContent() {
                   <div className="w-2 h-2 rounded-full animate-pulse bg-accent" />
                   CAMLY-SYNC-01: ONLINE
                 </div>
+                <InstallPWA />
               </div>
             </div>
           </div>

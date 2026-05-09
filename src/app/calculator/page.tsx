@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -198,7 +197,7 @@ export default function PrecisionCalculator() {
           </Link>
         </div>
 
-        <div className="absolute left-1/2 -translate-x-1/2 flex items-center whitespace-nowrap z-10">
+        <div className="flex items-center gap-2">
            <DropdownMenu>
              <DropdownMenuTrigger asChild>
                <Button 
@@ -209,7 +208,7 @@ export default function PrecisionCalculator() {
                  <span className="hidden min-[480px]:inline">Operational Tools</span>
                </Button>
              </DropdownMenuTrigger>
-             <DropdownMenuContent align="center" className="w-56 glass border-border/40 backdrop-blur-xl">
+             <DropdownMenuContent align="end" className="w-56 glass border-border/40 backdrop-blur-xl">
                <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-40 px-3 py-2">Mission Control</DropdownMenuLabel>
                <DropdownMenuSeparator className="bg-border/20" />
                <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 rounded-lg m-1">
@@ -247,9 +246,7 @@ export default function PrecisionCalculator() {
                </DropdownMenuItem>
              </DropdownMenuContent>
            </DropdownMenu>
-        </div>
 
-        <div className="flex items-center gap-2">
           <Link href="https://camly.org" target="_blank">
             <Button variant="ghost" size="sm" className="hidden lg:flex rounded-full text-[10px] font-black uppercase tracking-widest gap-2 h-8 px-4 border border-transparent hover:border-primary/20 transition-all">
               camly.org <ExternalLink className="w-3 h-3" />

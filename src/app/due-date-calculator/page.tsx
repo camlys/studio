@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -312,7 +311,7 @@ export default function DueDateCalculator() {
           </Link>
         </div>
 
-        <div className="absolute left-1/2 -translate-x-1/2 flex items-center whitespace-nowrap z-10">
+        <div className="flex items-center gap-2">
            <DropdownMenu>
              <DropdownMenuTrigger asChild>
                <Button 
@@ -323,7 +322,7 @@ export default function DueDateCalculator() {
                  <span className="hidden min-[480px]:inline">Operational Tools</span>
                </Button>
              </DropdownMenuTrigger>
-             <DropdownMenuContent align="center" className="w-56 glass border-border/40 backdrop-blur-xl">
+             <DropdownMenuContent align="end" className="w-56 glass border-border/40 backdrop-blur-xl">
                <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-40 px-3 py-2">Mission Control</DropdownMenuLabel>
                <DropdownMenuSeparator className="bg-border/20" />
                <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 rounded-lg m-1">
@@ -361,9 +360,7 @@ export default function DueDateCalculator() {
                </DropdownMenuItem>
              </DropdownMenuContent>
            </DropdownMenu>
-        </div>
 
-        <div className="flex items-center gap-2">
           <Badge variant="outline" className="hidden min-[480px]:flex border-accent/20 text-accent uppercase tracking-widest text-[8px] px-3 h-6 items-center gap-1.5 font-bold">
             <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" /> IST SYNCED
           </Badge>

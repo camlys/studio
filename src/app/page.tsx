@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
@@ -299,7 +298,7 @@ function ChronoFlowContent() {
           </div>
         </div>
 
-        <div className="absolute left-1/2 -translate-x-1/2 flex items-center whitespace-nowrap z-10">
+        <div className="flex items-center gap-2">
            <DropdownMenu>
              <DropdownMenuTrigger asChild>
                <Button 
@@ -313,7 +312,7 @@ function ChronoFlowContent() {
                  <span className="hidden min-[480px]:inline">Operational Tools</span>
                </Button>
              </DropdownMenuTrigger>
-             <DropdownMenuContent align="center" className="w-56 glass border-border/40 backdrop-blur-xl">
+             <DropdownMenuContent align="end" className="w-56 glass border-border/40 backdrop-blur-xl">
                <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-40 px-3 py-2">Mission Control</DropdownMenuLabel>
                <DropdownMenuSeparator className="bg-border/20" />
                <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 rounded-lg m-1">
@@ -351,9 +350,7 @@ function ChronoFlowContent() {
                </DropdownMenuItem>
              </DropdownMenuContent>
            </DropdownMenu>
-        </div>
 
-        <div className="flex items-center gap-2">
           {activeTab === 'focus' ? (
             <div className="flex gap-2">
               <Button variant="ghost" size="sm" className="text-white hover:bg-white/10 text-[10px] font-black uppercase tracking-widest gap-2">

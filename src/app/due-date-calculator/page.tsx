@@ -61,7 +61,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "https://calculator.camly.org"
+      "item": "https://calculator.camly.org/"
     },
     {
       "@type": "ListItem",
@@ -384,7 +384,7 @@ export default function DueDateCalculator() {
                      <CalcIcon className="w-4 h-4 text-primary" />
                    </div>
                    <div className="flex flex-col">
-                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Calculator Engine</span>
+                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Calculator</span>
                      <span className="text-[8px] font-bold text-muted-foreground uppercase">Precision ALU</span>
                    </div>
                  </Link>
@@ -395,7 +395,7 @@ export default function DueDateCalculator() {
                      <CalendarDays className="w-4 h-4 text-accent" />
                    </div>
                    <div className="flex flex-col">
-                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Due Date Engine</span>
+                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Due Date</span>
                      <span className="text-[8px] font-bold text-muted-foreground uppercase">Tactical Planning</span>
                    </div>
                  </Link>
@@ -407,7 +407,7 @@ export default function DueDateCalculator() {
                    </div>
                    <div className="flex flex-col">
                      <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Focus Mode</span>
-                     <span className="text-[8px] font-bold text-muted-foreground uppercase">Pomodoro Engine</span>
+                     <span className="text-[8px] font-bold text-muted-foreground uppercase">Pomodoro</span>
                    </div>
                  </Link>
                </DropdownMenuItem>
@@ -830,7 +830,7 @@ export default function DueDateCalculator() {
               <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-primary">Operations</h4>
               <ul className="text-[10px] space-y-3 font-bold text-muted-foreground/60 uppercase tracking-widest">
                 <li className="hover:text-primary transition-colors cursor-pointer">
-                  <Link href="/due-date-calculator">Due Date Engine</Link>
+                  <Link href="/due-date-calculator">Due Date</Link>
                 </li>
                 <li className="hover:text-primary transition-colors cursor-pointer">
                   <Link href="/calculator">Scientific ALU</Link>

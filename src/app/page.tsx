@@ -39,7 +39,7 @@ const homeSchema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "ChronoFlow Age Calculator",
-  "url": "https://calculator.camly.org",
+  "url": "https://calculator.camly.org/",
   "applicationCategory": "Utility",
   "operatingSystem": "All",
   "description": "A high-precision age and date difference calculator with real-time tracking and AI insights.",
@@ -87,7 +87,7 @@ const breadcrumbSchema = {
     "@type": "ListItem",
     "position": 1,
     "name": "Home",
-    "item": "https://calculator.camly.org"
+    "item": "https://calculator.camly.org/"
   }]
 };
 
@@ -333,7 +333,7 @@ function ChronoFlowContent() {
                      <CalcIcon className="w-4 h-4 text-primary" />
                    </div>
                    <div className="flex flex-col">
-                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Calculator Engine</span>
+                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Calculator</span>
                      <span className="text-[8px] font-bold text-muted-foreground uppercase">Precision ALU</span>
                    </div>
                  </Link>
@@ -344,7 +344,7 @@ function ChronoFlowContent() {
                      <CalendarDays className="w-4 h-4 text-accent" />
                    </div>
                    <div className="flex flex-col">
-                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Due Date Engine</span>
+                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Due Date</span>
                      <span className="text-[8px] font-bold text-muted-foreground uppercase">Tactical Planning</span>
                    </div>
                  </Link>
@@ -356,7 +356,7 @@ function ChronoFlowContent() {
                    </div>
                    <div className="flex flex-col">
                      <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Focus Mode</span>
-                     <span className="text-[8px] font-bold text-muted-foreground uppercase">Pomodoro Engine</span>
+                     <span className="text-[8px] font-bold text-muted-foreground uppercase">Pomodoro</span>
                    </div>
                  </Link>
                </DropdownMenuItem>
@@ -443,14 +443,14 @@ function ChronoFlowContent() {
                 <TabsContent value="calculator" className="mt-0">
                    <Link href="/calculator" className="block p-4 border border-dashed border-border/40 rounded-xl text-center space-y-2 hover:bg-muted/50 transition-all">
                       <CalcIcon className="w-6 h-6 mx-auto text-muted-foreground/40" />
-                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Scientific ALU Engine</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Scientific ALU</p>
                       <p className="text-[9px] text-primary font-bold uppercase tracking-widest flex items-center justify-center gap-1">Open Engine <ArrowRight className="w-2.5 h-2.5" /></p>
                    </Link>
                 </TabsContent>
                 <TabsContent value="due-date" className="mt-0">
                    <Link href="/due-date-calculator" className="block p-4 border border-dashed border-border/40 rounded-xl text-center space-y-2 hover:bg-muted/50 transition-all">
                       <CalendarDays className="w-6 h-6 mx-auto text-muted-foreground/40" />
-                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Milestone Inference Engine</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Milestone Inference</p>
                       <p className="text-[9px] text-primary font-bold uppercase tracking-widest flex items-center justify-center gap-1">Open Engine <ArrowRight className="w-2.5 h-2.5" /></p>
                    </Link>
                 </TabsContent>
@@ -577,7 +577,7 @@ function ChronoFlowContent() {
                      </p>
                      <Link href="/due-date-calculator">
                         <Button variant="link" className="p-0 h-auto text-primary font-black uppercase tracking-widest text-[10px] gap-2">
-                           Open Due Date Engine <ArrowUpRight className="w-3 h-3" />
+                           Open Due Date <ArrowUpRight className="w-3 h-3" />
                         </Button>
                      </Link>
                   </div>
@@ -599,7 +599,7 @@ function ChronoFlowContent() {
 
             <section className="space-y-20">
               <div className="text-center space-y-4">
-                <Badge className="bg-primary/10 text-primary border-primary/20 uppercase tracking-[0.3em] text-[10px] px-6 py-1.5 font-black">Technical whitepaper</Badge>
+                <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-6 py-1.5 font-black">Technical whitepaper</Badge>
                 <h2 className="text-4xl md:text-7xl font-black tracking-tighter leading-none">The ChronoFlow <span className="text-primary">Methodology</span></h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-medium">We define the standard for high-definition chronological computation through atomic-sync protocols.</p>
               </div>
@@ -701,7 +701,7 @@ function ChronoFlowContent() {
               <ul className="space-y-3 text-xs font-bold text-muted-foreground">
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                   <ChevronRight className="w-3 h-3 opacity-30" />
-                  <Link href="/due-date-calculator">Due Date Engine</Link>
+                  <Link href="/due-date-calculator">Due Date</Link>
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                   <ChevronRight className="w-3 h-3 opacity-30" />

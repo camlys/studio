@@ -73,19 +73,20 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
   themeColor: '#ba4949', 
 };
 
+// High-reliability CDN URLs for audio assets
 const ALARM_SOUNDS: Record<string, string> = {
-  kitchen: 'https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav',
-  bell: 'https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/Bell-Tone.mp3',
-  digital: 'https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/Heather-Tone.mp3',
+  kitchen: 'https://cdn.pixabay.com/audio/2021/08/04/audio_06d670a6c4.mp3',
+  bell: 'https://cdn.pixabay.com/audio/2022/03/15/audio_98363765cc.mp3',
+  digital: 'https://cdn.pixabay.com/audio/2022/03/10/audio_5e2d67f561.mp3',
 };
 
 const FOCUS_SOUNDS: Record<string, string> = {
-  'white-noise': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-  rain: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-  waves: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+  'white-noise': 'https://cdn.pixabay.com/audio/2022/03/10/audio_c3527e7d9b.mp3',
+  rain: 'https://cdn.pixabay.com/audio/2021/09/06/audio_4040a453e9.mp3',
+  waves: 'https://cdn.pixabay.com/audio/2022/02/12/audio_f367e174b5.mp3',
 };
 
-const CLICK_SOUND_URL = 'https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/Door-Bell.mp3';
+const CLICK_SOUND_URL = 'https://cdn.pixabay.com/audio/2022/03/15/audio_770e0a5c5b.mp3';
 
 interface PomodoroProps {
   onModeChange?: (mode: TimerMode) => void;
@@ -111,6 +112,7 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
   const pomodoroCountRef = useRef(0);
   const alarmAudioRef = useRef<HTMLAudioElement | null>(null);
   const focusAudioRef = useRef<HTMLAudioElement | null>(null);
+  const clickAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const savedSettings = localStorage.getItem('chrono_pomodoro_settings');
@@ -138,6 +140,10 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
         console.error("Failed to parse tasks", e);
       }
     }
+
+    // Pre-load click sound
+    clickAudioRef.current = new Audio(CLICK_SOUND_URL);
+    clickAudioRef.current.load();
   }, []);
 
   useEffect(() => {
@@ -166,7 +172,7 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
     try {
       const audio = new Audio(soundUrl);
       audio.volume = settings.alarmVolume / 100;
-      audio.play().catch(() => {});
+      audio.play().catch((err) => console.warn("Alarm play blocked:", err));
       alarmAudioRef.current = audio;
 
       let repeats = 1;
@@ -182,11 +188,11 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
   }, [settings.alarmSound, settings.alarmVolume, settings.alarmRepeat]);
 
   const playClickSound = useCallback(() => {
-    if (!settings.clickSoundEnabled) return;
+    if (!settings.clickSoundEnabled || !clickAudioRef.current) return;
     try {
-      const audio = new Audio(CLICK_SOUND_URL);
-      audio.volume = settings.alarmVolume / 100;
-      audio.play().catch(() => {});
+      clickAudioRef.current.currentTime = 0;
+      clickAudioRef.current.volume = settings.alarmVolume / 100;
+      clickAudioRef.current.play().catch((err) => console.warn("Click play blocked:", err));
     } catch (e) {
       // Ignore click sound errors
     }
@@ -206,7 +212,7 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
             const audio = new Audio(soundUrl);
             audio.loop = true;
             audio.volume = settings.focusVolume / 100;
-            audio.play().catch(() => {});
+            audio.play().catch((err) => console.warn("Focus sound blocked:", err));
             focusAudioRef.current = audio;
           } else {
             focusAudioRef.current.volume = settings.focusVolume / 100;

@@ -542,6 +542,24 @@ function ChronoFlowContent() {
             </section>
           </div>
         )}
+
+        {/* Brand Synchronization Section */}
+        <section className="container max-w-4xl mx-auto text-center space-y-12 py-24">
+          <div className="space-y-4">
+            <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-4 py-1.5 font-black">Global Infrastructure</Badge>
+            <h3 className="text-3xl md:text-5xl font-black tracking-tighter">Synchronize with <span className="text-primary">Camly.org</span></h3>
+            <p className="text-muted-foreground text-sm md:text-lg leading-relaxed max-w-2xl mx-auto">
+              Access the complete suite of high-precision digital assets and enterprise utility protocols. Defining the next decade of computational velocity.
+            </p>
+          </div>
+          <div className="pt-4">
+            <Link href="https://camly.org" target="_blank">
+              <Button className="h-16 px-12 bg-primary text-primary-foreground font-black text-xs uppercase tracking-widest rounded-2xl shadow-2xl hover:scale-105 transition-all group">
+                Explore Camly Ecosystem <ExternalLink className="ml-2 w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              </Button>
+            </Link>
+          </div>
+        </section>
       </main>
 
       <footer className={cn(

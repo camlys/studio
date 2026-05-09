@@ -71,6 +71,18 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
   themeColor: '#ba4949', 
 };
 
+const ALARM_SOUNDS: Record<string, string> = {
+  kitchen: 'https://cdn.pixabay.com/audio/2022/03/10/audio_af2e1f4007.mp3',
+  bell: 'https://cdn.pixabay.com/audio/2022/03/15/audio_784d142646.mp3',
+  digital: 'https://cdn.pixabay.com/audio/2021/08/04/audio_0623259972.mp3',
+};
+
+const FOCUS_SOUNDS: Record<string, string> = {
+  'white-noise': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', // Placeholder, using recognizable MP3s for prototype
+  rain: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+  waves: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+};
+
 interface PomodoroProps {
   onModeChange?: (mode: TimerMode) => void;
   onSettingsChange?: (settings: PomodoroSettings) => void;
@@ -93,6 +105,8 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const pomodoroCountRef = useRef(0);
+  const alarmAudioRef = useRef<HTMLAudioElement | null>(null);
+  const focusAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Load settings and tasks on mount
   useEffect(() => {
@@ -137,6 +151,67 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
     }
   };
 
+  const playAlarm = useCallback(() => {
+    if (settings.alarmSound === 'none') return;
+    const soundUrl = ALARM_SOUNDS[settings.alarmSound];
+    if (!soundUrl) return;
+
+    if (alarmAudioRef.current) {
+      alarmAudioRef.current.pause();
+      alarmAudioRef.current = null;
+    }
+
+    const audio = new Audio(soundUrl);
+    audio.volume = settings.alarmVolume / 100;
+    audio.play().catch(e => console.error("Alarm playback failed", e));
+    alarmAudioRef.current = audio;
+
+    // Handle repeat
+    let repeats = 1;
+    audio.onended = () => {
+      if (repeats < settings.alarmRepeat) {
+        repeats++;
+        audio.play();
+      }
+    };
+  }, [settings.alarmSound, settings.alarmVolume, settings.alarmRepeat]);
+
+  // Focus sound handling
+  useEffect(() => {
+    if (isActive && mode === 'work' && settings.focusSound !== 'none') {
+      const soundUrl = FOCUS_SOUNDS[settings.focusSound];
+      if (soundUrl) {
+        if (focusAudioRef.current && focusAudioRef.current.src !== soundUrl) {
+          focusAudioRef.current.pause();
+          focusAudioRef.current = null;
+        }
+
+        if (!focusAudioRef.current) {
+          const audio = new Audio(soundUrl);
+          audio.loop = true;
+          audio.volume = settings.focusVolume / 100;
+          audio.play().catch(e => console.error("Focus sound playback failed", e));
+          focusAudioRef.current = audio;
+        } else {
+          focusAudioRef.current.volume = settings.focusVolume / 100;
+          if (focusAudioRef.current.paused) {
+            focusAudioRef.current.play().catch(e => console.error("Focus sound resume failed", e));
+          }
+        }
+      }
+    } else {
+      if (focusAudioRef.current) {
+        focusAudioRef.current.pause();
+      }
+    }
+
+    return () => {
+      if (focusAudioRef.current) {
+        focusAudioRef.current.pause();
+      }
+    };
+  }, [isActive, mode, settings.focusSound, settings.focusVolume]);
+
   const fetchMantra = useCallback(async (currentMode: TimerMode, currentTask?: string) => {
     setLoadingMantra(true);
     try {
@@ -152,6 +227,8 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
   const handleTimerComplete = useCallback(() => {
     setIsActive(false);
     if (timerRef.current) clearInterval(timerRef.current);
+    
+    playAlarm();
 
     if (mode === 'work') {
       pomodoroCountRef.current += 1;
@@ -169,7 +246,7 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
       setTimeLeft(settings.workDuration * 60);
       if (settings.autoStartPomodoros) setIsActive(true);
     }
-  }, [mode, settings]);
+  }, [mode, settings, playAlarm]);
 
   useEffect(() => {
     if (isActive && timeLeft > 0) {

@@ -250,7 +250,7 @@ export default function DueDateCalculator() {
                         <CalendarIcon className="w-4 h-4 text-primary" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-1 scale-90 origin-top-right" align="end">
+                    <PopoverContent className="w-auto p-1 origin-top-right" align="end">
                       <Calendar
                         mode="single"
                         selected={isValid(new Date(parseInt(startValues.year), parseInt(startValues.month)-1, parseInt(startValues.day))) ? new Date(parseInt(startValues.year), parseInt(startValues.month)-1, parseInt(startValues.day)) : undefined}

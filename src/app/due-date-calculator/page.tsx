@@ -124,22 +124,22 @@ export default function DueDateCalculator() {
       </nav>
 
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-8 md:py-16">
-        <div className="mb-10 md:mb-12 space-y-3 text-center md:text-left">
+        <div className="mb-10 md:mb-12 space-y-3 text-center min-[480px]:text-left">
           <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-3 py-1 font-black">
             Tactical Planning Layer
           </Badge>
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.85]">
             Milestone <span className="text-primary">Inference</span> Engine
           </h2>
-          <p className="text-muted-foreground text-sm leading-relaxed font-medium max-w-xl mx-auto md:mx-0">
+          <p className="text-muted-foreground text-sm leading-relaxed font-medium max-w-xl mx-auto min-[480px]:mx-0">
             Advanced due date synchronization for Indian project cycles, regional business workflows, and high-fidelity tactical planning.
           </p>
         </div>
 
-        <div className="flex flex-col md:flex-row items-start justify-center gap-8 lg:gap-16">
+        <div className="flex flex-col min-[480px]:flex-row items-start justify-center gap-4 md:gap-8 lg:gap-16">
           
-          <div className="flex-grow w-full max-w-sm space-y-6">
-            <div className="glass-card !p-6 space-y-5 border-border/40 shadow-2xl">
+          <div className="w-full min-[480px]:flex-1 space-y-6">
+            <div className="glass-card !p-4 md:!p-6 space-y-5 border-border/40 shadow-2xl">
               <div className="space-y-1.5">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Method of Sync</Label>
                 <Select value={method} onValueChange={(v: any) => setMethod(v)}>
@@ -148,8 +148,8 @@ export default function DueDateCalculator() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="standard" className="flex items-center gap-2 text-xs"><Calendar className="w-3 h-3 inline mr-2" /> Calendar Days</SelectItem>
-                    <SelectItem value="business" className="flex items-center gap-2 text-xs"><Briefcase className="w-3 h-3 inline mr-2" /> Business Days (Mon-Fri)</SelectItem>
-                    <SelectItem value="medical" className="flex items-center gap-2 text-xs"><HeartPulse className="w-3 h-3 inline mr-2" /> Medical / Gestational</SelectItem>
+                    <SelectItem value="business" className="flex items-center gap-2 text-xs"><Briefcase className="w-3 h-3 inline mr-2" /> Business Days</SelectItem>
+                    <SelectItem value="medical" className="flex items-center gap-2 text-xs"><HeartPulse className="w-3 h-3 inline mr-2" /> Medical / LMP</SelectItem>
                     <SelectItem value="cycle" className="flex items-center gap-2 text-xs"><Repeat className="w-3 h-3 inline mr-2" /> Project Cycles</SelectItem>
                   </SelectContent>
                 </Select>
@@ -157,7 +157,7 @@ export default function DueDateCalculator() {
 
               <div className="space-y-1.5">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">
-                  {method === 'medical' ? 'Last Menstrual Period (Origin)' : 'Execution Start (Origin)'}
+                  {method === 'medical' ? 'Last Period (Origin)' : 'Execution Start (Origin)'}
                 </Label>
                 <Input 
                   type="date" 
@@ -215,15 +215,15 @@ export default function DueDateCalculator() {
             </div>
           </div>
 
-          <div className="w-full max-w-[380px] space-y-5">
+          <div className="w-full min-[480px]:flex-1 space-y-5">
             {result ? (
-              <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 space-y-5">
-                <div className="glass-card !p-8 border-accent/20 bg-accent/5 text-center relative overflow-hidden group">
+              <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 space-y-4">
+                <div className="glass-card !p-5 md:!p-8 border-accent/20 bg-accent/5 text-center relative overflow-hidden group">
                   <div className="absolute top-0 right-0 p-4 opacity-10">
-                    <Milestone className="w-16 h-16 text-accent group-hover:rotate-12 transition-transform duration-1000" />
+                    <Milestone className="w-12 h-12 md:w-16 md:h-16 text-accent group-hover:rotate-12 transition-transform duration-1000" />
                   </div>
                   <span className="text-[9px] font-black uppercase tracking-[0.4em] text-accent mb-3 block">Target Coordinate</span>
-                  <div className="text-3xl md:text-4xl font-black tracking-tighter text-foreground mb-3 tabular-nums">
+                  <div className="text-2xl md:text-4xl font-black tracking-tighter text-foreground mb-2 md:mb-3 tabular-nums">
                     {format(result, 'dd MMM, yyyy')}
                   </div>
                   <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
@@ -232,16 +232,16 @@ export default function DueDateCalculator() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="glass-card !p-5 border-border/40 text-center">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Calendar Span</span>
-                    <div className="text-xl font-black text-primary">
+                  <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
+                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Calendar</span>
+                    <div className="text-lg md:text-xl font-black text-primary">
                       {stats?.calDays.toLocaleString('en-IN')}
                     </div>
                     <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Total Days</span>
                   </div>
-                  <div className="glass-card !p-5 border-border/40 text-center">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Business Velocity</span>
-                    <div className="text-xl font-black text-accent uppercase">
+                  <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
+                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Velocity</span>
+                    <div className="text-lg md:text-xl font-black text-accent uppercase">
                       {stats?.busDays.toLocaleString('en-IN')}
                     </div>
                     <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Work Days</span>
@@ -249,47 +249,47 @@ export default function DueDateCalculator() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="glass-card !p-5 border-border/40 text-center">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Celestial alignment</span>
-                    <div className="text-sm font-black text-foreground uppercase truncate">
+                  <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
+                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Celestial</span>
+                    <div className="text-[10px] md:text-sm font-black text-foreground uppercase truncate">
                       {getZodiacSign(result.getDate(), result.getMonth() + 1)}
                     </div>
-                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Zodiac Phase</span>
+                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Phase</span>
                   </div>
-                  <div className="glass-card !p-5 border-border/40 text-center">
+                  <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
                     <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Confidence</span>
-                    <div className="text-xl font-black text-accent uppercase">99.9%</div>
-                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Atomic Sync</span>
+                    <div className="text-lg md:text-xl font-black text-accent uppercase">99.9%</div>
+                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Sync</span>
                   </div>
                 </div>
 
-                <div className="glass-card !p-5 border-primary/20 bg-primary/5">
-                  <div className="flex items-center gap-2 mb-3">
+                <div className="glass-card !p-4 md:!p-5 border-primary/20 bg-primary/5">
+                  <div className="flex items-center gap-2 mb-2">
                     <Zap className="w-3.5 h-3.5 text-primary" />
                     <span className="text-[9px] font-black uppercase tracking-widest">Protocol Insight</span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">
+                  <p className="text-[10px] md:text-[11px] text-muted-foreground leading-relaxed font-medium">
                     {method === 'business' ? (
-                      "Business mode excludes weekends. This milestone accounts for Indian corporate working cycles and IST synchronization."
+                      "Business mode excludes weekends. Synchronized with Indian corporate cycles and IST."
                     ) : method === 'medical' ? (
-                      "Medical inference uses the Naegele's rule equivalent for standard 280-day gestational tracking."
+                      "Gestational tracking mapped for standard 280-day obstetric milestones."
                     ) : method === 'cycle' ? (
-                      `Cycle inference mapped ${cycleCount.toLocaleString('en-IN')} iterations of ${duration} ${unit} to find the terminal coordinate.`
+                      `Iterative mapping of ${cycleCount.toLocaleString('en-IN')} cycles across ${duration} ${unit}.`
                     ) : (
-                      "Standard mode uses absolute Gregorian day counts for maximum chronological precision in the Indian context."
+                      "Absolute Gregorian alignment for maximum chronological precision in the Indian context."
                     )}
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="h-[380px] glass-card !p-8 border-dashed border-border/40 flex flex-col items-center justify-center text-center opacity-40">
-                <Hourglass className="w-10 h-10 mb-5 animate-pulse" />
-                <h3 className="text-base font-black tracking-tight mb-2">Awaiting Parameters</h3>
-                <p className="text-[11px] font-medium max-w-[180px]">Define origin and duration vectors to calculate the final terminal milestone.</p>
+              <div className="h-[300px] md:h-[380px] glass-card !p-8 border-dashed border-border/40 flex flex-col items-center justify-center text-center opacity-40">
+                <Hourglass className="w-8 h-8 md:w-10 md:h-10 mb-5 animate-pulse" />
+                <h3 className="text-sm md:text-base font-black tracking-tight mb-2">Awaiting Parameters</h3>
+                <p className="text-[10px] md:text-[11px] font-medium max-w-[180px]">Define origin and duration vectors to initiate milestone synchronization.</p>
               </div>
             )}
 
-            <div className="glass-card !p-5 border-border/40">
+            <div className="glass-card !p-4 md:!p-5 border-border/40">
               <h4 className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
                 <Database className="w-3 h-3" /> IST Registry History
               </h4>
@@ -302,16 +302,12 @@ export default function DueDateCalculator() {
                   <span>STRATUM_FEED</span>
                   <span className="text-primary">ACTIVE</span>
                 </div>
-                <div className="flex justify-between text-[9px] font-mono">
-                  <span>PROTOCOL_V2</span>
-                  <span className="text-accent">STABLE</span>
-                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <section className="mt-32 space-y-16">
+        <section className="mt-24 md:mt-32 space-y-16">
           <div className="text-center space-y-4">
             <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-6 py-1.5 font-black">Architecture Whitepaper</Badge>
             <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-none">The Science of <span className="text-primary">Deadlines</span></h2>
@@ -320,8 +316,8 @@ export default function DueDateCalculator() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            <div className="glass-card !p-8 md:!p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
               <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                  <Workflow className="w-8 h-8 text-primary" />
               </div>
@@ -330,7 +326,7 @@ export default function DueDateCalculator() {
                 Mapping the net vector of speed and fidelity at which a piece of information moves from inception to milestone within Indian corporate cycles.
               </p>
             </div>
-            <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-accent/40">
+            <div className="glass-card !p-8 md:!p-10 hover:translate-y-[-8px] transition-all group hover:border-accent/40">
               <div className="w-16 h-16 rounded-[2rem] bg-accent/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                  <ShieldCheck className="w-8 h-8 text-accent" />
               </div>
@@ -339,7 +335,7 @@ export default function DueDateCalculator() {
                 Real-time validation of mathematical inputs prevents overflows and handles Indian calendar edge-cases with absolute parity.
               </p>
             </div>
-            <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
+            <div className="glass-card !p-8 md:!p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40 sm:col-span-2 lg:col-span-1">
               <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                  <Globe className="w-8 h-8 text-primary" />
               </div>

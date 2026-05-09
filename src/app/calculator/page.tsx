@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -62,7 +63,12 @@ export default function PrecisionCalculator() {
   const calculate = () => {
     try {
       const fullExpression = expression + display;
-      const cleanExpr = fullExpression.replace('×', '*').replace('÷', '/');
+      const cleanExpr = fullExpression
+        .replace(/×/g, '*')
+        .replace(/÷/g, '/')
+        .replace(/\^/g, '**')
+        .replace(/mod/g, '%');
+      
       const result = eval(cleanExpr);
       const formattedResult = formatResult(result);
       setHistory(prev => [fullExpression + ' = ' + formattedResult, ...prev].slice(0, 5));
@@ -84,16 +90,23 @@ export default function PrecisionCalculator() {
         case 'sin': res = Math.sin(trigVal); break;
         case 'cos': res = Math.cos(trigVal); break;
         case 'tan': res = Math.tan(trigVal); break;
+        case 'sinh': res = Math.sinh(val); break;
+        case 'cosh': res = Math.cosh(val); break;
+        case 'tanh': res = Math.tanh(val); break;
         case 'asin': res = Math.asin(val); if (!isRadians) res *= (180 / Math.PI); break;
         case 'acos': res = Math.acos(val); if (!isRadians) res *= (180 / Math.PI); break;
         case 'atan': res = Math.atan(val); if (!isRadians) res *= (180 / Math.PI); break;
         case 'log': res = Math.log10(val); break;
+        case 'log2': res = Math.log2(val); break;
         case 'ln': res = Math.log(val); break;
         case 'sqrt': res = Math.sqrt(val); break;
         case 'pow2': res = Math.pow(val, 2); break;
+        case 'inv': res = 1 / val; break;
         case 'fact': res = factorial(val); break;
         case 'abs': res = Math.abs(val); break;
+        case 'sign': res = val * -1; break;
         case 'pi': setDisplay(Math.PI.toString()); return;
+        case 'e': setDisplay(Math.E.toString()); return;
         case 'c': setDisplay('299792458'); return;
       }
       setDisplay(formatResult(res));
@@ -145,7 +158,7 @@ export default function PrecisionCalculator() {
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-8 md:py-16">
         <div className="flex flex-col md:flex-row items-center md:items-start justify-center gap-8 lg:gap-20">
           
-          <div className="flex-grow max-w-md text-center md:text-left space-y-8 pt-4 order-2 md:order-1">
+          <div className="flex-grow max-w-md text-center md:text-left space-y-6 pt-4 order-2 md:order-1">
             <div className="space-y-4">
               <Badge variant="outline" className="border-accent/30 text-accent uppercase tracking-[0.4em] text-[9px] px-3 py-1 font-black">
                 Mission-Critical Logic
@@ -154,7 +167,7 @@ export default function PrecisionCalculator() {
                 Scientific <span className="text-primary">Inference</span> Engine
               </h2>
               <p className="text-muted-foreground text-xs md:text-base leading-relaxed font-medium">
-                Proprietary mathematical compute layer designed for high-resolution tactical analysis and sub-atomic precision.
+                Advanced mathematical compute layer with support for hyperbolic functions, precision logarithms, and high-fidelity physics constants.
               </p>
             </div>
 
@@ -164,18 +177,18 @@ export default function PrecisionCalculator() {
                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                       <Binary className="w-4 h-4 text-primary" />
                    </div>
-                   <span className="text-[10px] font-black uppercase tracking-widest">Logic Tier</span>
+                   <span className="text-[10px] font-black uppercase tracking-widest">Instruction Set</span>
                 </div>
-                <p className="text-[10px] text-muted-foreground leading-relaxed">FP-128 parity enabled for consistent telemetry.</p>
+                <p className="text-[10px] text-muted-foreground leading-relaxed">Full support for transcendental and hyperbolic operations.</p>
               </div>
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
                       <Atom className="w-4 h-4 text-accent" />
                    </div>
-                   <span className="text-[10px] font-black uppercase tracking-widest">Constants</span>
+                   <span className="text-[10px] font-black uppercase tracking-widest">Constants Cache</span>
                 </div>
-                <p className="text-[10px] text-muted-foreground leading-relaxed">Pre-loaded physics constants for accelerated workflow.</p>
+                <p className="text-[10px] text-muted-foreground leading-relaxed">Pre-loaded Speed of Light (c) and Euler's Number (e).</p>
               </div>
             </div>
 
@@ -199,7 +212,7 @@ export default function PrecisionCalculator() {
             </div>
           </div>
 
-          <div className="w-full max-w-[360px] flex flex-col gap-4 order-1 md:order-2">
+          <div className="w-full max-w-[420px] flex flex-col gap-4 order-1 md:order-2">
             <div className="w-full glass-card !p-0 overflow-hidden shadow-2xl border-border/40">
               <div className="bg-black/5 dark:bg-black/20 p-4 text-right space-y-1 border-b border-border/40 min-h-[90px] flex flex-col justify-end">
                 <div className="flex justify-between items-center mb-1">
@@ -207,7 +220,7 @@ export default function PrecisionCalculator() {
                     <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black", isRadians ? "text-primary border-primary/20" : "text-muted-foreground")}>RAD</Badge>
                     <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black", !isRadians ? "text-primary border-primary/20" : "text-muted-foreground")}>DEG</Badge>
                   </div>
-                  <div className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/50 h-3 truncate max-w-[150px]">
+                  <div className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/50 h-3 truncate max-w-[200px]">
                     {expression}
                   </div>
                 </div>
@@ -225,32 +238,55 @@ export default function PrecisionCalculator() {
                 </button>
               </div>
 
-              <div className="p-0.5 grid grid-cols-4 gap-0.5 bg-muted/10">
+              <div className="p-0.5 grid grid-cols-5 gap-0.5 bg-muted/10">
                 {isScientific && (
                   <>
                     <CalcButton onClick={() => handleScientific('sin')} className="text-primary/70 text-[10px]">sin</CalcButton>
                     <CalcButton onClick={() => handleScientific('cos')} className="text-primary/70 text-[10px]">cos</CalcButton>
                     <CalcButton onClick={() => handleScientific('tan')} className="text-primary/70 text-[10px]">tan</CalcButton>
+                    <CalcButton onClick={() => handleScientific('log')} className="text-primary/70 text-[10px]">log</CalcButton>
+                    <CalcButton onClick={() => handleScientific('ln')} className="text-primary/70 text-[10px]">ln</CalcButton>
+                    
+                    <CalcButton onClick={() => handleScientific('sinh')} className="text-accent/70 text-[9px]">sinh</CalcButton>
+                    <CalcButton onClick={() => handleScientific('cosh')} className="text-accent/70 text-[9px]">cosh</CalcButton>
+                    <CalcButton onClick={() => handleScientific('tanh')} className="text-accent/70 text-[9px]">tanh</CalcButton>
+                    <CalcButton onClick={() => handleScientific('log2')} className="text-accent/70 text-[9px]">log2</CalcButton>
+                    <CalcButton onClick={() => handleScientific('inv')} className="text-accent/70 text-[10px]">1/x</CalcButton>
+
+                    <CalcButton onClick={() => handleScientific('asin')} className="text-muted-foreground text-[8px]">asin</CalcButton>
+                    <CalcButton onClick={() => handleScientific('acos')} className="text-muted-foreground text-[8px]">acos</CalcButton>
+                    <CalcButton onClick={() => handleScientific('atan')} className="text-muted-foreground text-[8px]">atan</CalcButton>
+                    <CalcButton onClick={() => handleScientific('pi')} className="text-muted-foreground text-[10px]">π</CalcButton>
+                    <CalcButton onClick={() => handleScientific('e')} className="text-muted-foreground text-[10px]">e</CalcButton>
+
                     <CalcButton onClick={() => handleScientific('sqrt')} className="text-primary/70 text-[10px]">√</CalcButton>
-                    <CalcButton onClick={() => handleScientific('asin')} className="text-accent/70 text-[8px]">asin</CalcButton>
-                    <CalcButton onClick={() => handleScientific('acos')} className="text-accent/70 text-[8px]">acos</CalcButton>
-                    <CalcButton onClick={() => handleScientific('atan')} className="text-accent/70 text-[8px]">atan</CalcButton>
-                    <CalcButton onClick={() => handleScientific('fact')} className="text-accent/70 text-[10px]">x!</CalcButton>
+                    <CalcButton onClick={() => handleScientific('pow2')} className="text-primary/70 text-[10px]">x²</CalcButton>
+                    <CalcButton onClick={() => handleOperator('^')} className="text-primary/70 text-[10px]">xʸ</CalcButton>
+                    <CalcButton onClick={() => handleScientific('abs')} className="text-primary/70 text-[10px]">|x|</CalcButton>
+                    <CalcButton onClick={() => handleScientific('fact')} className="text-primary/70 text-[10px]">n!</CalcButton>
                   </>
                 )}
                 <CalcButton onClick={clear} className="bg-destructive/10 text-destructive font-black text-[10px]">AC</CalcButton>
                 <CalcButton onClick={() => setDisplay(prev => prev.length > 1 ? prev.slice(0, -1) : '0')} className="bg-muted/30 text-[10px]">C</CalcButton>
-                <CalcButton onClick={() => handleMemory('MC')} className="bg-muted/30 text-[10px]">MC</CalcButton>
+                <CalcButton onClick={() => handleScientific('sign')} className="bg-muted/30 text-[10px]">+/-</CalcButton>
+                <CalcButton onClick={() => handleOperator('mod')} className="bg-accent/10 text-accent text-[10px]">mod</CalcButton>
                 <CalcButton onClick={() => handleOperator('/')} className="bg-accent/10 text-accent text-[10px]">÷</CalcButton>
+
                 {[7,8,9].map(n => <CalcButton key={n} onClick={() => handleNumber(n.toString())}>{n}</CalcButton>)}
-                <CalcButton onClick={() => handleOperator('*')} className="bg-accent/10 text-accent">×</CalcButton>
+                <CalcButton onClick={() => handleMemory('MC')} className="bg-muted/30 text-[9px]">MC</CalcButton>
+                <CalcButton onClick={() => handleOperator('*')} className="bg-accent/10 text-accent text-[10px]">×</CalcButton>
+                
                 {[4,5,6].map(n => <CalcButton key={n} onClick={() => handleNumber(n.toString())}>{n}</CalcButton>)}
-                <CalcButton onClick={() => handleOperator('-')} className="bg-accent/10 text-accent">-</CalcButton>
+                <CalcButton onClick={() => handleMemory('MR')} className="bg-muted/30 text-[9px]">MR</CalcButton>
+                <CalcButton onClick={() => handleOperator('-')} className="bg-accent/10 text-accent text-[10px]">-</CalcButton>
+                
                 {[1,2,3].map(n => <CalcButton key={n} onClick={() => handleNumber(n.toString())}>{n}</CalcButton>)}
-                <CalcButton onClick={() => handleOperator('+')} className="bg-accent/10 text-accent">+</CalcButton>
+                <CalcButton onClick={() => handleMemory('M+')} className="bg-muted/30 text-[9px]">M+</CalcButton>
+                <CalcButton onClick={() => handleOperator('+')} className="bg-accent/10 text-accent text-[10px]">+</CalcButton>
+                
                 <CalcButton onClick={() => handleNumber('0')} className="col-span-2">0</CalcButton>
                 <CalcButton onClick={() => handleNumber('.')}>.</CalcButton>
-                <CalcButton onClick={calculate} className="bg-primary text-primary-foreground font-black">=</CalcButton>
+                <CalcButton onClick={calculate} className="bg-primary text-primary-foreground font-black col-span-2 text-[10px]">=</CalcButton>
               </div>
             </div>
 
@@ -299,7 +335,7 @@ function CalcButton({ children, onClick, className }: { children: React.ReactNod
     <button 
       onClick={onClick}
       className={cn(
-        "h-10 flex items-center justify-center text-xs font-bold transition-all hover:bg-white/5 active:scale-95 rounded-sm",
+        "h-9 flex items-center justify-center text-xs font-bold transition-all hover:bg-white/5 active:scale-95 rounded-sm",
         className
       )}
     >

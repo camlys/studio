@@ -98,8 +98,44 @@ export default function PrecisionCalculator() {
       <main className="flex-grow container max-w-5xl mx-auto px-6 py-8 md:py-16">
         <div className="flex flex-col md:flex-row items-center md:items-start justify-center gap-12 lg:gap-20">
           
-          {/* Calculator Section (LEFT on Desktop) */}
-          <div className="w-full max-w-[340px] flex flex-col gap-4 animate-in slide-in-from-left-8 duration-700">
+          {/* Info Section (LEFT on Desktop) */}
+          <div className="flex-grow max-w-md text-center md:text-left space-y-6 pt-4 animate-in slide-in-from-left-8 duration-1000">
+            <div className="space-y-4">
+              <Badge variant="outline" className="border-primary/20 text-primary uppercase tracking-[0.4em] text-[9px] px-3 py-1 font-black">
+                Tactical Intelligence Layer
+              </Badge>
+              <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-[0.85]">
+                Scientific <span className="text-primary">Inference</span> Engine
+              </h2>
+              <p className="text-muted-foreground text-sm md:text-base lg:text-lg leading-relaxed font-medium">
+                High-fidelity mathematical computation layer designed for mission-critical data processing and professional analysis.
+              </p>
+            </div>
+
+            <div className="space-y-6 pt-6 border-t border-border">
+              <div className="flex items-start gap-4">
+                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                    <Cpu className="w-5 h-5 text-primary" />
+                 </div>
+                 <div className="space-y-1">
+                    <h4 className="font-black text-xs uppercase tracking-widest">Client-Side Compute</h4>
+                    <p className="text-[11px] text-muted-foreground leading-relaxed">Processing is handled entirely within the local environment, ensuring absolute data sovereignty and zero-latency inference.</p>
+                 </div>
+              </div>
+              <div className="flex items-start gap-4">
+                 <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
+                    <ShieldCheck className="w-5 h-5 text-accent" />
+                 </div>
+                 <div className="space-y-1">
+                    <h4 className="font-black text-xs uppercase tracking-widest">Protocol Validated</h4>
+                    <p className="text-[11px] text-muted-foreground leading-relaxed">Algebraic operations follow strict IEEE 754 floating-point standards for consistent results across all operational nodes.</p>
+                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Calculator Section (RIGHT on Desktop) */}
+          <div className="w-full max-w-[340px] flex flex-col gap-4 animate-in slide-in-from-right-8 duration-700">
             <div className="w-full glass-card !p-0 overflow-hidden shadow-2xl border-border/40">
               {/* Display Area */}
               <div className="bg-black/5 dark:bg-black/20 p-4 text-right space-y-0.5 border-b border-border/40">
@@ -197,42 +233,6 @@ export default function PrecisionCalculator() {
                     <span className="text-[8px] font-black text-accent">LOCAL</span>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Info Section (RIGHT on Desktop) */}
-          <div className="flex-grow max-w-md text-center md:text-left space-y-6 pt-4 animate-in fade-in duration-1000">
-            <div className="space-y-4">
-              <Badge variant="outline" className="border-primary/20 text-primary uppercase tracking-[0.4em] text-[9px] px-3 py-1 font-black">
-                Tactical Intelligence Layer
-              </Badge>
-              <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-[0.85]">
-                Scientific <span className="text-primary">Inference</span> Engine
-              </h2>
-              <p className="text-muted-foreground text-sm md:text-base lg:text-lg leading-relaxed font-medium">
-                High-fidelity mathematical computation layer designed for mission-critical data processing and professional analysis.
-              </p>
-            </div>
-
-            <div className="space-y-6 pt-6 border-t border-border">
-              <div className="flex items-start gap-4">
-                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                    <Cpu className="w-5 h-5 text-primary" />
-                 </div>
-                 <div className="space-y-1">
-                    <h4 className="font-black text-xs uppercase tracking-widest">Client-Side Compute</h4>
-                    <p className="text-[11px] text-muted-foreground leading-relaxed">Processing is handled entirely within the local environment, ensuring absolute data sovereignty and zero-latency inference.</p>
-                 </div>
-              </div>
-              <div className="flex items-start gap-4">
-                 <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
-                    <ShieldCheck className="w-5 h-5 text-accent" />
-                 </div>
-                 <div className="space-y-1">
-                    <h4 className="font-black text-xs uppercase tracking-widest">Protocol Validated</h4>
-                    <p className="text-[11px] text-muted-foreground leading-relaxed">Algebraic operations follow strict IEEE 754 floating-point standards for consistent results across all operational nodes.</p>
-                 </div>
               </div>
             </div>
           </div>

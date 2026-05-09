@@ -10,7 +10,8 @@ import {
   ExternalLink, Workflow, 
   Briefcase, Baby, Microscope, Stethoscope,
   Flag, LayoutGrid, Download,
-  Calculator as CalcIcon, Timer
+  Calculator as CalcIcon, Timer,
+  Clock, Dna, Activity, Scaling, HeartPulse, Sparkles
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +24,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
 import { cn } from '@/lib/utils';
-import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays, isValid, getQuarter, getDayOfYear, getISOWeek } from 'date-fns';
+import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays, isValid, getQuarter, getDayOfYear, getISOWeek, differenceInHours, differenceInMinutes, differenceInSeconds } from 'date-fns';
 import { getZodiacSign } from '@/lib/date-utils';
 import { toPng } from 'html-to-image';
 import { 
@@ -42,7 +43,7 @@ const dueDateSchema = {
   "applicationCategory": "Utility",
   "operatingSystem": "All",
   "description": "High-precision milestone and project due date calculator optimized for Indian Standard Time (IST) and biological/clinical protocols.",
-  "softwareVersion": "3.1.2",
+  "softwareVersion": "3.2.0",
   "browserRequirements": "Requires JavaScript",
   "offers": {
     "@type": "Offer",
@@ -76,12 +77,19 @@ type DetailedStats = {
   calDays: number;
   busDays: number;
   gestation?: string;
+  trimester?: string;
+  fetalAge?: string;
   remaining: number;
+  remHours: number;
+  remMinutes: number;
+  remSeconds: number;
   progress: number;
   quarter?: string;
   dayOfYear: number;
   isoWeek: number;
-  milestones: { label: string; date: string }[];
+  milestones: { label: string; date: string; category?: string }[];
+  bioInsight?: string;
+  sizeComparison?: string;
 };
 
 export default function DueDateCalculator() {
@@ -102,7 +110,6 @@ export default function DueDateCalculator() {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
-  // Focus management refs
   const dayInputRef = useRef<HTMLInputElement>(null);
   const monthInputRef = useRef<HTMLInputElement>(null);
   const yearInputRef = useRef<HTMLInputElement>(null);
@@ -117,7 +124,6 @@ export default function DueDateCalculator() {
     
     setStartValues(prev => ({ ...prev, [field]: finalValue }));
 
-    // Auto-tab logic: Move focus when digits are filled
     if (field === 'day' && finalValue.length === 2) {
       monthInputRef.current?.focus();
     } else if (field === 'month' && finalValue.length === 2) {
@@ -147,29 +153,39 @@ export default function DueDateCalculator() {
     const cycles = parseInt(cycleCount) || 1;
     let end: Date;
     let gestationStr: string | undefined;
-    let milestones: { label: string; date: string }[] = [];
+    let trimesterStr: string | undefined;
+    let fetalAgeStr: string | undefined;
+    let bioInsight: string | undefined;
+    let sizeComparison: string | undefined;
+    let milestones: { label: string; date: string; category?: string }[] = [];
 
     switch (method) {
       case 'medical':
         end = addDays(start, 280);
         milestones = [
-          { label: "2nd Trimester", date: format(addWeeks(start, 13), 'dd/MM/yy') },
-          { label: "3rd Trimester", date: format(addWeeks(start, 27), 'dd/MM/yy') }
+          { label: "Organogenesis Begins", date: format(addWeeks(start, 5), 'dd MMM'), category: 'Biological' },
+          { label: "1st Trimester Completion", date: format(addWeeks(start, 12), 'dd MMM'), category: 'Phase' },
+          { label: "2nd Trimester Begins", date: format(addWeeks(start, 13), 'dd MMM'), category: 'Phase' },
+          { label: "Anatomy Scan (Typical)", date: format(addWeeks(start, 20), 'dd MMM'), category: 'Clinical' },
+          { label: "Threshold of Viability", date: format(addWeeks(start, 24), 'dd MMM'), category: 'Critical' },
+          { label: "3rd Trimester Begins", date: format(addWeeks(start, 27), 'dd MMM'), category: 'Phase' },
+          { label: "Full Term Threshold", date: format(addWeeks(start, 37), 'dd MMM'), category: 'Phase' }
         ];
         break;
       case 'conception':
         end = addDays(start, 266);
+        const lmpEquiv = addDays(start, -14);
         milestones = [
-          { label: "Trimester 2", date: format(addWeeks(start, 11), 'dd/MM/yy') },
-          { label: "Trimester 3", date: format(addWeeks(start, 25), 'dd/MM/yy') }
+          { label: "First Trimester Ends", date: format(addWeeks(lmpEquiv, 12), 'dd MMM') },
+          { label: "Second Trimester Ends", date: format(addWeeks(lmpEquiv, 26), 'dd MMM') }
         ];
         break;
       case 'ivf':
         end = addDays(start, ivfType === '3-day' ? 263 : 261);
-        const lmpEq = addDays(start, ivfType === '3-day' ? -17 : -19);
+        const lmpEqiv = addDays(start, ivfType === '3-day' ? -17 : -19);
         milestones = [
-          { label: "Trimester 2", date: format(addWeeks(lmpEq, 13), 'dd/MM/yy') },
-          { label: "Trimester 3", date: format(addWeeks(lmpEq, 27), 'dd/MM/yy') }
+          { label: "Heartbeat Detectable", date: format(addWeeks(lmpEqiv, 6), 'dd MMM') },
+          { label: "Glucose Screening", date: format(addWeeks(lmpEqiv, 26), 'dd MMM') }
         ];
         break;
       case 'crl':
@@ -177,8 +193,8 @@ export default function DueDateCalculator() {
         end = addDays(start, 280 - gaDays);
         const lmpFromCrl = addDays(start, -gaDays);
         milestones = [
-          { label: "Trimester 2", date: format(addWeeks(lmpFromCrl, 13), 'dd/MM/yy') },
-          { label: "Trimester 3", date: format(addWeeks(lmpFromCrl, 27), 'dd/MM/yy') }
+          { label: "Neural Tube Complete", date: format(addWeeks(lmpFromCrl, 6), 'dd MMM') },
+          { label: "Surfactant Production", date: format(addWeeks(lmpFromCrl, 28), 'dd MMM') }
         ];
         break;
       case 'business':
@@ -207,11 +223,13 @@ export default function DueDateCalculator() {
 
     const today = new Date();
     const remaining = differenceInDays(end, today);
+    const remHours = differenceInHours(end, today);
+    const remMinutes = differenceInMinutes(end, today);
+    const remSeconds = differenceInSeconds(end, today);
     const totalCal = Math.abs(differenceInDays(end, start));
     const elapsed = Math.max(0, differenceInDays(today, start));
     const progress = totalCal > 0 ? Math.min(100, Math.round((elapsed / totalCal) * 100)) : 0;
 
-    // Gestation string calculation for biological methods
     if (['medical', 'ivf', 'crl', 'conception'].includes(method)) {
       let lmpOrigin = start;
       if (method === 'conception') lmpOrigin = addDays(start, -14);
@@ -223,8 +241,24 @@ export default function DueDateCalculator() {
         const weeks = Math.floor(totalDiffDays / 7);
         const remainingDays = totalDiffDays % 7;
         gestationStr = `${weeks}w ${remainingDays}d`;
+        
+        if (weeks < 13) trimesterStr = "1st Trimester";
+        else if (weeks < 27) trimesterStr = "2nd Trimester";
+        else trimesterStr = "3rd Trimester";
+
+        const fetalWeeks = weeks > 2 ? weeks - 2 : 0;
+        fetalAgeStr = `${fetalWeeks}w ${remainingDays}d`;
+
+        if (weeks >= 4 && weeks < 9) { bioInsight = "Organogenesis Phase"; sizeComparison = "Blueberry"; }
+        else if (weeks >= 9 && weeks < 13) { bioInsight = "Fetal Transition"; sizeComparison = "Grape"; }
+        else if (weeks >= 13 && weeks < 20) { bioInsight = "Active Growth"; sizeComparison = "Lemon"; }
+        else if (weeks >= 20 && weeks < 28) { bioInsight = "Viability Window"; sizeComparison = "Banana"; }
+        else if (weeks >= 28 && weeks < 37) { bioInsight = "Rapid Maturation"; sizeComparison = "Cabbage"; }
+        else if (weeks >= 37) { bioInsight = "Full Term Ready"; sizeComparison = "Pumpkin"; }
+        else { bioInsight = "Cellular Assembly"; sizeComparison = "Poppy Seed"; }
       } else {
         gestationStr = "Pre-LMP";
+        trimesterStr = "Pre-Conception";
       }
     }
 
@@ -251,12 +285,19 @@ export default function DueDateCalculator() {
       calDays: totalCal,
       busDays: workDays,
       gestation: gestationStr,
+      trimester: trimesterStr,
+      fetalAge: fetalAgeStr,
       remaining,
+      remHours,
+      remMinutes,
+      remSeconds,
       progress,
       quarter: `Q${getQuarter(end)} FY${format(end, 'yy')}`,
       dayOfYear: getDayOfYear(end),
       isoWeek: getISOWeek(end),
-      milestones
+      milestones,
+      bioInsight,
+      sizeComparison
     });
   };
 
@@ -385,8 +426,7 @@ export default function DueDateCalculator() {
           </p>
         </div>
 
-        {/* Unified Horizontal Layout for 5-8 inches (min-480px) and Desktop */}
-        <div className="flex flex-col min-[480px]:flex-row items-start justify-center gap-4 md:gap-8 lg:gap-16">
+        <div className="flex flex-col min-[480px]:flex-row items-start justify-center gap-6 md:gap-8 lg:gap-16">
           
           <div className="w-full min-[480px]:flex-1 max-w-sm space-y-6">
             <div className="glass-card !p-4 md:!p-6 space-y-5 border-border/40 shadow-2xl">
@@ -530,18 +570,6 @@ export default function DueDateCalculator() {
                 </div>
               )}
 
-              {method === 'cycle' && (
-                <div className="space-y-1.5">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Cycle Count (Iterations)</Label>
-                  <input 
-                    type="number" 
-                    value={cycleCount} 
-                    onChange={(e) => setCycleCount(e.target.value)}
-                    className="flex h-11 w-full rounded-xl border border-border bg-muted/50 px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 font-bold outline-none"
-                  />
-                </div>
-              )}
-
               <Button 
                 onClick={calculateDueDate}
                 className="w-full h-12 bg-primary text-primary-foreground font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-xl hover:scale-[1.02] transition-all group mt-2"
@@ -549,126 +577,8 @@ export default function DueDateCalculator() {
                 Execute Inference <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
-          </div>
 
-          <div className="w-full min-[480px]:flex-1 max-w-[420px] space-y-5">
-            {result && isValid(result) && stats ? (
-              <div className="space-y-4">
-                <div ref={reportRef} className="animate-in fade-in slide-in-from-bottom-6 duration-700 space-y-4 bg-background p-2 rounded-3xl">
-                  <div className="glass-card !p-5 md:!p-8 border-accent/20 bg-accent/5 text-center relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-4 opacity-10">
-                      {['medical', 'ivf', 'crl', 'conception'].includes(method) ? (
-                        <Baby className="w-12 h-12 md:w-16 md:h-16 text-accent group-hover:rotate-12 transition-transform duration-1000" />
-                      ) : (
-                        <Milestone className="w-12 h-12 md:w-16 md:h-16 text-accent group-hover:rotate-12 transition-transform duration-1000" />
-                      )}
-                    </div>
-                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-accent mb-3 block">
-                      {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Estimated Due Date' : 'Target Coordinate'}
-                    </span>
-                    <div className="text-2xl md:text-4xl font-black tracking-tighter text-foreground mb-2 md:mb-3 tabular-nums">
-                      {format(result, 'dd MMM, yyyy')}
-                    </div>
-                    <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
-                      <CalendarIcon className="w-3 h-3" /> {format(result, 'EEEE')}
-                    </div>
-
-                    <div className="mt-6 space-y-2">
-                      <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">
-                        <span>Sync Progress</span>
-                        <span>{stats.progress}%</span>
-                      </div>
-                      <Progress value={stats.progress} className="h-1.5 bg-accent/10" />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
-                      <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Countdown</span>
-                      <div className="text-lg md:text-xl font-black text-primary">
-                        {stats.remaining.toLocaleString('en-IN')}
-                      </div>
-                      <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Days To Go</span>
-                    </div>
-                    <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
-                      <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">
-                        {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Progress' : 'Velocity'}
-                      </span>
-                      <div className="text-lg md:text-xl font-black text-accent uppercase">
-                        {stats.gestation || stats.busDays.toLocaleString('en-IN')}
-                      </div>
-                      <span className="text-[7px] font-bold uppercase text-muted-foreground/60">
-                        {stats.gestation ? 'Weeks Gone' : 'Work Days'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {stats.milestones.length > 0 && (
-                    <div className="glass-card !p-4 md:!p-5 border-border/40 space-y-4">
-                      <h4 className="text-[9px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                        <Flag className="w-3.5 h-3.5 text-primary" /> Critical Milestones
-                      </h4>
-                      <div className="grid grid-cols-1 gap-2">
-                        {stats.milestones.map((ms, idx) => (
-                          <div key={idx} className="flex items-center justify-between p-2.5 rounded-lg bg-muted/30 border border-border/20">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-foreground/80">{ms.label}</span>
-                            <Badge variant="outline" className="text-[9px] font-mono text-primary border-primary/20">{ms.date}</Badge>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
-                      <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Celestial</span>
-                      <div className="text-[10px] md:text-sm font-black text-foreground uppercase truncate">
-                        {getZodiacSign(result.getDate(), result.getMonth() + 1)}
-                      </div>
-                      <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Phase Alignment</span>
-                    </div>
-                    <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
-                      <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Context</span>
-                      <div className="text-[10px] md:text-sm font-black text-accent uppercase truncate">
-                        {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Biological' : stats.quarter}
-                      </div>
-                      <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Logic Layer</span>
-                    </div>
-                  </div>
-
-                  <div className="glass-card !p-4 md:!p-5 border-primary/20 bg-primary/5">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Zap className="w-3.5 h-3.5 text-primary" />
-                      <span className="text-[9px] font-black uppercase tracking-widest">Protocol Insight</span>
-                    </div>
-                    <p className="text-[10px] md:text-[11px] text-muted-foreground leading-relaxed font-medium">
-                      Target Coordinate derived via {method.toUpperCase()} protocol. 
-                      Calculated day of year is {stats.dayOfYear} in ISO-8601 Week {stats.isoWeek}.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-3">
-                  <Button 
-                    onClick={downloadReport} 
-                    disabled={isDownloading}
-                    variant="outline" 
-                    className="w-full h-11 rounded-xl text-[10px] font-black uppercase tracking-widest border-primary/20 hover:bg-primary/5 hover:text-primary gap-2.5 transition-all"
-                  >
-                    <Download className={cn("w-4 h-4", isDownloading && "animate-bounce")} />
-                    {isDownloading ? 'Capturing...' : 'Download Report'}
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="h-[300px] md:h-[380px] glass-card !p-8 border-dashed border-border/40 flex flex-col items-center justify-center text-center opacity-40">
-                <Hourglass className="w-8 h-8 md:w-10 md:h-10 mb-5 animate-pulse" />
-                <h3 className="text-sm md:text-base font-black tracking-tight mb-2">Awaiting Parameters</h3>
-                <p className="text-[10px] md:text-[11px] font-medium max-w-[180px]">Define origin and protocol vectors to initiate milestone synchronization.</p>
-              </div>
-            )}
-
-            <div className="glass-card !p-4 md:!p-5 border-border/40">
+            <div className="glass-card !p-4 border-border/40">
               <h4 className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
                 <Database className="w-3.5 h-3.5" /> IST Registry History
               </h4>
@@ -684,19 +594,179 @@ export default function DueDateCalculator() {
               </div>
             </div>
           </div>
+
+          <div className="w-full min-[480px]:flex-1 max-w-[540px] space-y-5">
+            {result && isValid(result) && stats ? (
+              <div className="space-y-5 animate-in fade-in slide-in-from-bottom-6 duration-700">
+                <div ref={reportRef} className="space-y-5 bg-background p-2 rounded-3xl">
+                  {/* Primary Target Coordinate */}
+                  <div className="glass-card !p-6 md:!p-10 border-accent/20 bg-accent/5 text-center relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                      {['medical', 'ivf', 'crl', 'conception'].includes(method) ? (
+                        <Baby className="w-16 h-16 md:w-24 md:h-24 text-accent group-hover:rotate-12 transition-transform duration-1000" />
+                      ) : (
+                        <Milestone className="w-16 h-16 md:w-24 md:h-24 text-accent group-hover:rotate-12 transition-transform duration-1000" />
+                      )}
+                    </div>
+                    <span className="text-[9px] font-black uppercase tracking-[0.5em] text-accent mb-4 block">
+                      {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Estimated Due Date' : 'Target Coordinate'}
+                    </span>
+                    <div className="text-3xl md:text-6xl font-black tracking-tighter text-foreground mb-4 tabular-nums">
+                      {format(result, 'dd MMM, yyyy')}
+                    </div>
+                    <div className="flex items-center justify-center gap-3 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                      <CalendarIcon className="w-4 h-4" /> {format(result, 'EEEE')}
+                      <Separator orientation="vertical" className="h-4 bg-accent/20" />
+                      <Clock className="w-4 h-4" /> IST Sync
+                    </div>
+
+                    <div className="mt-8 space-y-2">
+                      <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                        <span>Synchronization Progress</span>
+                        <span>{stats.progress}%</span>
+                      </div>
+                      <Progress value={stats.progress} className="h-2 bg-accent/10" />
+                    </div>
+                  </div>
+
+                  {/* Biological Deep Dive (Only for Clinical methods) */}
+                  {['medical', 'ivf', 'crl', 'conception'].includes(method) && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="glass-card !p-5 border-primary/20 bg-primary/5 flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+                           <Dna className="w-6 h-6 text-primary" />
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/60">Clinical Phase</span>
+                          <p className="text-sm font-black text-foreground uppercase">{stats.trimester}</p>
+                        </div>
+                      </div>
+                      <div className="glass-card !p-5 border-accent/20 bg-accent/5 flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center shrink-0">
+                           <Scaling className="w-6 h-6 text-accent" />
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/60">Bio Comparison</span>
+                          <p className="text-sm font-black text-foreground uppercase">Size of a {stats.sizeComparison}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Detailed Countdown Metrics */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div className="glass-card !p-4 border-border/40 text-center">
+                      <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Days</span>
+                      <div className="text-xl font-black text-primary">{stats.remaining.toLocaleString()}</div>
+                    </div>
+                    <div className="glass-card !p-4 border-border/40 text-center">
+                      <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Hours</span>
+                      <div className="text-xl font-black text-primary">{stats.remHours.toLocaleString()}</div>
+                    </div>
+                    <div className="glass-card !p-4 border-border/40 text-center">
+                      <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Minutes</span>
+                      <div className="text-lg font-black text-primary truncate px-1">{stats.remMinutes.toLocaleString()}</div>
+                    </div>
+                    <div className="glass-card !p-4 border-border/40 text-center">
+                      <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Progress</span>
+                      <div className="text-xl font-black text-accent">{stats.gestation || stats.busDays}</div>
+                    </div>
+                  </div>
+
+                  {/* High-Authority Milestone Matrix */}
+                  {stats.milestones.length > 0 && (
+                    <div className="glass-card !p-5 border-border/40 space-y-5">
+                      <div className="flex items-center justify-between">
+                         <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                           <Flag className="w-4 h-4 text-primary" /> Authority Milestone Matrix
+                         </h4>
+                         <Badge variant="outline" className="text-[8px] font-black uppercase border-primary/20 text-primary">IST Calibrated</Badge>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {stats.milestones.map((ms, idx) => (
+                          <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-muted/30 border border-border/20 group hover:border-primary/40 transition-colors">
+                            <div className="space-y-0.5">
+                              <span className="text-[9px] font-black uppercase tracking-widest text-foreground/80">{ms.label}</span>
+                              <p className="text-[7px] font-bold text-muted-foreground uppercase">{ms.category || 'Clinical'}</p>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-[10px] font-mono font-black text-primary">{ms.date}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Celestial & Phase Synchronization */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="glass-card !p-4 border-border/40 text-center col-span-1">
+                      <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Zodiac Mapping</span>
+                      <div className="text-xs font-black text-foreground uppercase truncate flex items-center justify-center gap-1.5">
+                        <Sparkles className="w-3 h-3 text-accent" /> {getZodiacSign(result.getDate(), result.getMonth() + 1)}
+                      </div>
+                    </div>
+                    <div className="glass-card !p-4 border-border/40 text-center col-span-1 md:col-span-2">
+                      <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Biological Inference</span>
+                      <div className="text-xs font-black text-accent uppercase truncate flex items-center justify-center gap-1.5">
+                        <HeartPulse className="w-3.5 h-3.5" /> {stats.bioInsight || 'Corporate Tactical Sync'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Precision Logic Feed */}
+                  <div className="glass-card !p-5 border-primary/20 bg-primary/5 flex flex-col md:flex-row items-center gap-6">
+                    <div className="w-16 h-16 rounded-full border-4 border-primary/20 border-t-primary flex items-center justify-center shrink-0 animate-spin-slow">
+                       <Zap className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="space-y-1 text-center md:text-left">
+                       <h5 className="text-[10px] font-black uppercase tracking-widest text-primary">Instruction Execution Log</h5>
+                       <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">
+                         Target Coordinate derived via {method.toUpperCase()} protocol. Absolute parity with Stratum-1 nodes maintained. 
+                         Calculated day of year is {stats.dayOfYear} in ISO-8601 Week {stats.isoWeek}.
+                       </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <Button 
+                    onClick={downloadReport} 
+                    disabled={isDownloading}
+                    className="w-full h-12 bg-foreground text-background font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-xl hover:scale-[1.02] transition-all group gap-3"
+                  >
+                    <Download className={cn("w-4 h-4", isDownloading && "animate-bounce")} />
+                    {isDownloading ? 'Capturing Report...' : 'Download Detailed PNG'}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="h-[400px] md:h-[600px] glass-card !p-12 border-dashed border-border/40 flex flex-col items-center justify-center text-center opacity-30">
+                <div className="relative w-24 h-24 mb-8">
+                   <div className="absolute inset-0 rounded-full border-2 border-primary/10 border-t-primary animate-spin" />
+                   <div className="absolute inset-0 flex items-center justify-center">
+                      <Hourglass className="w-10 h-10 text-primary/40" />
+                   </div>
+                </div>
+                <h3 className="text-xl font-black tracking-tight mb-3">Awaiting Temporal Coordinates</h3>
+                <p className="text-xs font-medium max-w-[240px] leading-relaxed">Input origin and protocol parameters to initiate high-precision milestone synchronization.</p>
+              </div>
+            )}
+          </div>
         </div>
 
-        <section className="mt-24 md:mt-32 space-y-16">
+        {/* Science of Deadlines Section */}
+        <section className="mt-32 space-y-20">
           <div className="text-center space-y-4">
-            <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-6 py-1.5 font-black">Architecture Whitepaper</Badge>
-            <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-none">The Science of <span className="text-primary">Deadlines</span></h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-medium">
-              We define the standard for high-fidelity chronological milestones through military-grade synchronization and clinical protocols.
+            <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[10px] px-6 py-1.5 font-black">Architecture Whitepaper</Badge>
+            <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-none">The Science of <span className="text-primary">Chronology</span></h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-xl leading-relaxed font-medium">
+              We define the global standard for high-fidelity chronological milestones through military-grade synchronization and clinical protocols.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            <div className="glass-card !p-8 md:!p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
               <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                  <Workflow className="w-8 h-8 text-primary" />
               </div>
@@ -705,7 +775,7 @@ export default function DueDateCalculator() {
                 Implementing standard obstetric and IVF dating models with absolute parity, turning biological data into precise milestones.
               </p>
             </div>
-            <div className="glass-card !p-8 md:!p-10 hover:translate-y-[-8px] transition-all group hover:border-accent/40">
+            <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-accent/40">
               <div className="w-16 h-16 rounded-[2rem] bg-accent/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                  <ShieldCheck className="w-8 h-8 text-accent" />
               </div>
@@ -714,7 +784,7 @@ export default function DueDateCalculator() {
                 Real-time validation of mathematical and biological inputs prevents overflows and handles edge-cases with sub-millisecond precision.
               </p>
             </div>
-            <div className="glass-card !p-8 md:!p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40 sm:col-span-2 lg:col-span-1">
+            <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
               <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                  <Globe className="w-8 h-8 text-primary" />
               </div>
@@ -727,18 +797,18 @@ export default function DueDateCalculator() {
         </section>
       </main>
 
-      <footer className="mt-auto py-12 glass border-t border-border/40">
+      <footer className="mt-auto py-16 glass border-t border-border/40">
         <div className="container max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
           <div className="space-y-4 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-3">
-              <div className="w-14 h-14 bg-primary rounded-md flex items-center justify-center">
+              <div className="w-14 h-14 bg-primary rounded-xl flex items-center justify-center shadow-lg">
                 <Timer className="text-primary-foreground w-8 h-8" />
               </div>
-              <h2 className="text-sm font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
+              <h2 className="text-xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
                 CHRONOFLOW
               </h2>
             </div>
-            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest leading-relaxed">
+            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] leading-relaxed max-w-[240px]">
               Defining high-precision velocity for professional and tactical computational systems.
             </p>
           </div>
@@ -746,14 +816,14 @@ export default function DueDateCalculator() {
           <div className="flex justify-center gap-12">
             <div className="space-y-4 text-center">
               <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-primary">Operations</h4>
-              <ul className="text-[10px] space-y-2 font-bold text-muted-foreground/60">
-                <li className="hover:text-primary transition-colors">
+              <ul className="text-[10px] space-y-3 font-bold text-muted-foreground/60 uppercase tracking-widest">
+                <li className="hover:text-primary transition-colors cursor-pointer">
                   <Link href="/due-date-calculator">Due Date Engine</Link>
                 </li>
-                <li className="hover:text-primary transition-colors">
+                <li className="hover:text-primary transition-colors cursor-pointer">
                   <Link href="/calculator">Scientific ALU</Link>
                 </li>
-                <li className="hover:text-primary transition-colors">
+                <li className="hover:text-primary transition-colors cursor-pointer">
                   <Link href="/?tab=focus">Pomodoro Focus</Link>
                 </li>
               </ul>

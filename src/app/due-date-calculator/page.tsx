@@ -19,7 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from '@/lib/utils';
-import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays, isValid, parseISO } from 'date-fns';
+import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays, isValid, parseISO, isLeapYear } from 'date-fns';
 import { getZodiacSign } from '@/lib/date-utils';
 
 const dueDateSchema = {
@@ -40,22 +40,40 @@ type CalcMethod = 'standard' | 'business' | 'medical' | 'cycle';
 
 export default function DueDateCalculator() {
   const [method, setMethod] = useState<CalcMethod>('standard');
-  const [startDate, setStartDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [startValues, setStartValues] = useState({
+    day: format(new Date(), 'dd'),
+    month: format(new Date(), 'MM'),
+    year: format(new Date(), 'yyyy')
+  });
   const [duration, setDuration] = useState('30');
   const [unit, setUnit] = useState<'days' | 'weeks' | 'months'>('days');
   const [cycleCount, setCycleCount] = useState('1');
   const [result, setResult] = useState<Date | null>(null);
   const [stats, setSetstats] = useState<{ calDays: number; busDays: number } | null>(null);
 
+  const handleInputChange = (field: 'day' | 'month' | 'year', value: string) => {
+    const numericValue = value.replace(/\D/g, '');
+    let finalValue = numericValue;
+    if (field === 'day' && parseInt(numericValue) > 31) finalValue = '31';
+    if (field === 'month' && parseInt(numericValue) > 12) finalValue = '12';
+    if (field === 'year' && numericValue.length > 4) finalValue = numericValue.slice(0, 4);
+    
+    setStartValues(prev => ({ ...prev, [field]: finalValue }));
+  };
+
   const calculateDueDate = () => {
-    if (!startDate) {
+    const d = parseInt(startValues.day);
+    const m = parseInt(startValues.month);
+    const y = parseInt(startValues.year);
+
+    if (isNaN(d) || isNaN(m) || isNaN(y) || y < 1000) {
       setResult(null);
       setSetstats(null);
       return;
     }
 
-    const start = parseISO(startDate);
-    if (!isValid(start)) {
+    const start = new Date(y, m - 1, d);
+    if (!isValid(start) || start.getFullYear() !== y || start.getMonth() !== m - 1 || start.getDate() !== d) {
       setResult(null);
       setSetstats(null);
       return;
@@ -115,7 +133,7 @@ export default function DueDateCalculator() {
 
   useEffect(() => {
     calculateDueDate();
-  }, [startDate, duration, unit, method, cycleCount]);
+  }, [startValues, duration, unit, method, cycleCount]);
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -163,9 +181,9 @@ export default function DueDateCalculator() {
           </p>
         </div>
 
-        <div className="flex flex-col min-[480px]:flex-row items-start justify-center gap-4 md:gap-8 lg:gap-16">
+        <div className="flex flex-col min-[480px]:row items-start justify-center gap-4 md:gap-8 lg:gap-16 sm:flex-row">
           
-          <div className="w-full min-[480px]:flex-1 max-w-sm space-y-6">
+          <div className="w-full sm:flex-1 max-w-sm space-y-6">
             <div className="glass-card !p-4 md:!p-6 space-y-5 border-border/40 shadow-2xl">
               <div className="space-y-1.5">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Method of Sync</Label>
@@ -187,25 +205,47 @@ export default function DueDateCalculator() {
                   {method === 'medical' ? 'Last Period (Origin)' : 'Execution Start (Origin)'}
                 </Label>
                 <div className="flex gap-2">
-                  <Input 
-                    type="text"
-                    placeholder="YYYY-MM-DD"
-                    value={startDate} 
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="bg-muted/50 border-border h-11 rounded-xl focus:ring-2 focus:ring-primary/20 font-bold text-sm flex-grow"
-                  />
+                  <div className="grid grid-cols-3 gap-1 flex-grow">
+                    <Input 
+                      placeholder="DD"
+                      value={startValues.day} 
+                      onChange={(e) => handleInputChange('day', e.target.value)}
+                      className="bg-muted/50 border-border h-11 rounded-l-xl rounded-r-none focus:ring-2 focus:ring-primary/20 font-bold text-sm text-center px-1"
+                      maxLength={2}
+                    />
+                    <Input 
+                      placeholder="MM"
+                      value={startValues.month} 
+                      onChange={(e) => handleInputChange('month', e.target.value)}
+                      className="bg-muted/50 border-border h-11 rounded-none border-l-0 border-r-0 focus:ring-2 focus:ring-primary/20 font-bold text-sm text-center px-1"
+                      maxLength={2}
+                    />
+                    <Input 
+                      placeholder="YYYY"
+                      value={startValues.year} 
+                      onChange={(e) => handleInputChange('year', e.target.value)}
+                      className="bg-muted/50 border-border h-11 rounded-r-xl rounded-l-none border-l-0 focus:ring-2 focus:ring-primary/20 font-bold text-sm text-center px-1"
+                      maxLength={4}
+                    />
+                  </div>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="outline" className="h-11 w-11 rounded-xl p-0 shrink-0 border-border bg-muted/50 hover:bg-muted">
                         <CalendarIcon className="w-4 h-4 text-primary" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="end">
+                    <PopoverContent className="w-auto p-1 scale-90 origin-top-right" align="end">
                       <Calendar
                         mode="single"
-                        selected={isValid(parseISO(startDate)) ? parseISO(startDate) : undefined}
+                        selected={isValid(new Date(parseInt(startValues.year), parseInt(startValues.month)-1, parseInt(startValues.day))) ? new Date(parseInt(startValues.year), parseInt(startValues.month)-1, parseInt(startValues.day)) : undefined}
                         onSelect={(date) => {
-                          if (date) setStartDate(format(date, 'yyyy-MM-dd'));
+                          if (date) {
+                            setStartValues({
+                              day: format(date, 'dd'),
+                              month: format(date, 'MM'),
+                              year: format(date, 'yyyy')
+                            });
+                          }
                         }}
                         initialFocus
                       />
@@ -262,7 +302,7 @@ export default function DueDateCalculator() {
             </div>
           </div>
 
-          <div className="w-full min-[480px]:flex-1 max-w-[380px] space-y-5">
+          <div className="w-full sm:flex-1 max-w-[380px] space-y-5">
             {result && isValid(result) ? (
               <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 space-y-4">
                 <div className="glass-card !p-5 md:!p-8 border-accent/20 bg-accent/5 text-center relative overflow-hidden group">

@@ -30,9 +30,9 @@ import { Separator } from '@/components/ui/separator';
 export type TimerMode = 'work' | 'short-break' | 'long-break';
 
 export type PomodoroSettings = {
-  workDuration: number; // total minutes
-  shortBreakDuration: number; // total minutes
-  longBreakDuration: number; // total minutes
+  workDuration: number; 
+  shortBreakDuration: number; 
+  longBreakDuration: number; 
   autoStartBreaks: boolean;
   autoStartPomodoros: boolean;
   longBreakInterval: number;
@@ -73,20 +73,20 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
   themeColor: '#ba4949', 
 };
 
-// High-reliability CDN URLs for audio assets
+// High-reliability, stable audio assets
 const ALARM_SOUNDS: Record<string, string> = {
-  kitchen: 'https://cdn.pixabay.com/audio/2021/08/04/audio_06d670a6c4.mp3',
-  bell: 'https://cdn.pixabay.com/audio/2022/03/15/audio_98363765cc.mp3',
-  digital: 'https://cdn.pixabay.com/audio/2022/03/10/audio_5e2d67f561.mp3',
+  kitchen: 'https://actions.google.com/sounds/v1/alarms/mechanical_clock_ring.ogg',
+  bell: 'https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg',
+  digital: 'https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg',
 };
 
 const FOCUS_SOUNDS: Record<string, string> = {
-  'white-noise': 'https://cdn.pixabay.com/audio/2022/03/10/audio_c3527e7d9b.mp3',
-  rain: 'https://cdn.pixabay.com/audio/2021/09/06/audio_4040a453e9.mp3',
-  waves: 'https://cdn.pixabay.com/audio/2022/02/12/audio_f367e174b5.mp3',
+  'white-noise': 'https://actions.google.com/sounds/v1/ambiences/white_noise.ogg',
+  rain: 'https://actions.google.com/sounds/v1/ambiences/rain_on_roof.ogg',
+  waves: 'https://actions.google.com/sounds/v1/ambiences/ocean_waves.ogg',
 };
 
-const CLICK_SOUND_URL = 'https://cdn.pixabay.com/audio/2022/03/15/audio_770e0a5c5b.mp3';
+const CLICK_SOUND_URL = 'https://actions.google.com/sounds/v1/ui/button_click.ogg';
 
 interface PomodoroProps {
   onModeChange?: (mode: TimerMode) => void;
@@ -110,11 +110,18 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const pomodoroCountRef = useRef(0);
+  
+  // Audio Instances
   const alarmAudioRef = useRef<HTMLAudioElement | null>(null);
   const focusAudioRef = useRef<HTMLAudioElement | null>(null);
   const clickAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
+    // Initialize Audio Objects
+    clickAudioRef.current = new Audio(CLICK_SOUND_URL);
+    alarmAudioRef.current = new Audio(ALARM_SOUNDS.kitchen);
+    focusAudioRef.current = new Audio();
+    
     const savedSettings = localStorage.getItem('chrono_pomodoro_settings');
     if (savedSettings) {
       try {
@@ -127,6 +134,10 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
                          mode === 'short-break' ? mergedSettings.shortBreakDuration : 
                          mergedSettings.longBreakDuration;
         setTimeLeft(duration * 60);
+        
+        if (alarmAudioRef.current) {
+          alarmAudioRef.current.src = ALARM_SOUNDS[mergedSettings.alarmSound] || ALARM_SOUNDS.kitchen;
+        }
       } catch (e) {
         console.error("Failed to parse settings", e);
       }
@@ -141,9 +152,10 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
       }
     }
 
-    // Pre-load click sound
-    clickAudioRef.current = new Audio(CLICK_SOUND_URL);
-    clickAudioRef.current.load();
+    return () => {
+      if (focusAudioRef.current) focusAudioRef.current.pause();
+      if (alarmAudioRef.current) alarmAudioRef.current.pause();
+    };
   }, []);
 
   useEffect(() => {
@@ -160,21 +172,17 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
   };
 
   const playAlarm = useCallback(() => {
-    if (settings.alarmSound === 'none') return;
+    if (settings.alarmSound === 'none' || !alarmAudioRef.current) return;
+    
     const soundUrl = ALARM_SOUNDS[settings.alarmSound];
     if (!soundUrl) return;
 
-    if (alarmAudioRef.current) {
-      alarmAudioRef.current.pause();
-      alarmAudioRef.current = null;
-    }
-
     try {
-      const audio = new Audio(soundUrl);
+      const audio = alarmAudioRef.current;
+      audio.src = soundUrl;
       audio.volume = settings.alarmVolume / 100;
-      audio.play().catch((err) => console.warn("Alarm play blocked:", err));
-      alarmAudioRef.current = audio;
-
+      audio.currentTime = 0;
+      
       let repeats = 1;
       audio.onended = () => {
         if (repeats < settings.alarmRepeat) {
@@ -182,59 +190,50 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
           audio.play().catch(() => {});
         }
       };
+      
+      audio.play().catch((err) => console.warn("Alarm play blocked:", err));
     } catch (e) {
-      console.warn("Audio initialization failed");
+      console.warn("Alarm playback failed", e);
     }
   }, [settings.alarmSound, settings.alarmVolume, settings.alarmRepeat]);
 
   const playClickSound = useCallback(() => {
     if (!settings.clickSoundEnabled || !clickAudioRef.current) return;
     try {
-      clickAudioRef.current.currentTime = 0;
-      clickAudioRef.current.volume = settings.alarmVolume / 100;
-      clickAudioRef.current.play().catch((err) => console.warn("Click play blocked:", err));
+      const audio = clickAudioRef.current;
+      audio.currentTime = 0;
+      audio.volume = settings.alarmVolume / 100;
+      audio.play().catch((err) => console.warn("Click play blocked:", err));
     } catch (e) {
-      // Ignore click sound errors
+      // Ignore click failures
     }
   }, [settings.clickSoundEnabled, settings.alarmVolume]);
 
+  // Handle Focus Sound
   useEffect(() => {
     const manageFocusAudio = async () => {
+      if (!focusAudioRef.current) return;
+      
+      const audio = focusAudioRef.current;
+      
       if (isActive && mode === 'work' && settings.focusSound !== 'none') {
         const soundUrl = FOCUS_SOUNDS[settings.focusSound];
         if (soundUrl) {
-          if (focusAudioRef.current && focusAudioRef.current.src !== soundUrl) {
-            focusAudioRef.current.pause();
-            focusAudioRef.current = null;
-          }
-
-          if (!focusAudioRef.current) {
-            const audio = new Audio(soundUrl);
+          if (audio.src !== soundUrl) {
+            audio.src = soundUrl;
             audio.loop = true;
-            audio.volume = settings.focusVolume / 100;
-            audio.play().catch((err) => console.warn("Focus sound blocked:", err));
-            focusAudioRef.current = audio;
-          } else {
-            focusAudioRef.current.volume = settings.focusVolume / 100;
-            if (focusAudioRef.current.paused) {
-              focusAudioRef.current.play().catch(() => {});
-            }
           }
+          audio.volume = settings.focusVolume / 100;
+          audio.play().catch((err) => console.warn("Focus sound blocked:", err));
+        } else {
+          audio.pause();
         }
       } else {
-        if (focusAudioRef.current) {
-          focusAudioRef.current.pause();
-        }
+        audio.pause();
       }
     };
 
     manageFocusAudio();
-
-    return () => {
-      if (focusAudioRef.current) {
-        focusAudioRef.current.pause();
-      }
-    };
   }, [isActive, mode, settings.focusSound, settings.focusVolume]);
 
   const fetchMantra = useCallback(async (currentMode: TimerMode, currentTask?: string) => {
@@ -278,7 +277,7 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
       timerRef.current = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
-    } else if (timeLeft === 0 && isActive) {
+    } else if (timeLeft <= 0 && isActive) {
       handleTimerComplete();
     }
 
@@ -300,6 +299,16 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
 
   const toggleTimer = () => {
     playClickSound();
+    
+    // Prime Audio for Alarm (Unlocks the audio buffer for later non-gesture play)
+    if (!isActive && alarmAudioRef.current) {
+      const audio = alarmAudioRef.current;
+      audio.play().then(() => {
+        audio.pause();
+        audio.currentTime = 0;
+      }).catch(() => {});
+    }
+
     setIsActive(!isActive);
   };
 
@@ -346,6 +355,10 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
     localStorage.setItem('chrono_pomodoro_settings', JSON.stringify(newSettings));
     if (onSettingsChange) onSettingsChange(newSettings);
     
+    if (alarmAudioRef.current) {
+      alarmAudioRef.current.src = ALARM_SOUNDS[newSettings.alarmSound];
+    }
+
     if (!isActive) {
       const duration = mode === 'work' ? newSettings.workDuration : 
                        mode === 'short-break' ? newSettings.shortBreakDuration : 
@@ -613,6 +626,7 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
                           <SelectItem value="kitchen">Kitchen</SelectItem>
                           <SelectItem value="bell">Bell</SelectItem>
                           <SelectItem value="digital">Digital</SelectItem>
+                          <SelectItem value="none">None</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

@@ -29,8 +29,26 @@ export default function PrecisionCalculator() {
     return () => clearInterval(interval);
   }, []);
 
+  const formatResult = (num: number): string => {
+    if (isNaN(num)) return "Error";
+    if (!isFinite(num)) return "Infinity";
+    
+    // If number is very large or very small (but not 0), use scientific notation with fixed precision
+    if (Math.abs(num) > 1e12 || (Math.abs(num) < 1e-7 && num !== 0)) {
+      return num.toExponential(6);
+    }
+    
+    // Otherwise, use standard notation and strip trailing zeros
+    return parseFloat(num.toFixed(10)).toString();
+  };
+
   const handleNumber = (num: string) => {
-    setDisplay(prev => prev === '0' ? num : prev + num);
+    setDisplay(prev => {
+      if (prev === '0' && num !== '.') return num;
+      if (prev.includes('.') && num === '.') return prev;
+      if (prev.length > 18) return prev; // Capped for visual sanity
+      return prev + num;
+    });
   };
 
   const handleOperator = (op: string) => {
@@ -39,7 +57,7 @@ export default function PrecisionCalculator() {
   };
 
   const factorial = (n: number): number => {
-    if (n < 0) return NaN;
+    if (n < 0 || n > 170) return NaN; // JS infinity after 170!
     if (n === 0) return 1;
     let res = 1;
     for (let i = 1; i <= n; i++) res *= i;
@@ -50,10 +68,9 @@ export default function PrecisionCalculator() {
     try {
       const fullExpression = expression + display;
       const cleanExpr = fullExpression.replace('×', '*').replace('÷', '/');
-      // Note: In a production app, use a proper math parser like mathjs. 
-      // Eval is used here for simplified MVP logic within safe constraints.
+      // Note: Eval is used for simplified logic in this MVP.
       const result = eval(cleanExpr);
-      const formattedResult = Number(result.toFixed(10)).toString();
+      const formattedResult = formatResult(result);
       
       setHistory(prev => [fullExpression + ' = ' + formattedResult, ...prev].slice(0, 5));
       setDisplay(formattedResult);
@@ -69,7 +86,6 @@ export default function PrecisionCalculator() {
       let val = parseFloat(display);
       let res = 0;
       
-      // Convert to radians if needed for trig
       const trigVal = isRadians ? val : val * (Math.PI / 180);
 
       switch (func) {
@@ -86,9 +102,9 @@ export default function PrecisionCalculator() {
         case 'fact': res = factorial(val); break;
         case 'abs': res = Math.abs(val); break;
         case 'pi': setDisplay(Math.PI.toString()); return;
-        case 'c': setDisplay('299792458'); return; // Speed of light m/s
+        case 'c': setDisplay('299792458'); return;
       }
-      setDisplay(Number(res.toFixed(10)).toString());
+      setDisplay(formatResult(res));
     } catch (e) {
       setDisplay('Error');
     }
@@ -96,7 +112,7 @@ export default function PrecisionCalculator() {
 
   const handleMemory = (action: 'M+' | 'MR' | 'MC') => {
     if (action === 'M+') setMemory(prev => prev + parseFloat(display));
-    if (action === 'MR') setDisplay(memory.toString());
+    if (action === 'MR') setDisplay(formatResult(memory));
     if (action === 'MC') setMemory(0);
   };
 
@@ -200,17 +216,17 @@ export default function PrecisionCalculator() {
           <div className="w-full max-w-[380px] flex flex-col gap-4 animate-in slide-in-from-right-8 duration-700">
             <div className="w-full glass-card !p-0 overflow-hidden shadow-2xl border-border/40">
               {/* Display Area */}
-              <div className="bg-black/5 dark:bg-black/20 p-5 text-right space-y-1 border-b border-border/40">
+              <div className="bg-black/5 dark:bg-black/20 p-5 text-right space-y-1 border-b border-border/40 min-h-[100px] flex flex-col justify-end">
                 <div className="flex justify-between items-center mb-1">
                   <div className="flex gap-2">
                     <Badge variant="outline" className={cn("text-[8px] px-2 py-0 h-4 uppercase font-black tracking-widest", isRadians ? "text-primary border-primary/20" : "text-muted-foreground")}>RAD</Badge>
                     <Badge variant="outline" className={cn("text-[8px] px-2 py-0 h-4 uppercase font-black tracking-widest", !isRadians ? "text-primary border-primary/20" : "text-muted-foreground")}>DEG</Badge>
                   </div>
-                  <div className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/50 h-3">
+                  <div className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/50 h-3 truncate max-w-[200px]">
                     {expression}
                   </div>
                 </div>
-                <div className="text-3xl md:text-4xl font-black tracking-tight tabular-nums overflow-hidden text-ellipsis">
+                <div className="text-2xl md:text-3xl font-black tracking-tight tabular-nums overflow-hidden text-ellipsis whitespace-nowrap">
                   {display}
                 </div>
               </div>
@@ -258,7 +274,7 @@ export default function PrecisionCalculator() {
                 )}
 
                 <CalcButton onClick={clear} className="bg-destructive/10 text-destructive font-black">AC</CalcButton>
-                <CalcButton onClick={() => setDisplay(prev => prev.slice(0, -1) || '0')} className="bg-muted/30">C</CalcButton>
+                <CalcButton onClick={() => setDisplay(prev => prev.length > 1 ? prev.slice(0, -1) : '0')} className="bg-muted/30">C</CalcButton>
                 <CalcButton onClick={() => handleMemory('MC')} className="bg-muted/30">MC</CalcButton>
                 <CalcButton onClick={() => handleOperator('/')} className="bg-accent/10 text-accent">÷</CalcButton>
 
@@ -295,7 +311,7 @@ export default function PrecisionCalculator() {
                     <p className="text-[9px] text-muted-foreground/30 italic">No operational data</p>
                   ) : (
                     history.slice(0, 3).map((item, i) => (
-                      <p key={i} className="text-[10px] font-mono text-muted-foreground/80 line-clamp-1 border-l border-primary/20 pl-2">{item}</p>
+                      <p key={i} className="text-[10px] font-mono text-muted-foreground/80 truncate border-l border-primary/20 pl-2">{item}</p>
                     ))
                   )}
                 </div>
@@ -312,7 +328,7 @@ export default function PrecisionCalculator() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-[8px] font-bold text-muted-foreground/60 uppercase">Memory</span>
-                    <span className="text-[9px] font-black text-accent">{memory.toFixed(2)}</span>
+                    <span className="text-[9px] font-black text-accent truncate max-w-[60px]">{formatResult(memory)}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-[8px] font-bold text-muted-foreground/60 uppercase">Uptime</span>

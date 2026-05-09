@@ -9,7 +9,7 @@ import {
   Activity, Binary, Terminal,
   Atom, Database, Layers, Globe, 
   Settings, Target, Network, Server,
-  Compass, FlaskConical, BarChart3, ChevronRight
+  Compass, FlaskConical, BarChart3, ChevronRight, ExternalLink
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -155,9 +155,12 @@ export default function PrecisionCalculator() {
             <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center neon-glow group-hover:scale-110 transition-transform">
               <Timer className="text-primary-foreground w-7 h-7" />
             </div>
-            <h1 className="text-[10px] sm:text-lg font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
-              CHRONOFLOW
-            </h1>
+            <div className="flex flex-col">
+              <h1 className="text-lg font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase leading-none">
+                CHRONOFLOW
+              </h1>
+              <span className="text-[7px] font-bold tracking-[0.3em] text-primary/60 uppercase mt-1">camly.org</span>
+            </div>
           </Link>
         </div>
 
@@ -168,6 +171,11 @@ export default function PrecisionCalculator() {
         </div>
 
         <div className="flex items-center gap-2">
+          <Link href="https://camly.org" target="_blank">
+            <Button variant="ghost" size="sm" className="hidden lg:flex rounded-full text-[10px] font-black uppercase tracking-widest gap-2 h-8 px-4 border border-transparent hover:border-primary/20 transition-all">
+              camly.org <ExternalLink className="w-3 h-3" />
+            </Button>
+          </Link>
           <Link href="/">
             <Button variant="ghost" size="sm" className="rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest gap-2 h-8 px-2 md:px-3">
               <ArrowLeft className="w-3 h-3" /> <span className="inline">Back</span>

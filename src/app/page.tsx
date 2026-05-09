@@ -245,12 +245,20 @@ function ChronoFlowContent() {
           )}>
             <Timer className={cn("w-7 h-7", activeTab === 'focus' ? "text-white" : "text-primary-foreground")} />
           </div>
-          <h1 className={cn(
-            "text-lg font-black tracking-tighter",
-            activeTab === 'focus' ? "text-white" : "bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent"
-          )}>
-            CHRONOFLOW
-          </h1>
+          <div className="flex flex-col">
+            <h1 className={cn(
+              "text-lg font-black tracking-tighter leading-none",
+              activeTab === 'focus' ? "text-white" : "bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent"
+            )}>
+              CHRONOFLOW
+            </h1>
+            <Link href="https://camly.org" target="_blank" className={cn(
+              "text-[7px] font-bold tracking-[0.3em] uppercase mt-1 flex items-center gap-1 transition-colors",
+              activeTab === 'focus' ? "text-white/60 hover:text-white" : "text-primary/60 hover:text-primary"
+            )}>
+              CAMLY.ORG <ExternalLink className="w-2 h-2" />
+            </Link>
+          </div>
         </div>
 
         <div className="absolute left-1/2 -translate-x-1/2 flex items-center whitespace-nowrap">

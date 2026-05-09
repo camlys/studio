@@ -74,9 +74,9 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
 };
 
 const ALARM_SOUNDS: Record<string, string> = {
-  kitchen: 'https://cdn.pixabay.com/audio/2022/03/10/audio_af2e1f4007.mp3',
-  bell: 'https://cdn.pixabay.com/audio/2022/03/15/audio_784d142646.mp3',
-  digital: 'https://cdn.pixabay.com/audio/2021/08/04/audio_0623259972.mp3',
+  kitchen: 'https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav',
+  bell: 'https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/Bell-Tone.mp3',
+  digital: 'https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/Heather-Tone.mp3',
 };
 
 const FOCUS_SOUNDS: Record<string, string> = {
@@ -85,7 +85,7 @@ const FOCUS_SOUNDS: Record<string, string> = {
   waves: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
 };
 
-const CLICK_SOUND_URL = 'https://cdn.pixabay.com/audio/2022/03/24/audio_71720d20d3.mp3';
+const CLICK_SOUND_URL = 'https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/Door-Bell.mp3';
 
 interface PomodoroProps {
   onModeChange?: (mode: TimerMode) => void;
@@ -163,54 +163,66 @@ export function Pomodoro({ onModeChange, onSettingsChange, onTimerActiveChange, 
       alarmAudioRef.current = null;
     }
 
-    const audio = new Audio(soundUrl);
-    audio.volume = settings.alarmVolume / 100;
-    audio.play().catch(e => console.error("Alarm playback failed", e));
-    alarmAudioRef.current = audio;
+    try {
+      const audio = new Audio(soundUrl);
+      audio.volume = settings.alarmVolume / 100;
+      audio.play().catch(() => {});
+      alarmAudioRef.current = audio;
 
-    let repeats = 1;
-    audio.onended = () => {
-      if (repeats < settings.alarmRepeat) {
-        repeats++;
-        audio.play();
-      }
-    };
+      let repeats = 1;
+      audio.onended = () => {
+        if (repeats < settings.alarmRepeat) {
+          repeats++;
+          audio.play().catch(() => {});
+        }
+      };
+    } catch (e) {
+      console.warn("Audio initialization failed");
+    }
   }, [settings.alarmSound, settings.alarmVolume, settings.alarmRepeat]);
 
   const playClickSound = useCallback(() => {
     if (!settings.clickSoundEnabled) return;
-    const audio = new Audio(CLICK_SOUND_URL);
-    audio.volume = settings.alarmVolume / 100;
-    audio.play().catch(e => console.error("Click sound playback failed", e));
+    try {
+      const audio = new Audio(CLICK_SOUND_URL);
+      audio.volume = settings.alarmVolume / 100;
+      audio.play().catch(() => {});
+    } catch (e) {
+      // Ignore click sound errors
+    }
   }, [settings.clickSoundEnabled, settings.alarmVolume]);
 
   useEffect(() => {
-    if (isActive && mode === 'work' && settings.focusSound !== 'none') {
-      const soundUrl = FOCUS_SOUNDS[settings.focusSound];
-      if (soundUrl) {
-        if (focusAudioRef.current && focusAudioRef.current.src !== soundUrl) {
-          focusAudioRef.current.pause();
-          focusAudioRef.current = null;
-        }
+    const manageFocusAudio = async () => {
+      if (isActive && mode === 'work' && settings.focusSound !== 'none') {
+        const soundUrl = FOCUS_SOUNDS[settings.focusSound];
+        if (soundUrl) {
+          if (focusAudioRef.current && focusAudioRef.current.src !== soundUrl) {
+            focusAudioRef.current.pause();
+            focusAudioRef.current = null;
+          }
 
-        if (!focusAudioRef.current) {
-          const audio = new Audio(soundUrl);
-          audio.loop = true;
-          audio.volume = settings.focusVolume / 100;
-          audio.play().catch(e => console.error("Focus sound playback failed", e));
-          focusAudioRef.current = audio;
-        } else {
-          focusAudioRef.current.volume = settings.focusVolume / 100;
-          if (focusAudioRef.current.paused) {
-            focusAudioRef.current.play().catch(e => console.error("Focus sound resume failed", e));
+          if (!focusAudioRef.current) {
+            const audio = new Audio(soundUrl);
+            audio.loop = true;
+            audio.volume = settings.focusVolume / 100;
+            audio.play().catch(() => {});
+            focusAudioRef.current = audio;
+          } else {
+            focusAudioRef.current.volume = settings.focusVolume / 100;
+            if (focusAudioRef.current.paused) {
+              focusAudioRef.current.play().catch(() => {});
+            }
           }
         }
+      } else {
+        if (focusAudioRef.current) {
+          focusAudioRef.current.pause();
+        }
       }
-    } else {
-      if (focusAudioRef.current) {
-        focusAudioRef.current.pause();
-      }
-    }
+    };
+
+    manageFocusAudio();
 
     return () => {
       if (focusAudioRef.current) {

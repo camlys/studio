@@ -8,7 +8,8 @@ import {
   CalendarDays, Hourglass, ArrowRight,
   Settings, Database, Network, Globe,
   ExternalLink, BarChart3, Workflow, Info,
-  Briefcase, HeartPulse, Repeat, Star, Baby, Microscope, Stethoscope
+  Briefcase, HeartPulse, Repeat, Star, Baby, Microscope, Stethoscope,
+  TrendingUp, Flag, Layers, LayoutGrid
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,8 +20,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Slider } from "@/components/ui/slider";
+import { Progress } from "@/components/ui/progress";
 import { cn } from '@/lib/utils';
-import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays, isValid, parseISO, isLeapYear, differenceInWeeks } from 'date-fns';
+import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays, isValid, getQuarter, getDayOfYear, getISOWeek } from 'date-fns';
 import { getZodiacSign } from '@/lib/date-utils';
 
 const dueDateSchema = {
@@ -39,6 +41,18 @@ const dueDateSchema = {
 
 type CalcMethod = 'standard' | 'business' | 'medical' | 'cycle' | 'ivf' | 'crl' | 'conception';
 
+type DetailedStats = {
+  calDays: number;
+  busDays: number;
+  gestation?: string;
+  remaining: number;
+  progress: number;
+  quarter?: string;
+  dayOfYear: number;
+  isoWeek: number;
+  milestones: { label: string; date: string }[];
+};
+
 export default function DueDateCalculator() {
   const [method, setMethod] = useState<CalcMethod>('standard');
   const [startValues, setStartValues] = useState({
@@ -53,7 +67,7 @@ export default function DueDateCalculator() {
   const [crlValue, setCrlValue] = useState(10);
   
   const [result, setResult] = useState<Date | null>(null);
-  const [stats, setSetstats] = useState<{ calDays: number; busDays: number; gestation?: string } | null>(null);
+  const [stats, setStats] = useState<DetailedStats | null>(null);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   // Focus management refs
@@ -85,14 +99,14 @@ export default function DueDateCalculator() {
 
     if (isNaN(d) || isNaN(m) || isNaN(y) || y < 1000) {
       setResult(null);
-      setSetstats(null);
+      setStats(null);
       return;
     }
 
     const start = new Date(y, m - 1, d);
     if (!isValid(start) || start.getFullYear() !== y || start.getMonth() !== m - 1 || start.getDate() !== d) {
       setResult(null);
-      setSetstats(null);
+      setStats(null);
       return;
     }
 
@@ -100,21 +114,39 @@ export default function DueDateCalculator() {
     const cycles = parseInt(cycleCount) || 1;
     let end: Date;
     let gestationStr: string | undefined;
+    let milestones: { label: string; date: string }[] = [];
 
     switch (method) {
-      case 'medical': // LMP
+      case 'medical':
         end = addDays(start, 280);
+        milestones = [
+          { label: "2nd Trimester", date: format(addWeeks(start, 13), 'dd/MM/yy') },
+          { label: "3rd Trimester", date: format(addWeeks(start, 27), 'dd/MM/yy') }
+        ];
         break;
       case 'conception':
         end = addDays(start, 266);
+        milestones = [
+          { label: "Trimester 2", date: format(addWeeks(start, 11), 'dd/MM/yy') },
+          { label: "Trimester 3", date: format(addWeeks(start, 25), 'dd/MM/yy') }
+        ];
         break;
       case 'ivf':
         end = addDays(start, ivfType === '3-day' ? 263 : 261);
+        const lmpEq = addDays(start, ivfType === '3-day' ? -17 : -19);
+        milestones = [
+          { label: "Trimester 2", date: format(addWeeks(lmpEq, 13), 'dd/MM/yy') },
+          { label: "Trimester 3", date: format(addWeeks(lmpEq, 27), 'dd/MM/yy') }
+        ];
         break;
       case 'crl':
-        // clinical: Gestational age (days) = CRL (mm) + 42
         const gaDays = crlValue + 42;
         end = addDays(start, 280 - gaDays);
+        const lmpFromCrl = addDays(start, -gaDays);
+        milestones = [
+          { label: "Trimester 2", date: format(addWeeks(lmpFromCrl, 13), 'dd/MM/yy') },
+          { label: "Trimester 3", date: format(addWeeks(lmpFromCrl, 27), 'dd/MM/yy') }
+        ];
         break;
       case 'business':
         end = addBusinessDays(start, num * cycles);
@@ -136,13 +168,18 @@ export default function DueDateCalculator() {
 
     if (!isValid(end)) {
       setResult(null);
-      setSetstats(null);
+      setStats(null);
       return;
     }
 
+    const today = new Date();
+    const remaining = differenceInDays(end, today);
+    const totalCal = Math.abs(differenceInDays(end, start));
+    const elapsed = Math.max(0, differenceInDays(today, start));
+    const progress = totalCal > 0 ? Math.min(100, Math.round((elapsed / totalCal) * 100)) : 0;
+
     // Gestation string calculation for biological methods
     if (['medical', 'ivf', 'crl', 'conception'].includes(method)) {
-      const today = new Date();
       let lmpOrigin = start;
       if (method === 'conception') lmpOrigin = addDays(start, -14);
       if (method === 'ivf') lmpOrigin = addDays(start, ivfType === '3-day' ? -17 : -19);
@@ -158,9 +195,6 @@ export default function DueDateCalculator() {
       }
     }
 
-    setResult(end);
-
-    const totalCal = Math.abs(differenceInDays(end, start));
     let workDays = 0;
     let curr = new Date(start);
     const target = new Date(end);
@@ -178,8 +212,19 @@ export default function DueDateCalculator() {
         }
       }
     }
-    
-    setSetstats({ calDays: totalCal, busDays: workDays, gestation: gestationStr });
+
+    setResult(end);
+    setStats({
+      calDays: totalCal,
+      busDays: workDays,
+      gestation: gestationStr,
+      remaining,
+      progress,
+      quarter: `Q${getQuarter(end)} FY${format(end, 'yy')}`,
+      dayOfYear: getDayOfYear(end),
+      isoWeek: getISOWeek(end),
+      milestones
+    });
   };
 
   useEffect(() => {
@@ -353,11 +398,11 @@ export default function DueDateCalculator() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Duration Vector</Label>
-                    <Input 
+                    <input 
                       type="number" 
                       value={duration} 
                       onChange={(e) => setDuration(e.target.value)}
-                      className="bg-muted/50 border-border h-11 rounded-xl focus:ring-2 focus:ring-primary/20 font-bold text-sm"
+                      className="flex h-11 w-full rounded-xl border border-border bg-muted/50 px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 font-bold outline-none"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -379,11 +424,11 @@ export default function DueDateCalculator() {
               {method === 'cycle' && (
                 <div className="space-y-1.5">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Cycle Count (Iterations)</Label>
-                  <Input 
+                  <input 
                     type="number" 
                     value={cycleCount} 
                     onChange={(e) => setCycleCount(e.target.value)}
-                    className="bg-muted/50 border-border h-11 rounded-xl focus:ring-2 focus:ring-primary/20 font-bold text-sm"
+                    className="flex h-11 w-full rounded-xl border border-border bg-muted/50 px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 font-bold outline-none"
                   />
                 </div>
               )}
@@ -397,8 +442,8 @@ export default function DueDateCalculator() {
             </div>
           </div>
 
-          <div className="w-full min-[480px]:flex-1 max-w-[380px] space-y-5">
-            {result && isValid(result) ? (
+          <div className="w-full min-[480px]:flex-1 max-w-[420px] space-y-5">
+            {result && isValid(result) && stats ? (
               <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 space-y-4">
                 <div className="glass-card !p-5 md:!p-8 border-accent/20 bg-accent/5 text-center relative overflow-hidden group">
                   <div className="absolute top-0 right-0 p-4 opacity-10">
@@ -417,30 +462,52 @@ export default function DueDateCalculator() {
                   <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
                     <CalendarDays className="w-3 h-3" /> {format(result, 'EEEE')}
                   </div>
+
+                  <div className="mt-6 space-y-2">
+                    <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">
+                      <span>Sync Progress</span>
+                      <span>{stats.progress}%</span>
+                    </div>
+                    <Progress value={stats.progress} className="h-1.5 bg-accent/10" />
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">
-                      {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Duration' : 'Calendar'}
-                    </span>
+                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Countdown</span>
                     <div className="text-lg md:text-xl font-black text-primary">
-                      {stats?.calDays.toLocaleString('en-IN')}
+                      {stats.remaining.toLocaleString('en-IN')}
                     </div>
-                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Total Days</span>
+                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Days To Go</span>
                   </div>
                   <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
                     <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">
                       {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Progress' : 'Velocity'}
                     </span>
                     <div className="text-lg md:text-xl font-black text-accent uppercase">
-                      {stats?.gestation || stats?.busDays.toLocaleString('en-IN')}
+                      {stats.gestation || stats.busDays.toLocaleString('en-IN')}
                     </div>
                     <span className="text-[7px] font-bold uppercase text-muted-foreground/60">
-                      {stats?.gestation ? 'Weeks Gone' : 'Work Days'}
+                      {stats.gestation ? 'Weeks Gone' : 'Work Days'}
                     </span>
                   </div>
                 </div>
+
+                {stats.milestones.length > 0 && (
+                  <div className="glass-card !p-4 md:!p-5 border-border/40 space-y-4">
+                    <h4 className="text-[9px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                      <Flag className="w-3 h-3 text-primary" /> Critical Milestones
+                    </h4>
+                    <div className="grid grid-cols-1 gap-2">
+                      {stats.milestones.map((ms, idx) => (
+                        <div key={idx} className="flex items-center justify-between p-2.5 rounded-lg bg-muted/30 border border-border/20">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-foreground/80">{ms.label}</span>
+                          <Badge variant="outline" className="text-[9px] font-mono text-primary border-primary/20">{ms.date}</Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
@@ -448,12 +515,14 @@ export default function DueDateCalculator() {
                     <div className="text-[10px] md:text-sm font-black text-foreground uppercase truncate">
                       {getZodiacSign(result.getDate(), result.getMonth() + 1)}
                     </div>
-                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Phase</span>
+                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Phase Alignment</span>
                   </div>
                   <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Confidence</span>
-                    <div className="text-lg md:text-xl font-black text-accent uppercase">99.9%</div>
-                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Sync</span>
+                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Context</span>
+                    <div className="text-[10px] md:text-sm font-black text-accent uppercase truncate">
+                      {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Biological' : stats.quarter}
+                    </div>
+                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Logic Layer</span>
                   </div>
                 </div>
 
@@ -463,21 +532,8 @@ export default function DueDateCalculator() {
                     <span className="text-[9px] font-black uppercase tracking-widest">Protocol Insight</span>
                   </div>
                   <p className="text-[10px] md:text-[11px] text-muted-foreground leading-relaxed font-medium">
-                    {method === 'business' ? (
-                      "Business mode excludes weekends. Synchronized with Indian corporate cycles and IST."
-                    ) : method === 'medical' ? (
-                      "Standard 280-day obstetric milestones inferred from the Last Menstrual Period."
-                    ) : method === 'ivf' ? (
-                      `IVF synchronization calibrated for a ${ivfType} embryo transfer.`
-                    ) : method === 'crl' ? (
-                      `Ultrasound dating derived from a ${crlValue}mm Crown-Rump Length measurement.`
-                    ) : method === 'conception' ? (
-                      "Target coordinate derived from a fixed 266-day conception-to-birth vector."
-                    ) : method === 'cycle' ? (
-                      `Iterative mapping of ${cycleCount.toLocaleString('en-IN')} cycles across ${duration} ${unit}.`
-                    ) : (
-                      "Absolute Gregorian alignment for maximum chronological precision in the Indian context."
-                    )}
+                    Target Coordinate derived via {method.toUpperCase()} protocol. 
+                    Calculated day of year is {stats.dayOfYear} in ISO-8601 Week {stats.isoWeek}.
                   </p>
                 </div>
               </div>

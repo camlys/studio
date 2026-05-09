@@ -519,9 +519,6 @@ function ChronoFlowContent() {
                 </div>
 
                 <div className="flex flex-wrap gap-3 pt-4">
-                  <Button variant="outline" className="rounded-xl h-11 px-6 gap-2.5 text-[10px] font-black uppercase tracking-widest border-primary/20 hover:bg-primary/5 hover:text-primary transition-all" onClick={handleShare}>
-                    <Share2 className="w-4 h-4" /> Share Insight
-                  </Button>
                   <Button 
                     variant="outline" 
                     className="rounded-xl h-11 px-6 gap-2.5 text-[10px] font-black uppercase tracking-widest border-primary/20 hover:bg-primary/5 hover:text-primary transition-all" 

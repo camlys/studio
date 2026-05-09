@@ -1,8 +1,9 @@
 
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { 
   Sun, Moon, RefreshCcw, Share2, Copy, Timer, ChevronRight, 
   Github, Twitter, Mail, Cpu, Database, ShieldCheck, 
@@ -23,8 +24,9 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { cn } from '@/lib/utils';
 
-export default function ChronoFlow() {
+function ChronoFlowContent() {
   const { toast } = useToast();
+  const searchParams = useSearchParams();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [activeTab, setActiveTab] = useState<'diff' | 'age' | 'focus'>('diff');
   const [pomodoroMode, setPomodoroMode] = useState<TimerMode>('work');
@@ -39,6 +41,14 @@ export default function ChronoFlow() {
   const [results, setResults] = useState<CalculationResults | null>(null);
   const [error, setError] = useState<string | null>(null);
   const tickerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Handle direct tab links from query params
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'focus') setActiveTab('focus');
+    else if (tab === 'age') setActiveTab('age');
+    else if (tab === 'diff') setActiveTab('diff');
+  }, [searchParams]);
 
   useEffect(() => {
     const savedDob = localStorage.getItem('chrono_dob');
@@ -566,8 +576,9 @@ export default function ChronoFlow() {
                   <ChevronRight className="w-3 h-3 opacity-30" />
                   <Link href="/calculator">Precision Calculator</Link>
                 </li>
-                <li className="hover:text-primary cursor-pointer transition-colors flex items-center gap-2">
-                   <ChevronRight className="w-3 h-3 opacity-30" /> Focus Protocols
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                   <ChevronRight className="w-3 h-3 opacity-30" />
+                   <Link href="/?tab=focus">Pomodoro Focus</Link>
                 </li>
                 <li className="hover:text-primary cursor-pointer transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" /> Celestial Mapping
@@ -613,5 +624,13 @@ export default function ChronoFlow() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function ChronoFlow() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center text-[10px] font-black uppercase tracking-widest opacity-20">Initializing Engine...</div>}>
+      <ChronoFlowContent />
+    </Suspense>
   );
 }

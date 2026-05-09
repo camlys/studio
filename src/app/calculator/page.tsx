@@ -440,10 +440,14 @@ export default function PrecisionCalculator() {
           
           <div className="flex justify-center gap-12">
             <div className="space-y-4 text-center">
-              <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">Inference</h4>
+              <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">Operations</h4>
               <ul className="text-[10px] space-y-2 font-bold text-muted-foreground/60">
-                <li className="hover:text-primary cursor-pointer transition-colors">ALU Engine</li>
-                <li className="hover:text-primary cursor-pointer transition-colors">Constants</li>
+                <li className="hover:text-primary transition-colors">
+                  <Link href="/calculator">ALU Engine</Link>
+                </li>
+                <li className="hover:text-primary transition-colors">
+                  <Link href="/?tab=focus">Pomodoro Focus</Link>
+                </li>
               </ul>
             </div>
             <div className="space-y-4 text-center">

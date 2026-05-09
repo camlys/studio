@@ -7,10 +7,13 @@ import {
   ArrowLeft, Cpu, History, 
   ShieldCheck, Timer, Zap, 
   Activity, Binary, Terminal,
-  Atom, Database
+  Atom, Database, Layers, Globe, 
+  Settings, Target, Network, Server,
+  Compass, FlaskConical, BarChart3, ChevronRight
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { cn } from '@/lib/utils';
 
 export default function PrecisionCalculator() {
@@ -134,7 +137,7 @@ export default function PrecisionCalculator() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center neon-glow group-hover:scale-110 transition-transform">
               <Timer className="text-primary-foreground w-5 h-5" />
             </div>
-            <h1 className="text-xs sm:text-lg font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
+            <h1 className="text-[10px] sm:text-lg font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
               CHRONOFLOW
             </h1>
           </Link>
@@ -149,7 +152,7 @@ export default function PrecisionCalculator() {
         <div className="flex items-center gap-2">
           <Link href="/">
             <Button variant="ghost" size="sm" className="rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest gap-2 h-8 px-2 md:px-3">
-              <ArrowLeft className="w-3 h-3" /> <span className="hidden min-[480px]:inline">Back</span>
+              <ArrowLeft className="w-3 h-3" /> <span className="inline">Back</span>
             </Button>
           </Link>
         </div>
@@ -319,12 +322,149 @@ export default function PrecisionCalculator() {
             </div>
           </div>
         </div>
+
+        {/* Rich Content Sections */}
+        <div className="mt-32 space-y-40">
+          <section className="space-y-20">
+            <div className="text-center space-y-4">
+              <Badge className="bg-primary/10 text-primary border-primary/20 uppercase tracking-[0.3em] text-[10px] px-6 py-1.5 font-black">Compute Specification</Badge>
+              <h2 className="text-4xl md:text-7xl font-black tracking-tighter leading-none">High-Fidelity <span className="text-primary">Standards</span></h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-medium">
+                Our inference engine follows the IEEE 754 standard for floating-point arithmetic, ensuring absolute parity for transcendental and hyperbolic operations.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
+                <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                   <Layers className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-2xl font-black mb-4 tracking-tight">ALU Precision</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed opacity-80">
+                  Custom logic gates for handling complex logarithms and power functions with sub-nanosecond instruction cycles.
+                </p>
+              </div>
+              <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-accent/40">
+                <div className="w-16 h-16 rounded-[2rem] bg-accent/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                   <ShieldCheck className="w-8 h-8 text-accent" />
+                </div>
+                <h3 className="text-2xl font-black mb-4 tracking-tight">Error Mitigation</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed opacity-80">
+                  Real-time validation of mathematical inputs prevents overflows and handles edge-case transcendental discontinuities.
+                </p>
+              </div>
+              <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
+                <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                   <Network className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-2xl font-black mb-4 tracking-tight">Protocol Sync</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed opacity-80">
+                  Computational results are processed locally via stateless worker threads, ensuring maximum asset velocity and security.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section className="space-y-16 py-24 bg-muted/30 rounded-[4rem] px-8 md:px-20 border border-border/40 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-20 opacity-[0.02] -rotate-12 group-hover:rotate-0 transition-transform duration-1000">
+              <Atom className="w-96 h-96 text-primary" />
+            </div>
+            <div className="text-center space-y-6 relative z-10">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter">Tactical <span className="text-primary">Vertical</span> Integration</h2>
+              <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto font-medium">The Scientific Inference Engine provides professional-grade logic for the world's most demanding sectors.</p>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
+              <div className="space-y-5 group/item">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                  <Compass className="w-7 h-7 text-primary" />
+                </div>
+                <h4 className="font-black text-sm uppercase tracking-[0.2em]">Aerospace</h4>
+                <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">High-fidelity trigonometric calculations for trajectory analysis and orbital velocity mappings.</p>
+              </div>
+              <div className="space-y-5 group/item">
+                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                  <FlaskConical className="w-7 h-7 text-accent" />
+                </div>
+                <h4 className="font-black text-sm uppercase tracking-[0.2em]">Quantum Research</h4>
+                <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Statistical modeling and probabilistic calculation layers for high-entropy experiment data.</p>
+              </div>
+              <div className="space-y-5 group/item">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                  <BarChart3 className="w-7 h-7 text-primary" />
+                </div>
+                <h4 className="font-black text-sm uppercase tracking-[0.2em]">High-Freq Trading</h4>
+                <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Real-time differential calculus and logarithmic regression for millisecond-level market insights.</p>
+              </div>
+              <div className="space-y-5 group/item">
+                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                  <Target className="w-7 h-7 text-accent" />
+                </div>
+                <h4 className="font-black text-sm uppercase tracking-[0.2em]">Precision Mfg</h4>
+                <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Micro-metric tolerance calculations and structural stress analysis for advanced material science.</p>
+              </div>
+            </div>
+          </section>
+
+          <section className="container max-w-4xl mx-auto text-center space-y-12">
+            <h3 className="text-3xl md:text-5xl font-black tracking-tighter">Synchronize Your Compute</h3>
+            <p className="text-muted-foreground text-sm md:text-lg leading-relaxed">
+              Experience the pinnacle of high-fidelity calculation. Our engine is built to handle the complexity of the future, today.
+            </p>
+            <div className="pt-8">
+               <Link href="/blog/image-and-pdf-resizing-optimization">
+                 <Button className="h-16 px-12 bg-primary text-primary-foreground font-black text-xs uppercase tracking-widest rounded-2xl shadow-2xl hover:scale-105 transition-all group">
+                   Read Technical Whitepaper <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                 </Button>
+               </Link>
+            </div>
+          </section>
+        </div>
       </main>
 
-      <footer className="mt-auto py-8 glass border-t border-border/40 text-center">
-        <p className="text-[10px] uppercase font-black tracking-[0.5em] text-muted-foreground/60">
-          Camly Intelligence • High-Fidelity Compute • © 2024
-        </p>
+      <footer className="mt-auto py-12 glass border-t border-border/40">
+        <div className="container max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
+          <div className="space-y-4 text-center md:text-left">
+            <div className="flex items-center justify-center md:justify-start gap-2">
+              <div className="w-6 h-6 bg-primary rounded-md flex items-center justify-center">
+                <Timer className="text-primary-foreground w-3.5 h-3.5" />
+              </div>
+              <h2 className="text-sm font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase">
+                CHRONOFLOW
+              </h2>
+            </div>
+            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest leading-relaxed">
+              Defining high-precision velocity for professional and tactical computational systems.
+            </p>
+          </div>
+          
+          <div className="flex justify-center gap-12">
+            <div className="space-y-4 text-center">
+              <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">Inference</h4>
+              <ul className="text-[10px] space-y-2 font-bold text-muted-foreground/60">
+                <li className="hover:text-primary cursor-pointer transition-colors">ALU Engine</li>
+                <li className="hover:text-primary cursor-pointer transition-colors">Constants</li>
+              </ul>
+            </div>
+            <div className="space-y-4 text-center">
+              <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">Security</h4>
+              <ul className="text-[10px] space-y-2 font-bold text-muted-foreground/60">
+                <li className="hover:text-primary cursor-pointer transition-colors">Sovereignty</li>
+                <li className="hover:text-primary cursor-pointer transition-colors">Audits</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="text-center md:text-right space-y-4">
+             <p className="text-[10px] uppercase font-black tracking-[0.5em] text-muted-foreground/40">
+               © 2024 Camly Intelligence Group
+             </p>
+             <div className="flex justify-center md:justify-end gap-6">
+                <Link href="/privacy-protocol" className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 hover:text-primary transition-colors">Privacy</Link>
+                <Link href="/terms-of-sync" className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 hover:text-primary transition-colors">Terms</Link>
+             </div>
+          </div>
+        </div>
       </footer>
     </div>
   );

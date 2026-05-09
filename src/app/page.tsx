@@ -10,7 +10,7 @@ import {
   Lock, Star, ArrowRight, CheckCircle, Scale, HeartPulse, 
   Coins, Milestone, Server, Layers, BarChart3, Target, Settings, UserCircle,
   Clock, ArrowUpRight, FileText, Workflow, Calculator as CalcIcon, CalendarDays,
-  LayoutGrid
+  LayoutGrid, Download
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,6 +23,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { cn } from '@/lib/utils';
+import { toPng } from 'html-to-image';
+import { format } from 'date-fns';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -98,6 +100,7 @@ function ChronoFlowContent() {
   const [pomodoroSettings, setPomodoroSettings] = useState<PomodoroSettings | null>(null);
   const [isPomodoroSettingsOpen, setIsPomodoroSettingsOpen] = useState(false);
   const [isTimerActive, setIsTimerActive] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   
   const [fromDate, setFromDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
   const [toDate, setToDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
@@ -105,6 +108,7 @@ function ChronoFlowContent() {
   const [results, setResults] = useState<CalculationResults | null>(null);
   const [error, setError] = useState<string | null>(null);
   const tickerRef = useRef<NodeJS.Timeout | null>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const tab = searchParams.get('tab');
@@ -188,6 +192,33 @@ function ChronoFlowContent() {
       setResults(calculateAll(start, end));
     }
   }, [activeTab, fromDate, toDate]);
+
+  const downloadResults = async () => {
+    if (!resultsRef.current) return;
+    setIsDownloading(true);
+    try {
+      const dataUrl = await toPng(resultsRef.current, {
+        cacheBust: true,
+        backgroundColor: theme === 'dark' ? '#09090b' : '#f9f9f9',
+        style: {
+          transform: 'scale(1)',
+        }
+      });
+      const link = document.createElement('a');
+      link.download = `ChronoFlow_Metrics_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Download failed', err);
+      toast({
+        variant: "destructive",
+        title: "Download Failed",
+        description: "Could not generate the report image.",
+      });
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   const handleReset = () => {
     setFromDate({ day: '', month: '', year: '' });
@@ -391,7 +422,7 @@ function ChronoFlowContent() {
                   <DateInput label="Date of Birth" values={fromDate} onChange={setFromDate} />
                   <DateInput label="Target Timestamp" values={toDate} onChange={setToDate} error={activeTab === 'age' ? error || undefined : undefined} />
                   <Button 
-                    className="w-full h-12 mt-6 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow border border-black dark:border-white"
+                    className="w-full h-12 mt-6 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow border-black dark:border-white border"
                     onClick={handleCalculate}
                   >
                     Compute Age Results
@@ -459,35 +490,46 @@ function ChronoFlowContent() {
                    <Badge variant="outline" className="text-[8px] uppercase tracking-widest border-border bg-muted/30">Latency: 1.2ms</Badge>
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  <ResultCard label="Years" value={results.years} delay="0s" />
-                  <ResultCard label="Months" value={results.months} delay="0.1s" />
-                  <ResultCard label="Days" value={results.days} delay="0.2s" />
-                  <ResultCard label="Days To Birthday" value={results.nextBirthday} subLabel="Milestone Countdown" delay="0.3s" />
-                </div>
+                <div ref={resultsRef} className="space-y-6 bg-background p-2 rounded-3xl">
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <ResultCard label="Years" value={results.years} delay="0s" />
+                    <ResultCard label="Months" value={results.months} delay="0.1s" />
+                    <ResultCard label="Days" value={results.days} delay="0.2s" />
+                    <ResultCard label="Days To Birthday" value={results.nextBirthday} subLabel="Milestone Countdown" delay="0.3s" />
+                  </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <ResultCard label="Previous Birthday" value={results.previousBirthdayDate} subLabel={`${results.daysSincePrevious} Days Elapsed`} delay="0.4s" />
-                  <ResultCard label="Next Birthday" value={results.nextBirthdayDate} subLabel={`${results.nextBirthday} Days Target`} delay="0.5s" />
-                </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <ResultCard label="Previous Birthday" value={results.previousBirthdayDate} subLabel={`${results.daysSincePrevious} Days Elapsed`} delay="0.4s" />
+                    <ResultCard label="Next Birthday" value={results.nextBirthdayDate} subLabel={`${results.nextBirthday} Days Target`} delay="0.5s" />
+                  </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  <ResultCard label="Total Days" value={results.totalDays} className="border-primary/10" delay="0.6s" />
-                  <ResultCard label="Total Hours" value={results.totalHours} className="border-primary/10" delay="0.7s" />
-                  <ResultCard label="Total Minutes" value={results.totalMinutes} className="border-primary/10" delay="0.8s" />
-                  <ResultCard label="Total Seconds" value={results.totalSeconds} className="border-primary/10" delay="0.9s" />
-                </div>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <ResultCard label="Total Days" value={results.totalDays} className="border-primary/10" delay="0.6s" />
+                    <ResultCard label="Total Hours" value={results.totalHours} className="border-primary/10" delay="0.7s" />
+                    <ResultCard label="Total Minutes" value={results.totalMinutes} className="border-primary/10" delay="0.8s" />
+                    <ResultCard label="Total Seconds" value={results.totalSeconds} className="border-primary/10" delay="0.9s" />
+                  </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <ResultCard label="Celestial Mapping" value={results.zodiac} subLabel="Zodiac Alignment" delay="1.0s" />
-                  <ResultCard label="Gregorian Check" value={results.isLeapYear ? "Leap Identified" : "Standard Cycle"} delay="1.1s" />
-                </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <ResultCard label="Celestial Mapping" value={results.zodiac} subLabel="Zodiac Alignment" delay="1.0s" />
+                    <ResultCard label="Gregorian Check" value={results.isLeapYear ? "Leap Identified" : "Standard Cycle"} delay="1.1s" />
+                  </div>
 
-                <FunFact years={results.years} months={results.months} days={results.days} />
+                  <FunFact years={results.years} months={results.months} days={results.days} />
+                </div>
 
                 <div className="flex flex-wrap gap-3 pt-4">
                   <Button variant="outline" className="rounded-xl h-11 px-6 gap-2.5 text-[10px] font-black uppercase tracking-widest border-primary/20 hover:bg-primary/5 hover:text-primary transition-all" onClick={handleShare}>
                     <Share2 className="w-4 h-4" /> Share Insight
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="rounded-xl h-11 px-6 gap-2.5 text-[10px] font-black uppercase tracking-widest border-primary/20 hover:bg-primary/5 hover:text-primary transition-all" 
+                    onClick={downloadResults}
+                    disabled={isDownloading}
+                  >
+                    <Download className={cn("w-4 h-4", isDownloading && "animate-bounce")} /> 
+                    {isDownloading ? 'Capturing...' : 'Download Report'}
                   </Button>
                   <Button variant="outline" className="rounded-xl h-11 px-6 gap-2.5 text-[10px] font-black uppercase tracking-widest border-primary/20 hover:bg-primary/5 hover:text-primary transition-all" onClick={handleShare}>
                     <Copy className="w-4 h-4" /> Copy Metrics

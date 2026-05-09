@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Timer, ArrowLeft, Cpu, Brain, Sparkles, Clock, Share2, Bookmark, CheckCircle, Lightbulb, Zap } from 'lucide-react';
+import { ArrowLeft, Brain, Sparkles, Clock, Share2, Bookmark, Lightbulb, Zap } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -21,7 +21,7 @@ const articleSchema = {
     "name": "ChronoFlow",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://chronoflow.app/logo.png"
+      "url": "https://calculator.camly.org/logo.png"
     }
   },
   "datePublished": "2024-05-22",

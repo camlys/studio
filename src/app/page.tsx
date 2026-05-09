@@ -4,13 +4,12 @@ import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { 
-  Sun, Moon, Share2, Copy, Timer, ChevronRight, 
-  Github, Twitter, Mail, Cpu, Database, ShieldCheck, 
-  ExternalLink, Globe, BookOpen, Zap, Brain, Activity, 
-  Lock, Star, ArrowRight, CheckCircle, Scale, HeartPulse, 
-  Coins, Milestone, Server, Layers, BarChart3, Target, Settings, UserCircle,
-  Clock, ArrowUpRight, FileText, Workflow, Calculator as CalcIcon, CalendarDays,
-  LayoutGrid, Download
+  Sun, Moon, Timer, ChevronRight, 
+  Github, Twitter, Cpu, ShieldCheck, 
+  ExternalLink, Globe, Zap, Activity, 
+  Star, ArrowRight, Scale, HeartPulse, 
+  Coins, Milestone, LayoutGrid, Download,
+  Calculator as CalcIcon, CalendarDays, Copy
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -38,7 +37,7 @@ const homeSchema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "ChronoFlow Age Calculator",
-  "url": "https://chronoflow.app",
+  "url": "https://calculator.camly.org",
   "applicationCategory": "Utility",
   "operatingSystem": "All",
   "description": "A high-precision age and date difference calculator with real-time tracking and AI insights.",
@@ -86,7 +85,7 @@ const breadcrumbSchema = {
     "@type": "ListItem",
     "position": 1,
     "name": "Home",
-    "item": "https://chronoflow.app"
+    "item": "https://calculator.camly.org"
   }]
 };
 

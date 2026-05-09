@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://chronoflow.app';
+  const baseUrl = 'https://calculator.camly.org';
   
   const blogPosts = [
     'ultimate-pregnancy-due-date-masterclass',

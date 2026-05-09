@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/_next/', '/api/'],
     },
-    sitemap: 'https://chronoflow.app/sitemap.xml',
+    sitemap: 'https://calculator.camly.org/sitemap.xml',
   };
 }

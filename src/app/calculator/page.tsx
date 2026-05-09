@@ -48,13 +48,13 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "https://chronoflow.app"
+      "item": "https://calculator.camly.org"
     },
     {
       "@type": "ListItem",
       "position": 2,
       "name": "Scientific Calculator",
-      "item": "https://chronoflow.app/calculator"
+      "item": "https://calculator.camly.org/calculator"
     }
   ]
 };

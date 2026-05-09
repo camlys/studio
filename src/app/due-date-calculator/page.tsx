@@ -3,13 +3,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { 
-  ArrowLeft, Calendar as CalendarIcon, Clock, Timer, Zap, 
-  ShieldCheck, Cpu, Target, Milestone, 
-  CalendarDays, Hourglass, ArrowRight,
-  Settings, Database, Network, Globe,
-  ExternalLink, BarChart3, Workflow, Info,
-  Briefcase, HeartPulse, Repeat, Star, Baby, Microscope, Stethoscope,
-  TrendingUp, Flag, Layers, LayoutGrid, Download,
+  ArrowLeft, Calendar as CalendarIcon, CalendarDays, Zap, 
+  ShieldCheck, Milestone, 
+  Hourglass, ArrowRight,
+  Database, Globe,
+  ExternalLink, Workflow, 
+  Briefcase, Baby, Microscope, Stethoscope,
+  Flag, LayoutGrid, Download,
   Calculator as CalcIcon
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -59,13 +59,13 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "https://chronoflow.app"
+      "item": "https://calculator.camly.org"
     },
     {
       "@type": "ListItem",
       "position": 2,
       "name": "Due Date Engine",
-      "item": "https://chronoflow.app/due-date-calculator"
+      "item": "https://calculator.camly.org/due-date-calculator"
     }
   ]
 };
@@ -403,7 +403,7 @@ export default function DueDateCalculator() {
                     <SelectItem value="ivf" className="flex items-center gap-2 text-xs"><Microscope className="w-3.5 h-3.5 inline mr-2" /> IVF Transfer</SelectItem>
                     <SelectItem value="crl" className="flex items-center gap-2 text-xs"><Baby className="w-3.5 h-3.5 inline mr-2" /> Ultrasound (CRL)</SelectItem>
                     <SelectItem value="conception" className="flex items-center gap-2 text-xs"><Zap className="w-3.5 h-3.5 inline mr-2" /> Conception Date</SelectItem>
-                    <SelectItem value="cycle" className="flex items-center gap-2 text-xs"><Repeat className="w-3.5 h-3.5 inline mr-2" /> Project Cycles</SelectItem>
+                    <SelectItem value="cycle" className="flex items-center gap-2 text-xs"><CalcIcon className="w-3.5 h-3.5 inline mr-2" /> Project Cycles</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -570,7 +570,7 @@ export default function DueDateCalculator() {
                       {format(result, 'dd MMM, yyyy')}
                     </div>
                     <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
-                      <CalendarDays className="w-3 h-3" /> {format(result, 'EEEE')}
+                      <CalendarIcon className="w-3 h-3" /> {format(result, 'EEEE')}
                     </div>
 
                     <div className="mt-6 space-y-2">

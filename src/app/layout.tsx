@@ -9,7 +9,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://chronoflow.app'),
+  metadataBase: new URL('https://calculator.camly.org'),
   title: {
     default: 'ChronoFlow | Premium Age Calculator & Chronology Engine',
     template: '%s | ChronoFlow'
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'ChronoFlow | Premium Age Calculator',
     description: 'High-precision chronological computation engine for professional and tactical use.',
-    url: 'https://chronoflow.app',
+    url: 'https://calculator.camly.org',
     siteName: 'ChronoFlow',
     locale: 'en_US',
     type: 'website',
@@ -56,7 +56,7 @@ const organizationSchema = {
   "@type": "Organization",
   "name": "Camly Inc",
   "url": "https://camly.org",
-  "logo": "https://chronoflow.app/logo.png",
+  "logo": "https://calculator.camly.org/logo.png",
   "sameAs": [
     "https://twitter.com/camly",
     "https://github.com/camly"
@@ -67,10 +67,10 @@ const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "ChronoFlow",
-  "url": "https://chronoflow.app",
+  "url": "https://calculator.camly.org",
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://chronoflow.app/blog?q={search_term_string}",
+    "target": "https://calculator.camly.org/blog?q={search_term_string}",
     "query-input": "required name=search_term_string"
   }
 };

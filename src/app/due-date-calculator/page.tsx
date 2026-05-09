@@ -9,7 +9,7 @@ import {
   Settings, Database, Network, Globe,
   ExternalLink, BarChart3, Workflow, Info,
   Briefcase, HeartPulse, Repeat, Star, Baby, Microscope, Stethoscope,
-  TrendingUp, Flag, Layers, LayoutGrid
+  TrendingUp, Flag, Layers, LayoutGrid, Download
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,7 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from '@/lib/utils';
 import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays, isValid, getQuarter, getDayOfYear, getISOWeek } from 'date-fns';
 import { getZodiacSign } from '@/lib/date-utils';
+import { toPng } from 'html-to-image';
 
 const dueDateSchema = {
   "@context": "https://schema.org",
@@ -69,11 +70,13 @@ export default function DueDateCalculator() {
   const [result, setResult] = useState<Date | null>(null);
   const [stats, setStats] = useState<DetailedStats | null>(null);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // Focus management refs
   const dayInputRef = useRef<HTMLInputElement>(null);
   const monthInputRef = useRef<HTMLInputElement>(null);
   const yearInputRef = useRef<HTMLInputElement>(null);
+  const reportRef = useRef<HTMLDivElement>(null);
 
   const handleInputChange = (field: 'day' | 'month' | 'year', value: string) => {
     const numericValue = value.replace(/\D/g, '');
@@ -227,6 +230,28 @@ export default function DueDateCalculator() {
     });
   };
 
+  const downloadReport = async () => {
+    if (!reportRef.current) return;
+    setIsDownloading(true);
+    try {
+      const dataUrl = await toPng(reportRef.current, {
+        cacheBust: true,
+        backgroundColor: '#f9f9f9',
+        style: {
+          transform: 'scale(1)',
+        }
+      });
+      const link = document.createElement('a');
+      link.download = `ChronoFlow_Tactical_Report_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('oops, something went wrong!', err);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   useEffect(() => {
     calculateDueDate();
   }, [startValues, duration, unit, method, cycleCount, ivfType, crlValue]);
@@ -288,13 +313,13 @@ export default function DueDateCalculator() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="standard" className="flex items-center gap-2 text-xs"><CalendarIcon className="w-3 h-3 inline mr-2" /> Calendar Days</SelectItem>
-                    <SelectItem value="business" className="flex items-center gap-2 text-xs"><Briefcase className="w-3 h-3 inline mr-2" /> Business Days</SelectItem>
-                    <SelectItem value="medical" className="flex items-center gap-2 text-xs"><Stethoscope className="w-3 h-3 inline mr-2" /> LMP (Last Period)</SelectItem>
-                    <SelectItem value="ivf" className="flex items-center gap-2 text-xs"><Microscope className="w-3 h-3 inline mr-2" /> IVF Transfer</SelectItem>
-                    <SelectItem value="crl" className="flex items-center gap-2 text-xs"><Baby className="w-3 h-3 inline mr-2" /> Ultrasound (CRL)</SelectItem>
-                    <SelectItem value="conception" className="flex items-center gap-2 text-xs"><Zap className="w-3 h-3 inline mr-2" /> Conception Date</SelectItem>
-                    <SelectItem value="cycle" className="flex items-center gap-2 text-xs"><Repeat className="w-3 h-3 inline mr-2" /> Project Cycles</SelectItem>
+                    <SelectItem value="standard" className="flex items-center gap-2 text-xs"><CalendarIcon className="w-3.5 h-3.5 inline mr-2" /> Calendar Days</SelectItem>
+                    <SelectItem value="business" className="flex items-center gap-2 text-xs"><Briefcase className="w-3.5 h-3.5 inline mr-2" /> Business Days</SelectItem>
+                    <SelectItem value="medical" className="flex items-center gap-2 text-xs"><Stethoscope className="w-3.5 h-3.5 inline mr-2" /> LMP (Last Period)</SelectItem>
+                    <SelectItem value="ivf" className="flex items-center gap-2 text-xs"><Microscope className="w-3.5 h-3.5 inline mr-2" /> IVF Transfer</SelectItem>
+                    <SelectItem value="crl" className="flex items-center gap-2 text-xs"><Baby className="w-3.5 h-3.5 inline mr-2" /> Ultrasound (CRL)</SelectItem>
+                    <SelectItem value="conception" className="flex items-center gap-2 text-xs"><Zap className="w-3.5 h-3.5 inline mr-2" /> Conception Date</SelectItem>
+                    <SelectItem value="cycle" className="flex items-center gap-2 text-xs"><Repeat className="w-3.5 h-3.5 inline mr-2" /> Project Cycles</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -444,97 +469,111 @@ export default function DueDateCalculator() {
 
           <div className="w-full min-[480px]:flex-1 max-w-[420px] space-y-5">
             {result && isValid(result) && stats ? (
-              <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 space-y-4">
-                <div className="glass-card !p-5 md:!p-8 border-accent/20 bg-accent/5 text-center relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 p-4 opacity-10">
-                    {['medical', 'ivf', 'crl', 'conception'].includes(method) ? (
-                      <Baby className="w-12 h-12 md:w-16 md:h-16 text-accent group-hover:rotate-12 transition-transform duration-1000" />
-                    ) : (
-                      <Milestone className="w-12 h-12 md:w-16 md:h-16 text-accent group-hover:rotate-12 transition-transform duration-1000" />
-                    )}
-                  </div>
-                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-accent mb-3 block">
-                    {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Estimated Due Date' : 'Target Coordinate'}
-                  </span>
-                  <div className="text-2xl md:text-4xl font-black tracking-tighter text-foreground mb-2 md:mb-3 tabular-nums">
-                    {format(result, 'dd MMM, yyyy')}
-                  </div>
-                  <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
-                    <CalendarDays className="w-3 h-3" /> {format(result, 'EEEE')}
-                  </div>
-
-                  <div className="mt-6 space-y-2">
-                    <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">
-                      <span>Sync Progress</span>
-                      <span>{stats.progress}%</span>
+              <div className="space-y-4">
+                <div ref={reportRef} className="animate-in fade-in slide-in-from-bottom-6 duration-700 space-y-4 bg-background p-2 rounded-3xl">
+                  <div className="glass-card !p-5 md:!p-8 border-accent/20 bg-accent/5 text-center relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                      {['medical', 'ivf', 'crl', 'conception'].includes(method) ? (
+                        <Baby className="w-12 h-12 md:w-16 md:h-16 text-accent group-hover:rotate-12 transition-transform duration-1000" />
+                      ) : (
+                        <Milestone className="w-12 h-12 md:w-16 md:h-16 text-accent group-hover:rotate-12 transition-transform duration-1000" />
+                      )}
                     </div>
-                    <Progress value={stats.progress} className="h-1.5 bg-accent/10" />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Countdown</span>
-                    <div className="text-lg md:text-xl font-black text-primary">
-                      {stats.remaining.toLocaleString('en-IN')}
-                    </div>
-                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Days To Go</span>
-                  </div>
-                  <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">
-                      {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Progress' : 'Velocity'}
+                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-accent mb-3 block">
+                      {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Estimated Due Date' : 'Target Coordinate'}
                     </span>
-                    <div className="text-lg md:text-xl font-black text-accent uppercase">
-                      {stats.gestation || stats.busDays.toLocaleString('en-IN')}
+                    <div className="text-2xl md:text-4xl font-black tracking-tighter text-foreground mb-2 md:mb-3 tabular-nums">
+                      {format(result, 'dd MMM, yyyy')}
                     </div>
-                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">
-                      {stats.gestation ? 'Weeks Gone' : 'Work Days'}
-                    </span>
+                    <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                      <CalendarDays className="w-3 h-3" /> {format(result, 'EEEE')}
+                    </div>
+
+                    <div className="mt-6 space-y-2">
+                      <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">
+                        <span>Sync Progress</span>
+                        <span>{stats.progress}%</span>
+                      </div>
+                      <Progress value={stats.progress} className="h-1.5 bg-accent/10" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
+                      <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Countdown</span>
+                      <div className="text-lg md:text-xl font-black text-primary">
+                        {stats.remaining.toLocaleString('en-IN')}
+                      </div>
+                      <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Days To Go</span>
+                    </div>
+                    <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
+                      <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">
+                        {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Progress' : 'Velocity'}
+                      </span>
+                      <div className="text-lg md:text-xl font-black text-accent uppercase">
+                        {stats.gestation || stats.busDays.toLocaleString('en-IN')}
+                      </div>
+                      <span className="text-[7px] font-bold uppercase text-muted-foreground/60">
+                        {stats.gestation ? 'Weeks Gone' : 'Work Days'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {stats.milestones.length > 0 && (
+                    <div className="glass-card !p-4 md:!p-5 border-border/40 space-y-4">
+                      <h4 className="text-[9px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                        <Flag className="w-3.5 h-3.5 text-primary" /> Critical Milestones
+                      </h4>
+                      <div className="grid grid-cols-1 gap-2">
+                        {stats.milestones.map((ms, idx) => (
+                          <div key={idx} className="flex items-center justify-between p-2.5 rounded-lg bg-muted/30 border border-border/20">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-foreground/80">{ms.label}</span>
+                            <Badge variant="outline" className="text-[9px] font-mono text-primary border-primary/20">{ms.date}</Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
+                      <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Celestial</span>
+                      <div className="text-[10px] md:text-sm font-black text-foreground uppercase truncate">
+                        {getZodiacSign(result.getDate(), result.getMonth() + 1)}
+                      </div>
+                      <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Phase Alignment</span>
+                    </div>
+                    <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
+                      <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Context</span>
+                      <div className="text-[10px] md:text-sm font-black text-accent uppercase truncate">
+                        {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Biological' : stats.quarter}
+                      </div>
+                      <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Logic Layer</span>
+                    </div>
+                  </div>
+
+                  <div className="glass-card !p-4 md:!p-5 border-primary/20 bg-primary/5">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Zap className="w-3.5 h-3.5 text-primary" />
+                      <span className="text-[9px] font-black uppercase tracking-widest">Protocol Insight</span>
+                    </div>
+                    <p className="text-[10px] md:text-[11px] text-muted-foreground leading-relaxed font-medium">
+                      Target Coordinate derived via {method.toUpperCase()} protocol. 
+                      Calculated day of year is {stats.dayOfYear} in ISO-8601 Week {stats.isoWeek}.
+                    </p>
                   </div>
                 </div>
 
-                {stats.milestones.length > 0 && (
-                  <div className="glass-card !p-4 md:!p-5 border-border/40 space-y-4">
-                    <h4 className="text-[9px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                      <Flag className="w-3 h-3 text-primary" /> Critical Milestones
-                    </h4>
-                    <div className="grid grid-cols-1 gap-2">
-                      {stats.milestones.map((ms, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-2.5 rounded-lg bg-muted/30 border border-border/20">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-foreground/80">{ms.label}</span>
-                          <Badge variant="outline" className="text-[9px] font-mono text-primary border-primary/20">{ms.date}</Badge>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Celestial</span>
-                    <div className="text-[10px] md:text-sm font-black text-foreground uppercase truncate">
-                      {getZodiacSign(result.getDate(), result.getMonth() + 1)}
-                    </div>
-                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Phase Alignment</span>
-                  </div>
-                  <div className="glass-card !p-3 md:!p-5 border-border/40 text-center">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Context</span>
-                    <div className="text-[10px] md:text-sm font-black text-accent uppercase truncate">
-                      {['medical', 'ivf', 'crl', 'conception'].includes(method) ? 'Biological' : stats.quarter}
-                    </div>
-                    <span className="text-[7px] font-bold uppercase text-muted-foreground/60">Logic Layer</span>
-                  </div>
-                </div>
-
-                <div className="glass-card !p-4 md:!p-5 border-primary/20 bg-primary/5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Zap className="w-3.5 h-3.5 text-primary" />
-                    <span className="text-[9px] font-black uppercase tracking-widest">Protocol Insight</span>
-                  </div>
-                  <p className="text-[10px] md:text-[11px] text-muted-foreground leading-relaxed font-medium">
-                    Target Coordinate derived via {method.toUpperCase()} protocol. 
-                    Calculated day of year is {stats.dayOfYear} in ISO-8601 Week {stats.isoWeek}.
-                  </p>
+                <div className="flex gap-3">
+                  <Button 
+                    onClick={downloadReport} 
+                    disabled={isDownloading}
+                    variant="outline" 
+                    className="w-full h-11 rounded-xl text-[10px] font-black uppercase tracking-widest border-primary/20 hover:bg-primary/5 hover:text-primary gap-2.5 transition-all"
+                  >
+                    <Download className={cn("w-4 h-4", isDownloading && "animate-bounce")} />
+                    {isDownloading ? 'Capturing...' : 'Download Report'}
+                  </Button>
                 </div>
               </div>
             ) : (
@@ -547,7 +586,7 @@ export default function DueDateCalculator() {
 
             <div className="glass-card !p-4 md:!p-5 border-border/40">
               <h4 className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
-                <Database className="w-3 h-3" /> IST Registry History
+                <Database className="w-3.5 h-3.5" /> IST Registry History
               </h4>
               <div className="space-y-1.5 opacity-50">
                 <div className="flex justify-between text-[9px] font-mono">

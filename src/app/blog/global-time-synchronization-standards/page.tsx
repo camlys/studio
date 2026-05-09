@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -42,7 +41,7 @@ export default function TimeSyncArticle() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
       
-      <nav className="sticky top-0 z-50 glass border-b border-border h-14 flex items-center px-4 md:px-8 justify-between">
+      <nav className="relative z-50 glass border-b border-border h-14 flex items-center px-4 md:px-8 justify-between">
         <Link href="/blog" className="flex items-center gap-2 group">
           <ArrowLeft className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:-translate-x-1 transition-all" />
           <span className="text-xs font-bold uppercase tracking-widest hidden sm:inline">Back to Insights</span>

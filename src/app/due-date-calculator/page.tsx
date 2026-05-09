@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -103,7 +102,7 @@ export default function DueDateCalculator() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(dueDateSchema) }}
       />
-      <nav className="sticky top-0 z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between">
+      <nav className="relative z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center neon-glow group-hover:scale-110 transition-transform">

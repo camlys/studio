@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -101,7 +100,7 @@ export default function BlogHub() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }}
       />
-      <nav className="sticky top-0 z-50 glass border-b border-border h-12 flex items-center px-4 md:px-6 justify-between">
+      <nav className="relative z-50 glass border-b border-border h-12 flex items-center px-4 md:px-6 justify-between">
         <Link href="/" className="flex items-center gap-3 group">
           <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center neon-glow group-hover:scale-110 transition-transform">
             <Timer className="text-primary-foreground w-7 h-7" />
@@ -173,7 +172,7 @@ export default function BlogHub() {
               <div className="space-y-4 flex-grow">
                 <div className="flex justify-between items-start">
                   <Badge variant="secondary" className="text-[9px] uppercase tracking-widest">{post.category}</Badge>
-                  <span className="text-[9px] text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" /> {post.readTime}</span>
+                  <span className="text-[9px] text-muted-foreground flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {post.readTime}</span>
                 </div>
                 <h3 className="text-xl font-black tracking-tight group-hover:text-primary transition-colors">{post.title}</h3>
                 <p className="text-muted-foreground text-xs leading-relaxed line-clamp-2">{post.description}</p>

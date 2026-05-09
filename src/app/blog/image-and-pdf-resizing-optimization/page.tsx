@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -48,7 +47,7 @@ export default function ResizerArticle() {
       {/* Reading Progress Indicator */}
       <div className="fixed top-0 left-0 h-1.5 bg-primary w-full z-[60] origin-left animate-in fade-in" style={{ transform: 'scaleX(0.2)' }} />
 
-      <nav className="sticky top-0 z-50 glass border-b border-border h-14 flex items-center px-4 md:px-8 justify-between">
+      <nav className="relative z-50 glass border-b border-border h-14 flex items-center px-4 md:px-8 justify-between">
         <Link href="/blog" className="flex items-center gap-2 group">
           <ArrowLeft className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:-translate-x-1 transition-all" />
           <span className="text-xs font-bold uppercase tracking-widest hidden sm:inline">Back to Insights</span>
@@ -176,7 +175,7 @@ export default function ResizerArticle() {
               </li>
             </ul>
             <p>
-              For a deeper look at how Camly handles these complex operations, visit our <Link href="/security-ops" className="text-primary hover:underline font-bold">Security & Ops Center</Link>, where we detail our stateless document processing infrastructure.
+              For a deeper look how Camly handles these complex operations, visit our <Link href="/security-ops" className="text-primary hover:underline font-bold">Security & Ops Center</Link>, where we detail our stateless document processing infrastructure.
             </p>
           </div>
 
@@ -299,4 +298,3 @@ export default function ResizerArticle() {
     </div>
   );
 }
-

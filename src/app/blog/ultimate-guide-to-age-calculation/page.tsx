@@ -38,7 +38,7 @@ export default function UltimateGuideArticle() {
       {/* Progress Bar (Visual Hack) */}
       <div className="fixed top-0 left-0 h-1 bg-primary w-full z-[60] origin-left animate-in fade-in" style={{ transform: 'scaleX(0.4)' }} />
 
-      <nav className="sticky top-0 z-50 glass border-b border-white/10 h-14 flex items-center px-4 md:px-8 justify-between">
+      <nav className="relative z-50 glass border-b border-white/10 h-14 flex items-center px-4 md:px-8 justify-between">
         <Link href="/blog" className="flex items-center gap-2 group">
           <ArrowLeft className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:-translate-x-1 transition-all" />
           <span className="text-xs font-bold uppercase tracking-widest hidden sm:inline">Back to Insights</span>

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
@@ -235,7 +234,7 @@ function ChronoFlowContent() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <nav className={cn(
-        "sticky top-0 z-50 h-14 flex items-center px-4 md:px-6 justify-between transition-colors duration-700",
+        "relative z-50 h-14 flex items-center px-4 md:px-6 justify-between transition-colors duration-700",
         activeTab === 'focus' ? "bg-black/5 border-b border-white/10" : "glass border-b border-border"
       )}>
         <div className="flex items-center gap-3">

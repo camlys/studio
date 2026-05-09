@@ -278,11 +278,6 @@ function ChronoFlowContent() {
             </div>
           ) : (
             <>
-              <Link href="/blog">
-                <Button variant="ghost" size="sm" className="hidden sm:flex rounded-full hover:bg-accent/10 text-[10px] uppercase font-black tracking-[0.2em] gap-2">
-                  <BookOpen className="w-3.5 h-3.5" /> Insights Hub
-                </Button>
-              </Link>
               <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full hover:bg-accent/10 w-8 h-8">
                 {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </Button>

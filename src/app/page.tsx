@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -236,18 +235,17 @@ export default function ChronoFlow() {
           </h1>
         </div>
 
-        {/* Centered Calculator Link */}
-        <div className="absolute left-1/2 -translate-x-1/2 hidden md:block">
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center">
            <Link href="/calculator">
              <Button 
                variant="ghost" 
                className={cn(
-                 "rounded-full text-[10px] font-black uppercase tracking-[0.2em] gap-2.5 transition-all group",
+                 "rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] gap-2.5 transition-all group",
                  activeTab === 'focus' ? "text-white hover:bg-white/10" : "hover:bg-primary/5 text-primary/60 hover:text-primary"
                )}
              >
                <Cpu className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
-               Precision Calculator
+               <span className="hidden sm:inline">Precision Calculator</span>
              </Button>
            </Link>
         </div>
@@ -449,7 +447,6 @@ export default function ChronoFlow() {
 
         {activeTab !== 'focus' && (
           <div className="mt-32 space-y-40">
-            {/* Methodology Section */}
             <section className="space-y-20">
               <div className="text-center space-y-4">
                 <Badge className="bg-primary/10 text-primary border-primary/20 uppercase tracking-[0.3em] text-[10px] px-6 py-1.5 font-black">Technical whitepaper</Badge>
@@ -482,7 +479,6 @@ export default function ChronoFlow() {
               </div>
             </section>
 
-            {/* Verticals Section */}
             <section className="space-y-16 py-24 bg-muted/30 rounded-[4rem] px-8 md:px-20 border border-border/40 relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-20 opacity-[0.02] -rotate-12 group-hover:rotate-0 transition-transform duration-1000">
                 <Target className="w-96 h-96 text-primary" />
@@ -522,123 +518,6 @@ export default function ChronoFlow() {
                   <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">A high-definition view of chronological timelines for enterprise assets, turning abstract durations into concrete, living data.</p>
                 </div>
               </div>
-            </section>
-
-            {/* Featured Insights Section */}
-            <section className="space-y-16">
-              <div className="flex flex-col md:flex-row justify-between items-end gap-6">
-                <div className="space-y-4">
-                  <Badge className="bg-accent/10 text-accent border-accent/20 uppercase tracking-[0.3em] text-[9px] px-4 font-black">Strategic Intelligence</Badge>
-                  <h2 className="text-4xl md:text-6xl font-black tracking-tighter">Latest <span className="text-accent">Insights</span></h2>
-                </div>
-                <Link href="/blog">
-                  <Button variant="link" className="text-primary font-black uppercase tracking-widest text-xs group">
-                    Visit Knowledge Hub <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <Link href="/blog/digital-asset-velocity-enterprise-guide" className="group">
-                  <div className="glass-card !p-0 overflow-hidden border-border/40 group-hover:border-primary/40 transition-all">
-                    <div className="h-48 bg-gradient-to-br from-primary/10 to-accent/10 relative">
-                       <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:scale-110 transition-transform duration-700">
-                          <Zap className="w-20 h-20 text-primary" />
-                       </div>
-                       <div className="absolute top-4 left-4">
-                          <Badge className="bg-black/50 backdrop-blur-md text-[8px] font-black uppercase tracking-widest border-white/10">Whitepaper</Badge>
-                       </div>
-                    </div>
-                    <div className="p-8 space-y-4">
-                      <h4 className="text-xl font-black tracking-tight leading-tight group-hover:text-primary transition-colors">The Enterprise Blueprint for Digital Asset Velocity</h4>
-                      <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">Maximizing performance through high-precision optimization and edge-compute architectures.</p>
-                      <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-primary pt-2">
-                        READ 9000-WORD GUIDE <ArrowUpRight className="w-3 h-3" />
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-
-                <Link href="/blog/global-time-synchronization-standards" className="group">
-                  <div className="glass-card !p-0 overflow-hidden border-border/40 group-hover:border-accent/40 transition-all">
-                    <div className="h-48 bg-gradient-to-br from-accent/10 to-primary/10 relative">
-                       <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:scale-110 transition-transform duration-700">
-                          <Globe className="w-20 h-20 text-accent" />
-                       </div>
-                       <div className="absolute top-4 left-4">
-                          <Badge className="bg-black/50 backdrop-blur-md text-[8px] font-black uppercase tracking-widest border-white/10">Technical</Badge>
-                       </div>
-                    </div>
-                    <div className="p-8 space-y-4">
-                      <h4 className="text-xl font-black tracking-tight leading-tight group-hover:text-accent transition-colors">Global Time Synchronization Standards</h4>
-                      <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">A master guide to NTP protocols and atomic chronology in high-precision engineering environments.</p>
-                      <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-accent pt-2">
-                        ACCESS DOCUMENT <ArrowUpRight className="w-3 h-3" />
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-
-                <Link href="/blog/image-and-pdf-resizing-optimization" className="group">
-                  <div className="glass-card !p-0 overflow-hidden border-border/40 group-hover:border-primary/40 transition-all">
-                    <div className="h-48 bg-gradient-to-br from-primary/10 to-accent/10 relative">
-                       <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:scale-110 transition-transform duration-700">
-                          <FileText className="w-20 h-20 text-primary" />
-                       </div>
-                       <div className="absolute top-4 left-4">
-                          <Badge className="bg-black/50 backdrop-blur-md text-[8px] font-black uppercase tracking-widest border-white/10">Optimization</Badge>
-                       </div>
-                    </div>
-                    <div className="p-8 space-y-4">
-                      <h4 className="text-xl font-black tracking-tight leading-tight group-hover:text-primary transition-colors">The Master Resizing Protocol for Enterprise</h4>
-                      <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">Deep dive into image and PDF optimization for Core Web Vitals and asset velocity.</p>
-                      <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-primary pt-2">
-                        EXPLORE ANALYSIS <ArrowUpRight className="w-3 h-3" />
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            </section>
-
-            {/* Operations Status Dashboard */}
-            <section className="glass-card !p-12 border-primary/20 bg-primary/5 rounded-[3rem] space-y-12">
-               <div className="flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
-                  <div className="space-y-2">
-                    <h3 className="text-3xl font-black tracking-tighter">System Operations <span className="text-primary">Status</span></h3>
-                    <p className="text-muted-foreground text-sm font-medium">Real-time health monitoring of our global chronological infrastructure.</p>
-                  </div>
-                  <div className="flex gap-4">
-                     <div className="flex flex-col gap-1 items-center md:items-end">
-                        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Active Node</span>
-                        <span className="text-xs font-bold text-accent">CAMLY-ALPHA-01</span>
-                     </div>
-                     <Separator orientation="vertical" className="h-8 hidden md:block" />
-                     <div className="flex flex-col gap-1 items-center md:items-end">
-                        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Global Sync</span>
-                        <span className="text-xs font-bold text-primary">STRATUM-1 ACTIVE</span>
-                     </div>
-                  </div>
-               </div>
-
-               <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                  <div className="space-y-1">
-                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Sync Jitter</p>
-                     <p className="text-2xl font-black text-foreground">0.002ms</p>
-                  </div>
-                  <div className="space-y-1">
-                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">NTP Latency</p>
-                     <p className="text-2xl font-black text-foreground">1.18ms</p>
-                  </div>
-                  <div className="space-y-1">
-                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Uptime</p>
-                     <p className="text-2xl font-black text-foreground">99.998%</p>
-                  </div>
-                  <div className="space-y-1">
-                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Nodes</p>
-                     <p className="text-2xl font-black text-foreground">12 Active</p>
-                  </div>
-               </div>
             </section>
           </div>
         )}
@@ -682,17 +561,15 @@ export default function ChronoFlow() {
             <div className="space-y-6">
               <h3 className={cn("text-[11px] font-black uppercase tracking-[0.3em]", activeTab === 'focus' ? "text-white" : "text-primary")}>Operations</h3>
               <ul className={cn("space-y-3 text-xs font-bold", activeTab === 'focus' ? "text-white/60" : "text-muted-foreground")}>
-                <li className="hover:text-primary cursor-pointer transition-colors flex items-center gap-2">
-                   <ChevronRight className="w-3 h-3 opacity-30" /> Precision Engine
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                  <ChevronRight className="w-3 h-3 opacity-30" />
+                  <Link href="/calculator">Precision Calculator</Link>
                 </li>
                 <li className="hover:text-primary cursor-pointer transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" /> Focus Protocols
                 </li>
                 <li className="hover:text-primary cursor-pointer transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" /> Celestial Mapping
-                </li>
-                <li className="hover:text-primary cursor-pointer transition-colors flex items-center gap-2">
-                   <ChevronRight className="w-3 h-3 opacity-30" /> Delta Analysis
                 </li>
               </ul>
             </div>
@@ -704,15 +581,8 @@ export default function ChronoFlow() {
                   <ChevronRight className="w-3 h-3 opacity-30" />
                   <Link href="/blog">Knowledge Hub</Link>
                 </li>
-                <li className="hover:text-primary transition-colors flex items-center gap-2">
-                  <ChevronRight className="w-3 h-3 opacity-30" />
-                  <Link href="/blog/digital-asset-velocity-enterprise-guide">Strategic Whitepapers</Link>
-                </li>
                 <li className="hover:text-primary cursor-pointer transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" /> Fun Facts API
-                </li>
-                <li className="hover:text-primary cursor-pointer transition-colors flex items-center gap-2">
-                   <ChevronRight className="w-3 h-3 opacity-30" /> Security Audits
                 </li>
               </ul>
             </div>
@@ -724,12 +594,6 @@ export default function ChronoFlow() {
                   <div className={cn("w-2 h-2 rounded-full animate-pulse", activeTab === 'focus' ? "bg-accent" : "bg-accent")} />
                   CAMLY-SYNC-01: ONLINE
                 </div>
-                <div className={cn("flex items-center gap-2 text-[10px] font-mono font-bold", activeTab === 'focus' ? "text-white/60" : "text-muted-foreground")}>
-                  <Cpu className="w-3.5 h-3.5" /> SYSTEM v2.4.8-STABLE
-                </div>
-                <div className={cn("flex items-center gap-2 text-[10px] font-mono font-bold", activeTab === 'focus' ? "text-white/60" : "text-muted-foreground")}>
-                  <ShieldCheck className="w-3.5 h-3.5" /> E2E DATA SOVEREIGNTY
-                </div>
               </div>
             </div>
           </div>
@@ -737,21 +601,13 @@ export default function ChronoFlow() {
           <Separator className={cn("mb-10", activeTab === 'focus' ? "bg-white/10" : "bg-border/60")} />
 
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex flex-col md:flex-row items-center gap-4">
-              <p className={cn("text-[10px] uppercase tracking-[0.5em] font-black", activeTab === 'focus' ? "text-white/30" : "text-muted-foreground/40")}>
-                © 2024 Camly Inc • Defining High-Precision Velocity
-              </p>
-            </div>
+            <p className={cn("text-[10px] uppercase tracking-[0.5em] font-black", activeTab === 'focus' ? "text-white/30" : "text-muted-foreground/40")}>
+              © 2024 Camly Inc • Defining High-Precision Velocity
+            </p>
             <div className="flex gap-8">
               <Link href="/privacy-protocol" className={cn("text-[10px] uppercase tracking-[0.2em] transition-colors font-black", activeTab === 'focus' ? "text-white/40 hover:text-white" : "text-muted-foreground/40 hover:text-primary")}>Privacy Protocol</Link>
               <Link href="/terms-of-sync" className={cn("text-[10px] uppercase tracking-[0.2em] transition-colors font-black", activeTab === 'focus' ? "text-white/40 hover:text-white" : "text-muted-foreground/40 hover:text-primary")}>Terms of Sync</Link>
-              <Link href="/security-ops" className={cn("text-[10px] uppercase tracking-[0.2em] transition-colors font-black", activeTab === 'focus' ? "text-white/40 hover:text-white" : "text-muted-foreground/40 hover:text-primary")}>Security Ops</Link>
             </div>
-          </div>
-          <div className="mt-12 text-center">
-             <p className={cn("text-[11px] uppercase tracking-[1em] font-black opacity-10", activeTab === 'focus' ? "text-white" : "text-foreground")}>
-               PRECISION IN EVERY PIXEL
-             </p>
           </div>
         </div>
       </footer>

@@ -342,8 +342,8 @@ export default function DueDateCalculator() {
       <nav className="relative z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between transition-colors">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center neon-glow group-hover:scale-110 transition-transform">
-              <Image src="/camly.png" alt="Camly Calculator" width={28} height={28} priority className="object-contain" />
+            <div className="flex items-center justify-center transition-all group-hover:scale-110">
+              <Image src="/camly.png" alt="Camly Calculator" width={40} height={40} priority className="object-contain" />
             </div>
             <div className="flex flex-col">
               <h1 className="text-lg font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase font-roboto-slab">
@@ -815,8 +815,8 @@ export default function DueDateCalculator() {
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-20">
             <div className="col-span-2 lg:col-span-2 space-y-6">
               <div className="flex items-center gap-3">
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center transition-all bg-primary neon-glow">
-                  <Image src="/camly.png" alt="Camly Calculator" width={32} height={32} className="object-contain" />
+                <div className="flex items-center justify-center transition-all">
+                  <Image src="/camly.png" alt="Camly Calculator" width={48} height={48} className="object-contain" />
                 </div>
                 <h2 className="text-xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase font-roboto-slab">
                   CALCULATOR

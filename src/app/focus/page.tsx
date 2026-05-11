@@ -74,7 +74,7 @@ function FocusPageContent() {
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-12 h-12 rounded-lg flex items-center justify-center transition-all bg-white/20 group-hover:scale-110">
-              <Image src="/camlycalc.png" alt="Camly Calculator" width={28} height={28} priority className="object-contain" />
+              <Image src="/camly.png" alt="Camly Calculator" width={28} height={28} priority className="object-contain" />
             </div>
             <div className="flex flex-col">
               <h1 className="text-lg font-black tracking-tighter leading-none font-roboto-slab uppercase text-white">
@@ -204,7 +204,7 @@ function FocusPageContent() {
             <div className="col-span-2 lg:col-span-2 space-y-6">
               <div className="flex items-center gap-3">
                 <div className="w-14 h-14 rounded-xl flex items-center justify-center transition-all bg-white/20">
-                  <Image src="/camlycalc.png" alt="Camly Calculator" width={32} height={32} className="object-contain" />
+                  <Image src="/camly.png" alt="Camly Calculator" width={32} height={32} className="object-contain" />
                 </div>
                 <h2 className="text-xl font-black tracking-tighter text-white uppercase font-roboto-slab">
                   FOCUS ENGINE

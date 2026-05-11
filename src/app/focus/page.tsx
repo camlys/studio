@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { 
   Timer, ExternalLink, Sun, Moon, 
   LayoutGrid, Settings, BarChart3, ArrowLeft,
-  FileType, Calculator as CalcIcon, CalendarDays, ArrowRight
+  FileType, Calculator as CalcIcon, CalendarDays, ArrowRight,
+  Github, Twitter, Globe, ChevronRight
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,6 +21,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
+import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const focusSchema = {
   "@context": "https://schema.org",
@@ -70,7 +74,7 @@ function FocusPageContent() {
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-12 h-12 rounded-lg flex items-center justify-center transition-all bg-white/20 group-hover:scale-110">
-              <Timer className="w-7 h-7 text-white" />
+              <Image src="/camlycalc.png" alt="Camly Calculator" width={28} height={28} priority className="object-contain" />
             </div>
             <div className="flex flex-col">
               <h1 className="text-lg font-black tracking-tighter leading-none font-roboto-slab uppercase text-white">
@@ -200,7 +204,7 @@ function FocusPageContent() {
             <div className="col-span-2 lg:col-span-2 space-y-6">
               <div className="flex items-center gap-3">
                 <div className="w-14 h-14 rounded-xl flex items-center justify-center transition-all bg-white/20">
-                  <Timer className="w-8 h-8 text-white" />
+                  <Image src="/camlycalc.png" alt="Camly Calculator" width={32} height={32} className="object-contain" />
                 </div>
                 <h2 className="text-xl font-black tracking-tighter text-white uppercase font-roboto-slab">
                   FOCUS ENGINE
@@ -210,22 +214,31 @@ function FocusPageContent() {
                 High-precision focus synchronization for deep work and biological rest.
                 Synchronize your workflow with absolute parity.
               </p>
+              <div className="flex gap-5">
+                <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-white/10 border border-white/20"><Github className="w-4 h-4 text-white" /></Button>
+                <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-white/10 border border-white/20"><Twitter className="w-4 h-4 text-white" /></Button>
+                <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-white/10 border border-white/20"><Globe className="w-4 h-4 text-white" /></Button>
+              </div>
             </div>
 
             <div className="space-y-6">
               <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-white/60">Operations</h3>
               <ul className="space-y-3 text-xs font-bold text-white/40">
-                <li className="hover:text-white transition-colors">
+                <li className="hover:text-white transition-colors flex items-center gap-2">
+                  <ChevronRight className="w-3 h-3 opacity-30" />
                   <Link href="/due-date-calculator">Due Date</Link>
                 </li>
-                <li className="hover:text-white transition-colors">
+                <li className="hover:text-white transition-colors flex items-center gap-2">
+                  <ChevronRight className="w-3 h-3 opacity-30" />
                   <Link href="/calculator">Precision Calculator</Link>
                 </li>
-                <li className="hover:text-white transition-colors">
+                <li className="hover:text-white transition-colors flex items-center gap-2">
+                  <ChevronRight className="w-3 h-3 opacity-30" />
                   <Link href="/focus">Focus Mode</Link>
                 </li>
-                <li className="hover:text-white transition-colors">
-                  <Link href="/">Age Calculator</Link>
+                <li className="hover:text-white transition-colors flex items-center gap-2">
+                   <ChevronRight className="w-3 h-3 opacity-30" />
+                   <Link href="/">Age Calculator</Link>
                 </li>
               </ul>
             </div>
@@ -233,11 +246,12 @@ function FocusPageContent() {
             <div className="space-y-6">
               <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-white/60">Intelligence</h3>
               <ul className="space-y-3 text-xs font-bold text-white/40">
-                <li className="hover:text-white transition-colors">
+                <li className="hover:text-white transition-colors flex items-center gap-2">
+                  <ChevronRight className="w-3 h-3 opacity-30" />
                   <Link href="/blog">Knowledge Hub</Link>
                 </li>
-                <li className="hover:text-white cursor-pointer transition-colors">
-                   Fun Facts API
+                <li className="hover:text-white cursor-pointer transition-colors flex items-center gap-2">
+                   <ChevronRight className="w-3 h-3 opacity-30" /> Fun Facts API
                 </li>
               </ul>
             </div>
@@ -249,14 +263,21 @@ function FocusPageContent() {
                   <div className="w-2 h-2 rounded-full animate-pulse bg-white" />
                   CAMLY-SYNC-01: ONLINE
                 </div>
+                <InstallPWA />
               </div>
             </div>
           </div>
+
+          <Separator className="mb-10 bg-white/10" />
 
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <p className="text-[10px] uppercase tracking-[0.5em] font-black text-white/30">
               © 2024 Camly Inc • Defining High-Precision Velocity
             </p>
+            <div className="flex gap-8">
+              <Link href="/privacy-protocol" className="text-[10px] uppercase tracking-[0.2em] transition-colors font-black text-white/30 hover:text-white">Privacy Protocol</Link>
+              <Link href="/terms-of-sync" className="text-[10px] uppercase tracking-[0.2em] transition-colors font-black text-white/30 hover:text-white">Terms of Sync</Link>
+            </div>
           </div>
         </div>
       </footer>

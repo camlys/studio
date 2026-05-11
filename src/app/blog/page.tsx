@@ -237,7 +237,10 @@ export default function BlogHub() {
                   <Link href="/calculator">Scientific ALU</Link>
                 </li>
                 <li className="hover:text-primary transition-colors">
-                  <Link href="/?tab=focus">Focus Mode</Link>
+                  <Link href="/focus">Focus Mode</Link>
+                </li>
+                <li className="hover:text-primary transition-colors">
+                  <Link href="/">Age Engine</Link>
                 </li>
               </ul>
             </div>

@@ -18,7 +18,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DateInput } from '@/components/chrono/DateInput';
 import { ResultCard } from '@/components/chrono/ResultCard';
 import { FunFact } from '@/components/chrono/FunFact';
-import { Pomodoro, TimerMode, PomodoroSettings } from '@/components/chrono/Pomodoro';
 import { InstallPWA } from '@/components/chrono/InstallPWA';
 import { isValidDate, calculateAll, DateInputValues, CalculationResults } from '@/lib/date-utils';
 import { useToast } from '@/hooks/use-toast';
@@ -94,14 +93,8 @@ const breadcrumbSchema = {
 
 function ChronoFlowContent() {
   const { toast } = useToast();
-  const searchParams = useSearchParams();
   const router = useRouter();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [activeTab, setActiveTab] = useState<'age' | 'focus' | 'calculator' | 'due-date'>('age');
-  const [pomodoroMode, setPomodoroMode] = useState<TimerMode>('work');
-  const [pomodoroSettings, setPomodoroSettings] = useState<PomodoroSettings | null>(null);
-  const [isPomodoroSettingsOpen, setIsPomodoroSettingsOpen] = useState(false);
-  const [isTimerActive, setIsTimerActive] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   
   const [fromDate, setFromDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
@@ -111,14 +104,6 @@ function ChronoFlowContent() {
   const [error, setError] = useState<string | null>(null);
   const tickerRef = useRef<NodeJS.Timeout | null>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const tab = searchParams.get('tab');
-    if (tab === 'focus') setActiveTab('focus');
-    else if (tab === 'calculator') setActiveTab('calculator');
-    else if (tab === 'due-date') setActiveTab('due-date');
-    else setActiveTab('age');
-  }, [searchParams]);
 
   useEffect(() => {
     const savedFrom = localStorage.getItem('chrono_from');
@@ -150,16 +135,12 @@ function ChronoFlowContent() {
   }, [fromDate, toDate]);
 
   useEffect(() => {
-    const isOverriddenDark = isTimerActive && pomodoroSettings?.darkModeWhenRunning;
-    document.documentElement.classList.toggle('dark', isOverriddenDark || theme === 'dark');
-    
-    if (!isOverriddenDark) {
-      localStorage.setItem('chrono_theme', theme);
-    }
-  }, [theme, isTimerActive, pomodoroSettings?.darkModeWhenRunning]);
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem('chrono_theme', theme);
+  }, [theme]);
 
   useEffect(() => {
-    if (results && activeTab === 'age') {
+    if (results) {
       tickerRef.current = setInterval(() => {
         setResults(prev => {
           if (!prev) return null;
@@ -177,23 +158,21 @@ function ChronoFlowContent() {
     return () => {
       if (tickerRef.current) clearInterval(tickerRef.current);
     };
-  }, [results === null, activeTab]);
+  }, [results === null]);
 
   const handleCalculate = useCallback(() => {
     setError(null);
     if (tickerRef.current) clearInterval(tickerRef.current);
 
-    if (activeTab === 'age') {
-      if (!isValidDate(fromDate.day, fromDate.month, fromDate.year) || 
-          !isValidDate(toDate.day, toDate.month, toDate.year)) {
-        setError("Invalid dates.");
-        return;
-      }
-      const start = new Date(parseInt(fromDate.year), parseInt(fromDate.month) - 1, parseInt(fromDate.day));
-      const end = new Date(parseInt(toDate.year), parseInt(toDate.month) - 1, parseInt(toDate.day));
-      setResults(calculateAll(start, end));
+    if (!isValidDate(fromDate.day, fromDate.month, fromDate.year) || 
+        !isValidDate(toDate.day, toDate.month, toDate.year)) {
+      setError("Invalid dates.");
+      return;
     }
-  }, [activeTab, fromDate, toDate]);
+    const start = new Date(parseInt(fromDate.year), parseInt(fromDate.month) - 1, parseInt(fromDate.day));
+    const end = new Date(parseInt(toDate.year), parseInt(toDate.month) - 1, parseInt(toDate.day));
+    setResults(calculateAll(start, end));
+  }, [fromDate, toDate]);
 
   const downloadResults = async () => {
     if (!resultsRef.current) return;
@@ -222,18 +201,6 @@ function ChronoFlowContent() {
     }
   };
 
-  const handleReset = () => {
-    setFromDate({ day: '', month: '', year: '' });
-    const now = new Date();
-    setToDate({
-      day: now.getDate().toString().padStart(2, '0'),
-      month: (now.getMonth() + 1).toString().padStart(2, '0'),
-      year: now.getFullYear().toString()
-    });
-    setResults(null);
-    setError(null);
-  };
-
   const handleShare = () => {
     if (!results) return;
     const text = `Age Metrics: ${results.years}y, ${results.months}m, ${results.days}d. Calculated via ChronoFlow.`;
@@ -244,23 +211,8 @@ function ChronoFlowContent() {
     });
   };
 
-  const getAtmosphereStyles = () => {
-    if (activeTab !== 'focus') return {};
-    const isOverriddenDark = isTimerActive && pomodoroSettings?.darkModeWhenRunning;
-    if (isOverriddenDark) return { backgroundColor: '#09090b' };
-    if (theme === 'dark') return { backgroundColor: '#0c0c0e' };
-    const baseColor = pomodoroSettings?.themeColor || '#ba4949';
-    return { backgroundColor: baseColor };
-  };
-
   return (
-    <div 
-      className={cn(
-        "min-h-screen flex flex-col transition-all duration-700 overflow-x-hidden",
-        activeTab === 'focus' && "text-white"
-      )}
-      style={getAtmosphereStyles()}
-    >
+    <div className="min-h-screen flex flex-col transition-all duration-700 overflow-x-hidden bg-background">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema) }}
@@ -273,28 +225,16 @@ function ChronoFlowContent() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <nav className={cn(
-        "relative z-50 h-14 flex items-center px-4 md:px-6 justify-between transition-colors duration-700",
-        activeTab === 'focus' ? "bg-black/5 border-b border-white/10" : "glass border-b border-border"
-      )}>
+      <nav className="relative z-50 h-14 flex items-center px-4 md:px-6 justify-between transition-colors duration-700 glass border-b border-border">
         <div className="flex items-center gap-3">
-          <div className={cn(
-            "w-12 h-12 rounded-lg flex items-center justify-center transition-all",
-            activeTab === 'focus' ? "bg-white/20" : "bg-primary neon-glow"
-          )}>
-            <Timer className={cn("w-7 h-7", activeTab === 'focus' ? "text-white" : "text-primary-foreground")} />
+          <div className="w-12 h-12 rounded-lg flex items-center justify-center transition-all bg-primary neon-glow">
+            <Timer className="w-7 h-7 text-primary-foreground" />
           </div>
           <div className="flex flex-col">
-            <h1 className={cn(
-              "text-lg font-black tracking-tighter leading-none font-roboto-slab uppercase",
-              activeTab === 'focus' ? "text-white" : "bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent"
-            )}>
+            <h1 className="text-lg font-black tracking-tighter leading-none font-roboto-slab uppercase bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
               CALCULATOR
             </h1>
-            <Link href="https://camly.org" target="_blank" className={cn(
-              "text-[7px] font-bold tracking-[0.3em] uppercase mt-1 flex items-center gap-1 transition-colors",
-              activeTab === 'focus' ? "text-white/60 hover:text-white" : "text-primary/60 hover:text-primary"
-            )}>
+            <Link href="https://camly.org" target="_blank" className="text-[7px] font-bold tracking-[0.3em] uppercase mt-1 flex items-center gap-1 transition-colors text-primary/60 hover:text-primary">
               CAMLY.ORG <ExternalLink className="w-2  h-2" />
             </Link>
           </div>
@@ -305,10 +245,7 @@ function ChronoFlowContent() {
              <DropdownMenuTrigger asChild>
                <Button 
                  variant="ghost" 
-                 className={cn(
-                   "rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] gap-1.5 md:gap-2.5 transition-all group",
-                   activeTab === 'focus' ? "text-white hover:bg-white/10" : "hover:bg-primary/5 text-primary/60 hover:text-primary"
-                 )}
+                 className="rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] gap-1.5 md:gap-2.5 transition-all group hover:bg-primary/5 text-primary/60 hover:text-primary"
                >
                  <LayoutGrid className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
                  <span className="hidden min-[480px]:inline">Operational Tools</span>
@@ -351,7 +288,7 @@ function ChronoFlowContent() {
                  </Link>
                </DropdownMenuItem>
                <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 rounded-lg m-1">
-                 <Link href="/?tab=focus" className="flex items-center gap-3 w-full px-2 py-2">
+                 <Link href="/focus" className="flex items-center gap-3 w-full px-2 py-2">
                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                      <Timer className="w-4 h-4 text-primary" />
                    </div>
@@ -364,65 +301,27 @@ function ChronoFlowContent() {
              </DropdownMenuContent>
            </DropdownMenu>
 
-          {activeTab === 'focus' ? (
-            <div className="flex gap-2">
-              <Button variant="ghost" size="sm" className="text-white hover:bg-white/10 text-[10px] font-black uppercase tracking-widest gap-2">
-                <BarChart3 className="w-4 h-4" /> Report
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="text-white hover:bg-white/10 text-[10px] font-black uppercase tracking-widest gap-2"
-                onClick={() => setIsPomodoroSettingsOpen(true)}
-              >
-                <Settings className="w-4 h-4" /> Setting
-              </Button>
-            </div>
-          ) : (
-            <>
-              <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full hover:bg-accent/10 w-8 h-8">
-                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              </Button>
-            </>
-          )}
+           <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full hover:bg-accent/10 w-8 h-8">
+             {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+           </Button>
         </div>
       </nav>
 
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-6 md:py-12">
-        <div className={cn(
-          "flex flex-col gap-10",
-          activeTab === 'focus' ? "items-center" : "min-[480px]:flex-row items-start"
-        )}>
+        <div className="flex flex-col min-[480px]:flex-row items-start gap-10">
           
-          <aside className={cn(
-            "w-full shrink-0 space-y-4",
-            activeTab === 'focus' ? "max-w-[480px]" : "min-[480px]:w-[180px] sm:w-[240px] md:w-[300px] lg:w-[340px] min-[480px]:sticky min-[480px]:top-24"
-          )}>
-            <div className={cn(
-              "glass-card !p-6 shadow-2xl transition-all duration-700",
-              activeTab === 'focus' ? "bg-transparent border-none shadow-none" : "border-black dark:border-white border"
-            )}>
+          <aside className="w-full shrink-0 space-y-4 min-[480px]:w-[180px] sm:w-[240px] md:w-[300px] lg:w-[340px] min-[480px]:sticky min-[480px]:top-24">
+            <div className="glass-card !p-6 shadow-2xl transition-all duration-700 border-black dark:border-white border">
               <Tabs 
-                value={activeTab}
+                value="age"
                 className="w-full" 
                 onValueChange={(v) => {
-                  if (v === 'calculator') {
-                    router.push('/calculator');
-                    return;
-                  }
-                  if (v === 'due-date') {
-                    router.push('/due-date-calculator');
-                    return;
-                  }
-                  setActiveTab(v as any);
-                  setError(null);
-                  if (v !== 'age') setResults(null);
+                  if (v === 'focus') router.push('/focus');
+                  if (v === 'calculator') router.push('/calculator');
+                  if (v === 'due-date') router.push('/due-date-calculator');
                 }}
               >
-                <TabsList className={cn(
-                  "grid w-full grid-cols-4 mb-6 rounded-xl h-10",
-                  activeTab === 'focus' ? "bg-white/10" : "bg-muted/50"
-                )}>
+                <TabsList className="grid w-full grid-cols-4 mb-6 rounded-xl h-10 bg-muted/50">
                   <TabsTrigger value="age" className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Age</TabsTrigger>
                   <TabsTrigger value="focus" className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Focus</TabsTrigger>
                   <TabsTrigger value="calculator" className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Calc</TabsTrigger>
@@ -431,7 +330,7 @@ function ChronoFlowContent() {
 
                 <TabsContent value="age" className="space-y-4 mt-0">
                   <DateInput label="Date of Birth" values={fromDate} onChange={setFromDate} />
-                  <DateInput label="Target Timestamp" values={toDate} onChange={setToDate} error={activeTab === 'age' ? error || undefined : undefined} />
+                  <DateInput label="Target Timestamp" values={toDate} onChange={setToDate} error={error || undefined} />
                   <Button 
                     className="w-full h-12 mt-6 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow border-black dark:border-white border"
                     onClick={handleCalculate}
@@ -439,59 +338,33 @@ function ChronoFlowContent() {
                     Compute Age Results
                   </Button>
                 </TabsContent>
-
-                <TabsContent value="focus" className="mt-0" />
-                <TabsContent value="calculator" className="mt-0">
-                   <Link href="/calculator" className="block p-4 border border-dashed border-border/40 rounded-xl text-center space-y-2 hover:bg-muted/50 transition-all">
-                      <CalcIcon className="w-6 h-6 mx-auto text-muted-foreground/40" />
-                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Scientific ALU</p>
-                      <p className="text-[9px] text-primary font-bold uppercase tracking-widest flex items-center justify-center gap-1">Open Engine <ArrowRight className="w-2.5 h-2.5" /></p>
-                   </Link>
-                </TabsContent>
-                <TabsContent value="due-date" className="mt-0">
-                   <Link href="/due-date-calculator" className="block p-4 border border-dashed border-border/40 rounded-xl text-center space-y-2 hover:bg-muted/50 transition-all">
-                      <CalendarDays className="w-6 h-6 mx-auto text-muted-foreground/40" />
-                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Milestone Inference</p>
-                      <p className="text-[9px] text-primary font-bold uppercase tracking-widest flex items-center justify-center gap-1">Open Engine <ArrowRight className="w-2.5 h-2.5" /></p>
-                   </Link>
-                </TabsContent>
               </Tabs>
             </div>
 
-            {activeTab === 'age' && (
-              <div className="space-y-3">
-                <div className="glass-card !p-4 border-accent/20 bg-accent/5 overflow-hidden relative group">
-                  <div className="absolute -top-4 -right-4 w-12 h-12 bg-accent/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-1000" />
-                  <div className="flex items-center gap-2 mb-2">
-                    <Activity className="w-3 h-3 text-accent" />
-                    <p className="text-[9px] uppercase font-black tracking-widest text-accent">Real-Time Sync</p>
-                  </div>
-                  <h4 className="text-xs font-black tracking-tight mb-1">Atomic Precision Control</h4>
-                  <p className="text-[10px] text-muted-foreground/80 leading-relaxed">Engine synchronizing with primary time servers via Stratum-1 NTP nodes.</p>
+            <div className="space-y-3">
+              <div className="glass-card !p-4 border-accent/20 bg-accent/5 overflow-hidden relative group">
+                <div className="absolute -top-4 -right-4 w-12 h-12 bg-accent/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-1000" />
+                <div className="flex items-center gap-2 mb-2">
+                  <Activity className="w-3 h-3 text-accent" />
+                  <p className="text-[9px] uppercase font-black tracking-widest text-accent">Real-Time Sync</p>
                 </div>
-                
-                <div className="glass-card !p-4 border-primary/20 bg-primary/5 relative overflow-hidden group">
-                  <div className="flex items-center gap-2 mb-2">
-                    <ShieldCheck className="w-3 h-3 text-primary" />
-                    <p className="text-[9px] uppercase font-black tracking-widest text-primary">Security Ops</p>
-                  </div>
-                  <h4 className="text-xs font-black tracking-tight mb-1">Encrypted Payload</h4>
-                  <p className="text-[10px] text-muted-foreground/80 leading-relaxed">Calculation processing is handled locally. Zero-knowledge data sovereignty.</p>
-                </div>
+                <h4 className="text-xs font-black tracking-tight mb-1">Atomic Precision Control</h4>
+                <p className="text-[10px] text-muted-foreground/80 leading-relaxed">Engine synchronizing with primary time servers via Stratum-1 NTP nodes.</p>
               </div>
-            )}
+              
+              <div className="glass-card !p-4 border-primary/20 bg-primary/5 relative overflow-hidden group">
+                <div className="flex items-center gap-2 mb-2">
+                  <ShieldCheck className="w-3 h-3 text-primary" />
+                  <p className="text-[9px] uppercase font-black tracking-widest text-primary">Security Ops</p>
+                </div>
+                <h4 className="text-xs font-black tracking-tight mb-1">Encrypted Payload</h4>
+                <p className="text-[10px] text-muted-foreground/80 leading-relaxed">Calculation processing is handled locally. Zero-knowledge data sovereignty.</p>
+              </div>
+            </div>
           </aside>
 
           <div className="flex-grow w-full min-0">
-            {activeTab === 'focus' ? (
-              <Pomodoro 
-                onModeChange={setPomodoroMode} 
-                onSettingsChange={setPomodoroSettings}
-                onTimerActiveChange={setIsTimerActive}
-                isExternalSettingsOpen={isPomodoroSettingsOpen}
-                onExternalSettingsOpenChange={setIsPomodoroSettingsOpen}
-              />
-            ) : activeTab === 'age' && results ? (
+            {results ? (
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
                 <div className="flex items-center justify-between px-2">
                    <div className="flex items-center gap-3">
@@ -566,112 +439,110 @@ function ChronoFlowContent() {
           </div>
         </div>
 
-        {activeTab !== 'focus' && (
-          <div className="mt-32 space-y-40">
-            <section className="container max-w-4xl mx-auto py-12">
-               <div className="flex flex-col md:flex-row items-center gap-8">
-                  <div className="flex-1 space-y-4">
-                     <Badge variant="outline" className="border-accent/30 text-accent uppercase tracking-[0.3em] text-[10px] px-4 py-1.5 font-black">Professional Utility</Badge>
-                     <h3 className="text-3xl font-black tracking-tight">Milestone Planning</h3>
-                     <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
-                        Access our specialized high-precision due date engine for tactical project management.
-                     </p>
-                     <Link href="/due-date-calculator">
-                        <Button variant="link" className="p-0 h-auto text-primary font-black uppercase tracking-widest text-[10px] gap-2">
-                           Open Due Date <ArrowUpRight className="w-3 h-3" />
-                        </Button>
-                     </Link>
-                  </div>
-                  <div className="w-full md:w-px h-px md:h-32 bg-border/40" />
-                  <div className="flex-grow space-y-4 text-center md:text-left">
-                    <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-4 py-1.5 font-black">Global Infrastructure</Badge>
-                    <h3 className="text-3xl md:text-5xl font-black tracking-tighter">Synchronize with <span className="text-primary">Camly.org</span></h3>
-                    <p className="text-muted-foreground text-sm md:text-lg leading-relaxed max-w-2xl mx-auto md:mx-0 font-medium">
-                      Access the complete suite of high-precision digital assets and enterprise utility protocols.
-                    </p>
-                    <Link href="https://camly.org" target="_blank">
-                      <Button className="h-12 px-8 bg-primary text-primary-foreground font-black text-[10px] uppercase tracking-widest rounded-xl shadow-xl hover:scale-105 transition-all group">
-                        Explore Camly Ecosystem <ExternalLink className="ml-2 w-3.5 h-3.5" />
+        <div className="mt-32 space-y-40">
+          <section className="container max-w-4xl mx-auto py-12">
+             <div className="flex flex-col md:flex-row items-center gap-8">
+                <div className="flex-1 space-y-4">
+                   <Badge variant="outline" className="border-accent/30 text-accent uppercase tracking-[0.3em] text-[10px] px-4 py-1.5 font-black">Professional Utility</Badge>
+                   <h3 className="text-3xl font-black tracking-tight">Milestone Planning</h3>
+                   <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
+                      Access our specialized high-precision due date engine for tactical project management.
+                   </p>
+                   <Link href="/due-date-calculator">
+                      <Button variant="link" className="p-0 h-auto text-primary font-black uppercase tracking-widest text-[10px] gap-2">
+                         Open Due Date <ArrowUpRight className="w-3 h-3" />
                       </Button>
-                    </Link>
-                  </div>
-               </div>
-            </section>
+                   </Link>
+                </div>
+                <div className="w-full md:w-px h-px md:h-32 bg-border/40" />
+                <div className="flex-grow space-y-4 text-center md:text-left">
+                  <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-4 py-1.5 font-black">Global Infrastructure</Badge>
+                  <h3 className="text-3xl md:text-5xl font-black tracking-tighter">Synchronize with <span className="text-primary">Camly.org</span></h3>
+                  <p className="text-muted-foreground text-sm md:text-lg leading-relaxed max-w-2xl mx-auto md:mx-0 font-medium">
+                    Access the complete suite of high-precision digital assets and enterprise utility protocols.
+                  </p>
+                  <Link href="https://camly.org" target="_blank">
+                    <Button className="h-12 px-8 bg-primary text-primary-foreground font-black text-[10px] uppercase tracking-widest rounded-xl shadow-xl hover:scale-105 transition-all group">
+                      Explore Camly Ecosystem <ExternalLink className="ml-2 w-3.5 h-3.5" />
+                    </Button>
+                  </Link>
+                </div>
+             </div>
+          </section>
 
-            <section className="space-y-20">
-              <div className="text-center space-y-4">
-                <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-6 py-1.5 font-black">Technical whitepaper</Badge>
-                <h2 className="text-4xl md:text-7xl font-black tracking-tighter leading-none">The ChronoFlow <span className="text-primary">Methodology</span></h2>
-                <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-medium">We define the standard for high-definition chronological computation through atomic-sync protocols.</p>
-              </div>
+          <section className="space-y-20">
+            <div className="text-center space-y-4">
+              <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-6 py-1.5 font-black">Technical whitepaper</Badge>
+              <h2 className="text-4xl md:text-7xl font-black tracking-tighter leading-none">The ChronoFlow <span className="text-primary">Methodology</span></h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-medium">We define the standard for high-definition chronological computation through atomic-sync protocols.</p>
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
-                  <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-primary/5">
-                     <Milestone className="w-8 h-8 text-primary" />
-                  </div>
-                  <h3 className="text-2xl font-black mb-4 tracking-tight">Gregorian Alignment</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed opacity-80">Our algorithms account for complex centurial leap year rules and ISO-8601 standards, ensuring astronomical accuracy across multi-decade spans.</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
+                <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-primary/5">
+                   <Milestone className="w-8 h-8 text-primary" />
                 </div>
-                <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-accent/40">
-                  <div className="w-16 h-16 rounded-[2rem] bg-accent/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-accent/5">
-                     <Globe className="w-8 h-8 text-accent" />
-                  </div>
-                  <h3 className="text-2xl font-black mb-4 tracking-tight">Temporal Drift Control</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed opacity-80">By synchronizing with Stratum-1 UTC nodes, we eliminate local system variance that typically degrades precision in web-based calculation tools.</p>
-                </div>
-                <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
-                  <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-primary/5">
-                     <Star className="w-8 h-8 text-primary" />
-                  </div>
-                  <h3 className="text-2xl font-black mb-4 tracking-tight">Celestial Mapping</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed opacity-80">Utilizing high-precision ecliptic coordinate systems to handle cusp transitions with sub-minute resolution for Western zodiac alignment.</p>
-                </div>
+                <h3 className="text-2xl font-black mb-4 tracking-tight">Gregorian Alignment</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed opacity-80">Our algorithms account for complex centurial leap year rules and ISO-8601 standards, ensuring astronomical accuracy across multi-decade spans.</p>
               </div>
-            </section>
+              <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-accent/40">
+                <div className="w-16 h-16 rounded-[2rem] bg-accent/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-accent/5">
+                   <Globe className="w-8 h-8 text-accent" />
+                </div>
+                <h3 className="text-2xl font-black mb-4 tracking-tight">Temporal Drift Control</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed opacity-80">By synchronizing with Stratum-1 UTC nodes, we eliminate local system variance that typically degrades precision in web-based calculation tools.</p>
+              </div>
+              <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
+                <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-primary/5">
+                   <Star className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-2xl font-black mb-4 tracking-tight">Celestial Mapping</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed opacity-80">Utilizing high-precision ecliptic coordinate systems to handle cusp transitions with sub-minute resolution for Western zodiac alignment.</p>
+              </div>
+            </div>
+          </section>
 
-            <section className="space-y-16 py-24 bg-muted/30 rounded-[4rem] px-8 md:px-20 border border-border/40 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-20 opacity-[0.02] -rotate-12 group-hover:rotate-0 transition-transform duration-1000">
-                <Target className="w-96 h-96 text-primary" />
+          <section className="space-y-16 py-24 bg-muted/30 rounded-[4rem] px-8 md:px-20 border border-border/40 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-20 opacity-[0.02] -rotate-12 group-hover:rotate-0 transition-transform duration-1000">
+              <Target className="w-96 h-96 text-primary" />
+            </div>
+            <div className="text-center space-y-6 relative z-10">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter">Precision for <span className="text-primary">Global Verticals</span></h2>
+              <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto font-medium">ChronoFlow provides mission-critical data for sectors where time isn't just a number—it's a high-stakes record.</p>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
+              <div className="space-y-5 group/item">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                  <Scale className="w-7 h-7 text-primary" />
+                </div>
+                <h4 className="font-black text-sm uppercase tracking-[0.2em]">Legal & Compliance</h4>
+                <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Determining exact age metrics for statutes of limitation, contract eligibility, and high-precision legal maturation milestones.</p>
               </div>
-              <div className="text-center space-y-6 relative z-10">
-                <h2 className="text-4xl md:text-6xl font-black tracking-tighter">Precision for <span className="text-primary">Global Verticals</span></h2>
-                <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto font-medium">ChronoFlow provides mission-critical data for sectors where time isn't just a number—it's a high-stakes record.</p>
+              <div className="space-y-5 group/item">
+                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                  <HeartPulse className="w-7 h-7 text-accent" />
+                </div>
+                <h4 className="font-black text-sm uppercase tracking-[0.2em]">Healthcare Stats</h4>
+                <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Tracking pediatric developmental cycles and age-specific biological markers with absolute day-level granular precision.</p>
               </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
-                <div className="space-y-5 group/item">
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
-                    <Scale className="w-7 h-7 text-primary" />
-                  </div>
-                  <h4 className="font-black text-sm uppercase tracking-[0.2em]">Legal & Compliance</h4>
-                  <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Determining exact age metrics for statutes of limitation, contract eligibility, and high-precision legal maturation milestones.</p>
+              <div className="space-y-5 group/item">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                  <Coins className="w-7 h-7 text-primary" />
                 </div>
-                <div className="space-y-5 group/item">
-                  <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
-                    <HeartPulse className="w-7 h-7 text-accent" />
-                  </div>
-                  <h4 className="font-black text-sm uppercase tracking-[0.2em]">Healthcare Stats</h4>
-                  <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Tracking pediatric developmental cycles and age-specific biological markers with absolute day-level granular precision.</p>
-                </div>
-                <div className="space-y-5 group/item">
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
-                    <Coins className="w-7 h-7 text-primary" />
-                  </div>
-                  <h4 className="font-black text-sm uppercase tracking-[0.2em]">Financial Planning</h4>
-                  <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Computing exact time horizons for compound interest maturation and retirement account eligibility windows with accuracy.</p>
-                </div>
-                <div className="space-y-5 group/item">
-                  <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
-                    <Milestone className="w-7 h-7 text-accent" />
-                  </div>
-                  <h4 className="font-black text-sm uppercase tracking-[0.2em]">Asset Lifecycle</h4>
-                  <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">A high-definition view of chronological timelines for enterprise assets, turning abstract durations into concrete, living data.</p>
-                </div>
+                <h4 className="font-black text-sm uppercase tracking-[0.2em]">Financial Planning</h4>
+                <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Computing exact time horizons for compound interest maturation and retirement account eligibility windows with accuracy.</p>
               </div>
-            </section>
-          </div>
-        )}
+              <div className="space-y-5 group/item">
+                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                  <Milestone className="w-7 h-7 text-accent" />
+                </div>
+                <h4 className="font-black text-sm uppercase tracking-[0.2em]">Asset Lifecycle</h4>
+                <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">A high-definition view of chronological timelines for enterprise assets, turning abstract durations into concrete, living data.</p>
+              </div>
+            </div>
+          </section>
+        </div>
       </main>
 
       <footer className="relative mt-auto pt-24 pb-12 px-6 transition-colors duration-700 border-t glass border-border/40">
@@ -710,7 +581,11 @@ function ChronoFlowContent() {
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />
-                   <Link href="/?tab=focus">Pomodoro Focus</Link>
+                   <Link href="/focus">Pomodoro Focus</Link>
+                </li>
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                   <ChevronRight className="w-3 h-3 opacity-30" />
+                   <Link href="/">Age Calculator</Link>
                 </li>
               </ul>
             </div>

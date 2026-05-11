@@ -402,7 +402,7 @@ export default function DueDateCalculator() {
                  </Link>
                </DropdownMenuItem>
                <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 rounded-lg m-1">
-                 <Link href="/?tab=focus" className="flex items-center gap-3 w-full px-2 py-2">
+                 <Link href="/focus" className="flex items-center gap-3 w-full px-2 py-2">
                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                      <Timer className="w-4 h-4 text-primary" />
                    </div>
@@ -846,7 +846,11 @@ export default function DueDateCalculator() {
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />
-                   <Link href="/?tab=focus">Pomodoro Focus</Link>
+                   <Link href="/focus">Pomodoro Focus</Link>
+                </li>
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                   <ChevronRight className="w-3 h-3 opacity-30" />
+                   <Link href="/">Age Calculator</Link>
                 </li>
               </ul>
             </div>

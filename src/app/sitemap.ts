@@ -18,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '',
     '/calculator',
     '/due-date-calculator',
+    '/focus',
     '/blog',
     '/privacy-protocol',
     '/terms-of-sync',

@@ -2,8 +2,8 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'ChronoFlow | High-Precision Chronological Engine',
-    short_name: 'ChronoFlow',
+    name: 'Camly | High-Precision Chronological Engine',
+    short_name: 'Camly',
     description: 'Professional high-precision age calculator, scientific ALU, and clinical due date engine.',
     start_url: '/',
     display: 'standalone',

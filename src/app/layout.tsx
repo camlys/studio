@@ -12,8 +12,8 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://calculator.camly.org'),
   title: {
-    default: 'ChronoFlow | Premium Age Calculator & Chronology Engine',
-    template: '%s | ChronoFlow'
+    default: 'Camly | Premium Age Calculator & Chronology Engine',
+    template: '%s | Camly'
   },
   description: 'A high-precision age and date difference calculator. Features real-time tracking, zodiac mapping, and AI-driven chronological insights.',
   keywords: ['age calculator', 'date difference', 'birthday countdown', 'chronological engine', 'time tracker', 'precision calculator', 'zodiac sign calculator', 'due date engine', 'pregnancy calculator'],
@@ -28,21 +28,21 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'ChronoFlow',
+    title: 'Camly',
   },
   openGraph: {
-    title: 'ChronoFlow | Premium Age Calculator',
+    title: 'Camly | Premium Age Calculator',
     description: 'High-precision chronological computation engine for professional and tactical use.',
     url: 'https://calculator.camly.org',
-    siteName: 'ChronoFlow',
+    siteName: 'Camly',
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ChronoFlow | Premium Age Calculator',
+    title: 'Camly | Premium Age Calculator',
     description: 'High-precision chronological computation engine with real-time tracking.',
-    creator: '@chronoflow',
+    creator: '@camly',
   },
   robots: {
     index: true,
@@ -72,7 +72,7 @@ const organizationSchema = {
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "ChronoFlow",
+  "name": "Camly",
   "url": "https://calculator.camly.org",
   "potentialAction": {
     "@type": "SearchAction",

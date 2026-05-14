@@ -339,7 +339,7 @@ export default function DueDateCalculator() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <nav className="relative z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between transition-colors duration-700">
+      <nav className="relative z-50 h-14 flex items-center px-4 md:px-6 justify-between transition-colors duration-700 glass border-b border-border">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="flex items-center justify-center transition-all group-hover:scale-110">
@@ -698,12 +698,12 @@ export default function DueDateCalculator() {
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                     {[
-                      { name: "Academic Sync", href: "/cgpa-calculator" },
                       { name: "Age Calculator", href: "/" },
                       { name: "Attendance Calculator", href: "/attendance-calculator" },
                       { name: "BMI Calculator", href: "/bmi-calculator" },
                       { name: "Calorie Calculator", href: "/calorie-calculator" },
-                      { name: "Due Date", href: "/due-date-calculator" },
+                      { name: "CGPA Calculator", href: "/cgpa-calculator" },
+                      { name: "Due Date Calculator", href: "/due-date-calculator" },
                       { name: "EMI Calculator", href: "/emi-calculator" },
                       { name: "Scientific Calculator", href: "/calculator" }
                     ].filter(calc => calc.href !== "/due-date-calculator").map((calc) => (
@@ -725,7 +725,7 @@ export default function DueDateCalculator() {
                    </div>
                 </div>
                 <h3 className="text-xl font-black tracking-tight mb-3">Awaiting Temporal Coordinates</h3>
-                <p className="text-xs font-medium max-w-[240px] font-medium leading-relaxed">Input origin and protocol parameters to initiate high-precision milestone synchronization.</p>
+                <p className="text-xs font-medium max-w-[240px] leading-relaxed">Input origin and protocol parameters to initiate high-precision milestone synchronization.</p>
               </div>
             )}
           </div>

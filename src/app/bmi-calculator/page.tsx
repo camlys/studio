@@ -246,12 +246,12 @@ export default function BMICalculator() {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {[
-                  { name: "Academic Sync", href: "/cgpa-calculator" },
                   { name: "Age Calculator", href: "/" },
                   { name: "Attendance Calculator", href: "/attendance-calculator" },
                   { name: "BMI Calculator", href: "/bmi-calculator" },
                   { name: "Calorie Calculator", href: "/calorie-calculator" },
-                  { name: "Due Date", href: "/due-date-calculator" },
+                  { name: "CGPA Calculator", href: "/cgpa-calculator" },
+                  { name: "Due Date Calculator", href: "/due-date-calculator" },
                   { name: "EMI Calculator", href: "/emi-calculator" },
                   { name: "Scientific Calculator", href: "/calculator" }
                 ].filter(calc => calc.href !== "/bmi-calculator").map((calc) => (

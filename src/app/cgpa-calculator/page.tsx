@@ -204,7 +204,7 @@ export default function CGPACalculator() {
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.85]">
             CGPA <span className="text-primary">Inference</span> Engine
           </h2>
-          <p className="text-muted-foreground text-sm leading-relaxed font-medium max-w-xl mx-auto min-[480px]:mx-0">
+          <p className="text-muted-foreground text-sm leading-relaxed font-medium max-xl mx-auto min-[480px]:mx-0">
             Advanced academic synchronization for university grades, credit-weighted milestones, and high-fidelity educational tracking.
           </p>
         </div>
@@ -291,12 +291,12 @@ export default function CGPACalculator() {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {[
-                  { name: "Academic Sync", href: "/cgpa-calculator" },
                   { name: "Age Calculator", href: "/" },
                   { name: "Attendance Calculator", href: "/attendance-calculator" },
                   { name: "BMI Calculator", href: "/bmi-calculator" },
                   { name: "Calorie Calculator", href: "/calorie-calculator" },
-                  { name: "Due Date", href: "/due-date-calculator" },
+                  { name: "CGPA Calculator", href: "/cgpa-calculator" },
+                  { name: "Due Date Calculator", href: "/due-date-calculator" },
                   { name: "EMI Calculator", href: "/emi-calculator" },
                   { name: "Scientific Calculator", href: "/calculator" }
                 ].filter(calc => calc.href !== "/cgpa-calculator").map((calc) => (

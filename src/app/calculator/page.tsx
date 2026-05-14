@@ -372,12 +372,12 @@ export default function PrecisionCalculator() {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {[
-                  { name: "Academic Sync", href: "/cgpa-calculator" },
                   { name: "Age Calculator", href: "/" },
                   { name: "Attendance Calculator", href: "/attendance-calculator" },
                   { name: "BMI Calculator", href: "/bmi-calculator" },
                   { name: "Calorie Calculator", href: "/calorie-calculator" },
-                  { name: "Due Date", href: "/due-date-calculator" },
+                  { name: "CGPA Calculator", href: "/cgpa-calculator" },
+                  { name: "Due Date Calculator", href: "/due-date-calculator" },
                   { name: "EMI Calculator", href: "/emi-calculator" },
                   { name: "Scientific Calculator", href: "/calculator" }
                 ].filter(calc => calc.href !== "/calculator").map((calc) => (
@@ -445,28 +445,28 @@ export default function PrecisionCalculator() {
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
               <div className="space-y-5 group/item">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group/item:scale-110 transition-transform">
                   <Compass className="w-7 h-7 text-primary" />
                 </div>
                 <h4 className="font-black text-sm uppercase tracking-[0.2em]">Aerospace</h4>
                 <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">High-fidelity trigonometric calculations for trajectory analysis and orbital velocity mappings.</p>
               </div>
               <div className="space-y-5 group/item">
-                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group/item:scale-110 transition-transform">
                   <FlaskConical className="w-7 h-7 text-accent" />
                 </div>
                 <h4 className="font-black text-sm uppercase tracking-[0.2em]">Quantum Research</h4>
                 <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Statistical modeling and probabilistic calculation layers for high-entropy experiment data.</p>
               </div>
               <div className="space-y-5 group/item">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group/item:scale-110 transition-transform">
                   <BarChart3 className="w-7 h-7 text-primary" />
                 </div>
                 <h4 className="font-black text-sm uppercase tracking-[0.2em]">High-Freq Trading</h4>
                 <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Real-time differential calculus and logarithmic regression for millisecond-level market insights.</p>
               </div>
               <div className="space-y-5 group/item">
-                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group/item:scale-110 transition-transform">
                   <Target className="w-7 h-7 text-accent" />
                 </div>
                 <h4 className="font-black text-sm uppercase tracking-[0.2em]">Precision Mfg</h4>

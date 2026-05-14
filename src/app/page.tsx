@@ -376,12 +376,12 @@ function ChronoFlowContent() {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {[
-                  { name: "Academic Sync", href: "/cgpa-calculator" },
                   { name: "Age Calculator", href: "/" },
                   { name: "Attendance Calculator", href: "/attendance-calculator" },
                   { name: "BMI Calculator", href: "/bmi-calculator" },
                   { name: "Calorie Calculator", href: "/calorie-calculator" },
-                  { name: "Due Date", href: "/due-date-calculator" },
+                  { name: "CGPA Calculator", href: "/cgpa-calculator" },
+                  { name: "Due Date Calculator", href: "/due-date-calculator" },
                   { name: "EMI Calculator", href: "/emi-calculator" },
                   { name: "Scientific Calculator", href: "/calculator" }
                 ].filter(calc => calc.href !== "/").map((calc) => (
@@ -482,28 +482,28 @@ function ChronoFlowContent() {
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
               <div className="space-y-5 group/item">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group/item:scale-110 transition-transform">
                   <Scale className="w-7 h-7 text-primary" />
                 </div>
                 <h4 className="font-black text-sm uppercase tracking-[0.2em]">Legal & Compliance</h4>
                 <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Determining exact age metrics for statutes of limitation, contract eligibility, and high-precision legal maturation milestones.</p>
               </div>
               <div className="space-y-5 group/item">
-                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group/item:scale-110 transition-transform">
                   <HeartPulse className="w-7 h-7 text-accent" />
                 </div>
                 <h4 className="font-black text-sm uppercase tracking-[0.2em]">Academic & Med</h4>
                 <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Tracking pediatric developmental cycles and academic milestones with absolute day-level granular precision.</p>
               </div>
               <div className="space-y-5 group/item">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group/item:scale-110 transition-transform">
                   <Coins className="w-7 h-7 text-primary" />
                 </div>
                 <h4 className="font-black text-sm uppercase tracking-[0.2em]">Financial Planning</h4>
                 <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Computing exact time horizons for compound interest maturation and retirement account eligibility windows with accuracy.</p>
               </div>
               <div className="space-y-5 group/item">
-                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group/item:scale-110 transition-transform">
                   <Milestone className="w-7 h-7 text-accent" />
                 </div>
                 <h4 className="font-black text-sm uppercase tracking-[0.2em]">Asset Lifecycle</h4>

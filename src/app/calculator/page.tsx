@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -70,7 +69,6 @@ export default function PrecisionCalculator() {
   const [history, setHistory] = useState<string[]>([]);
   const [isScientific, setIsScientific] = useState(true);
   const [isRadians, setIsRadians] = useState(true);
-  const [notation, setNotation] = useState<'auto' | 'fixed'>('auto');
   const [memory, setMemory] = useState<number>(0);
   const [entropy, setEntropy] = useState(0.000);
 
@@ -81,25 +79,11 @@ export default function PrecisionCalculator() {
     return () => clearInterval(interval);
   }, []);
 
-  const formatResult = (num: number): string => {
-    if (isNaN(num)) return "Error";
-    if (!isFinite(num)) return "Infinity";
-    
-    if (notation === 'fixed') {
-      return num.toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 10 });
-    }
-
-    if (Math.abs(num) > 1e12 || (Math.abs(num) < 1e-7 && num !== 0)) {
-      return num.toExponential(6);
-    }
-    return parseFloat(num.toFixed(10)).toString();
-  };
-
   const handleNumber = (num: string) => {
     setDisplay(prev => {
       if (prev === '0' && num !== '.') return num;
       if (prev.includes('.') && num === '.') return prev;
-      if (prev.length > 25) return prev; // Extended for fixed notation
+      if (prev.length > 15) return prev;
       return prev + num;
     });
   };
@@ -127,32 +111,13 @@ export default function PrecisionCalculator() {
         .replace(/mod/g, '%');
       
       const result = eval(cleanExpr);
-      const formattedResult = formatResult(result);
-      setHistory(prev => [fullExpression + ' = ' + formattedResult, ...prev].slice(0, 10));
+      const formattedResult = result.toString().length > 12 ? result.toExponential(6) : result.toString();
+      setHistory(prev => [fullExpression + ' = ' + formattedResult, ...prev].slice(0, 5));
       setDisplay(formattedResult);
       setExpression('');
     } catch (e) {
       setDisplay('Error');
       setTimeout(() => setDisplay('0'), 1500);
-    }
-  };
-
-  const toggleNotation = () => {
-    const nextNotation = notation === 'auto' ? 'fixed' : 'auto';
-    setNotation(nextNotation);
-    
-    // Attempt to reformat existing display if it's a numeric result
-    const val = parseFloat(display);
-    if (!isNaN(val) && expression === '') {
-      if (nextNotation === 'fixed') {
-        setDisplay(val.toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 10 }));
-      } else {
-        if (Math.abs(val) > 1e12 || (Math.abs(val) < 1e-7 && val !== 0)) {
-          setDisplay(val.toExponential(6));
-        } else {
-          setDisplay(parseFloat(val.toFixed(10)).toString());
-        }
-      }
     }
   };
 
@@ -173,7 +138,6 @@ export default function PrecisionCalculator() {
         case 'acos': res = Math.acos(val); if (!isRadians) res *= (180 / Math.PI); break;
         case 'atan': res = Math.atan(val); if (!isRadians) res *= (180 / Math.PI); break;
         case 'log': res = Math.log10(val); break;
-        case 'log2': res = Math.log2(val); break;
         case 'ln': res = Math.log(val); break;
         case 'sqrt': res = Math.sqrt(val); break;
         case 'pow2': res = Math.pow(val, 2); break;
@@ -185,7 +149,7 @@ export default function PrecisionCalculator() {
         case 'e': setDisplay(Math.E.toString()); return;
         case 'c': setDisplay('299792458'); return;
       }
-      setDisplay(formatResult(res));
+      setDisplay(res.toString().length > 12 ? res.toExponential(6) : res.toString());
     } catch (e) {
       setDisplay('Error');
     }
@@ -193,7 +157,7 @@ export default function PrecisionCalculator() {
 
   const handleMemory = (action: 'M+' | 'MR' | 'MC') => {
     if (action === 'M+') setMemory(prev => prev + parseFloat(display));
-    if (action === 'MR') setDisplay(formatResult(memory));
+    if (action === 'MR') setDisplay(memory.toString());
     if (action === 'MC') setMemory(0);
   };
 
@@ -365,7 +329,6 @@ export default function PrecisionCalculator() {
                   <div className="flex gap-1.5">
                     <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black", isRadians ? "text-primary border-primary/20" : "text-muted-foreground")}>RAD</Badge>
                     <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black", !isRadians ? "text-primary border-primary/20" : "text-muted-foreground")}>DEG</Badge>
-                    <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black", notation === 'fixed' ? "text-accent border-accent/20" : "text-muted-foreground")}>{notation === 'fixed' ? 'NORM' : 'SCI'}</Badge>
                   </div>
                   <div className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/50 h-3 truncate max-w-[150px]">
                     {expression}
@@ -379,9 +342,6 @@ export default function PrecisionCalculator() {
               <div className="flex border-b border-border/20 bg-muted/30">
                 <button onClick={() => setIsRadians(!isRadians)} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 border-r border-border/10 transition-colors">
                   {isRadians ? 'Set Degrees' : 'Set Radians'}
-                </button>
-                <button onClick={toggleNotation} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 border-r border-border/10 transition-colors">
-                  {notation === 'auto' ? 'Fix Notation' : 'Sci Notation'}
                 </button>
                 <button onClick={() => setIsScientific(!isScientific)} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 transition-colors">
                   {isScientific ? 'Standard' : 'Scientific'}
@@ -400,14 +360,14 @@ export default function PrecisionCalculator() {
                     <CalcButton onClick={() => handleScientific('sinh')} className="text-accent/70 text-xs">sinh</CalcButton>
                     <CalcButton onClick={() => handleScientific('cosh')} className="text-accent/70 text-xs">cosh</CalcButton>
                     <CalcButton onClick={() => handleScientific('tanh')} className="text-accent/70 text-xs">tanh</CalcButton>
-                    <CalcButton onClick={() => handleScientific('log2')} className="text-accent/70 text-xs">log2</CalcButton>
                     <CalcButton onClick={() => handleScientific('inv')} className="text-accent/70 text-xs">1/x</CalcButton>
+                    <CalcButton onClick={() => handleScientific('pi')} className="text-muted-foreground text-sm">π</CalcButton>
 
                     <CalcButton onClick={() => handleScientific('asin')} className="text-muted-foreground text-[10px]">asin</CalcButton>
                     <CalcButton onClick={() => handleScientific('acos')} className="text-muted-foreground text-[10px]">acos</CalcButton>
                     <CalcButton onClick={() => handleScientific('atan')} className="text-muted-foreground text-[10px]">atan</CalcButton>
-                    <CalcButton onClick={() => handleScientific('pi')} className="text-muted-foreground text-sm">π</CalcButton>
                     <CalcButton onClick={() => handleScientific('e')} className="text-muted-foreground text-sm">e</CalcButton>
+                    <CalcButton onClick={() => handleScientific('c')} className="text-muted-foreground text-[10px]">c</CalcButton>
 
                     <CalcButton onClick={() => handleScientific('sqrt')} className="text-primary/70 text-base">√</CalcButton>
                     <CalcButton onClick={() => handleScientific('pow2')} className="text-primary/70 text-base">x²</CalcButton>
@@ -445,14 +405,12 @@ export default function PrecisionCalculator() {
                 <span className="text-[7px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-1 mb-2">
                   <History className="w-2.5 h-2.5" /> Registry
                 </span>
-                <ScrollArea className="h-[60px] pr-2">
-                  <div className="space-y-1">
-                    {history.map((item, i) => (
-                      <p key={i} className="text-[9px] font-mono text-muted-foreground/80 truncate border-l border-primary/20 pl-1.5">{item}</p>
-                    ))}
-                    {history.length === 0 && <p className="text-[8px] italic text-muted-foreground/40">No entries recorded.</p>}
-                  </div>
-                </ScrollArea>
+                <div className="space-y-1">
+                  {history.map((item, i) => (
+                    <p key={i} className="text-[9px] font-mono text-muted-foreground/80 truncate border-l border-primary/20 pl-1.5">{item}</p>
+                  ))}
+                  {history.length === 0 && <p className="text-[8px] italic text-muted-foreground/40">No entries recorded.</p>}
+                </div>
               </div>
               <div className="glass-card !p-3 border-accent/20 bg-accent/5">
                 <span className="text-[7px] font-black uppercase tracking-widest text-accent flex items-center gap-1 mb-2">
@@ -465,11 +423,33 @@ export default function PrecisionCalculator() {
                   </div>
                   <div className="flex justify-between">
                     <span className="opacity-40 uppercase">Mem</span>
-                    <span className="text-accent truncate max-w-[40px]">{formatResult(memory)}</span>
+                    <span className="text-accent truncate max-w-[40px]">{memory}</span>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* Quick Navigation Section */}
+            <section className="mt-4 space-y-4">
+              <div className="flex items-center gap-2 px-2">
+                <LayoutGrid className="w-4 h-4 text-primary" />
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { name: "Academic Sync", href: "/cgpa-calculator" },
+                  { name: "Age Calculator", href: "/" },
+                  { name: "Due Date", href: "/due-date-calculator" },
+                  { name: "Scientific Calculator", href: "/calculator" }
+                ].map((calc) => (
+                  <Link key={calc.name} href={calc.href}>
+                    <Button variant="outline" className="w-full justify-start h-10 text-[10px] font-bold uppercase tracking-widest border-border/40 hover:border-primary/40 hover:bg-primary/5 transition-all">
+                      {calc.name}
+                    </Button>
+                  </Link>
+                ))}
+              </div>
+            </section>
           </div>
         </div>
 

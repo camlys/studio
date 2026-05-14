@@ -339,6 +339,28 @@ export default function CGPACalculator() {
             >
               <Plus className="mr-2 w-5 h-5" /> Initialize New Semester Sync
             </Button>
+
+            {/* Quick Navigation Section */}
+            <section className="mt-12 space-y-4">
+              <div className="flex items-center gap-2 px-2">
+                <LayoutGrid className="w-4 h-4 text-primary" />
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                {[
+                  { name: "Academic Sync", href: "/cgpa-calculator" },
+                  { name: "Age Calculator", href: "/" },
+                  { name: "Due Date", href: "/due-date-calculator" },
+                  { name: "Scientific Calculator", href: "/calculator" }
+                ].map((calc) => (
+                  <Link key={calc.name} href={calc.href}>
+                    <Button variant="outline" className="w-full justify-start h-10 text-[10px] font-bold uppercase tracking-widest border-border/40 hover:border-primary/40 hover:bg-primary/5 transition-all">
+                      {calc.name}
+                    </Button>
+                  </Link>
+                ))}
+              </div>
+            </section>
           </div>
 
           <aside className="w-full min-[480px]:w-[320px] lg:w-[380px] space-y-6 min-[480px]:sticky min-[480px]:top-24">

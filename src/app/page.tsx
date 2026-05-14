@@ -386,8 +386,8 @@ function ChronoFlowContent() {
                   { name: "Scientific Calculator", href: "/calculator" }
                 ].filter(calc => calc.href !== "/").map((calc) => (
                   <Link key={calc.name} href={calc.href}>
-                    <Button variant="outline" className="w-full justify-start h-10 text-[9px] font-bold uppercase tracking-wider border-border/40 hover:border-primary/40 hover:bg-primary/5 transition-all px-2 overflow-hidden">
-                      <span className="truncate">{calc.name}</span>
+                    <Button variant="outline" className="w-full justify-start h-10 text-[9px] font-black uppercase tracking-wider border-border/40 hover:border-primary/40 hover:bg-primary/5 transition-all px-2 overflow-hidden group">
+                      <span className="truncate text-primary group-hover:text-primary/80 transition-colors">{calc.name}</span>
                     </Button>
                   </Link>
                 ))}
@@ -402,7 +402,7 @@ function ChronoFlowContent() {
                 <div className="flex-1 space-y-4">
                    <Badge variant="outline" className="border-accent/30 text-accent uppercase tracking-[0.3em] text-[10px] px-4 py-1.5 font-black">Professional Utility</Badge>
                    <h3 className="text-3xl font-black tracking-tight">Computational Planning</h3>
-                   <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
+                   <p className="text-muted-foreground text-sm leading-relaxed max-sm">
                       Access our specialized high-precision academic, fiscal, and biometric engines for tactical planning.
                    </p>
                    <div className="flex flex-wrap gap-4">

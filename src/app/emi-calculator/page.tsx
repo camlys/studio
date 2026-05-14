@@ -9,7 +9,7 @@ import {
   ExternalLink, LayoutGrid, Calculator as CalcIcon, 
   CalendarDays, Timer, Github, Twitter, ChevronRight,
   Target, BarChart3, FileType, CheckCircle2, TrendingUp,
-  GraduationCap, Info, Wallet
+  GraduationCap, Info, Wallet, Globe
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

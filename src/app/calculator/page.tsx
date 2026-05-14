@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -68,6 +69,7 @@ export default function PrecisionCalculator() {
   const [history, setHistory] = useState<string[]>([]);
   const [isScientific, setIsScientific] = useState(true);
   const [isRadians, setIsRadians] = useState(true);
+  const [notation, setNotation] = useState<'auto' | 'fixed'>('auto');
   const [memory, setMemory] = useState<number>(0);
   const [entropy, setEntropy] = useState(0.000);
 
@@ -81,6 +83,11 @@ export default function PrecisionCalculator() {
   const formatResult = (num: number): string => {
     if (isNaN(num)) return "Error";
     if (!isFinite(num)) return "Infinity";
+    
+    if (notation === 'fixed') {
+      return num.toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 10 });
+    }
+
     if (Math.abs(num) > 1e12 || (Math.abs(num) < 1e-7 && num !== 0)) {
       return num.toExponential(6);
     }
@@ -91,7 +98,7 @@ export default function PrecisionCalculator() {
     setDisplay(prev => {
       if (prev === '0' && num !== '.') return num;
       if (prev.includes('.') && num === '.') return prev;
-      if (prev.length > 18) return prev;
+      if (prev.length > 25) return prev; // Extended for fixed notation
       return prev + num;
     });
   };
@@ -126,6 +133,25 @@ export default function PrecisionCalculator() {
     } catch (e) {
       setDisplay('Error');
       setTimeout(() => setDisplay('0'), 1500);
+    }
+  };
+
+  const toggleNotation = () => {
+    const nextNotation = notation === 'auto' ? 'fixed' : 'auto';
+    setNotation(nextNotation);
+    
+    // Attempt to reformat existing display if it's a numeric result
+    const val = parseFloat(display);
+    if (!isNaN(val) && expression === '') {
+      if (nextNotation === 'fixed') {
+        setDisplay(val.toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 10 }));
+      } else {
+        if (Math.abs(val) > 1e12 || (Math.abs(val) < 1e-7 && val !== 0)) {
+          setDisplay(val.toExponential(6));
+        } else {
+          setDisplay(parseFloat(val.toFixed(10)).toString());
+        }
+      }
     }
   };
 
@@ -338,8 +364,9 @@ export default function PrecisionCalculator() {
                   <div className="flex gap-1.5">
                     <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black", isRadians ? "text-primary border-primary/20" : "text-muted-foreground")}>RAD</Badge>
                     <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black", !isRadians ? "text-primary border-primary/20" : "text-muted-foreground")}>DEG</Badge>
+                    <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black", notation === 'fixed' ? "text-accent border-accent/20" : "text-muted-foreground")}>{notation === 'fixed' ? 'NORM' : 'SCI'}</Badge>
                   </div>
-                  <div className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/50 h-3 truncate max-w-[200px]">
+                  <div className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/50 h-3 truncate max-w-[150px]">
                     {expression}
                   </div>
                 </div>
@@ -351,6 +378,9 @@ export default function PrecisionCalculator() {
               <div className="flex border-b border-border/20 bg-muted/30">
                 <button onClick={() => setIsRadians(!isRadians)} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 border-r border-border/10 transition-colors">
                   {isRadians ? 'Set Degrees' : 'Set Radians'}
+                </button>
+                <button onClick={toggleNotation} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 border-r border-border/10 transition-colors">
+                  {notation === 'auto' ? 'Fix Notation' : 'Sci Notation'}
                 </button>
                 <button onClick={() => setIsScientific(!isScientific)} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 transition-colors">
                   {isScientific ? 'Standard' : 'Scientific'}

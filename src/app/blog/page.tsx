@@ -12,6 +12,15 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const BLOG_POSTS = [
   {
+    title: "The Masterclass on Metabolic Calorie Inference",
+    description: "An exhaustive technical whitepaper on thermodynamic synchronization, BMR algorithms, and the precision of macro-nutrient mapping.",
+    date: "October 05, 2024",
+    author: "Metabolic Ops Team",
+    readTime: "280 min read",
+    slug: "/blog/ultimate-metabolic-calorie-masterclass",
+    category: "Metabolic Whitepaper"
+  },
+  {
     title: "The Definitive Masterclass on Scholastic CGPA Synchronization",
     description: "An exhaustive technical whitepaper on credit-weighted distribution, grading algorithms, and the future of global academic parity.",
     date: "September 10, 2024",
@@ -192,16 +201,16 @@ export default function BlogHub() {
                 <GraduationCap className="w-24 h-24 text-primary opacity-20 group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div className="p-8 space-y-4 flex flex-col justify-center">
-                <Badge className="w-fit bg-primary text-primary-foreground text-[10px] uppercase tracking-widest font-black">EXHAUSTIVE SCHOLASTIC WHITEPAPER</Badge>
-                <h2 className="text-3xl font-black leading-tight tracking-tight">The Definitive Masterclass on Scholastic CGPA Synchronization</h2>
+                <Badge className="w-fit bg-primary text-primary-foreground text-[10px] uppercase tracking-widest font-black">EXHAUSTIVE METABOLIC WHITEPAPER</Badge>
+                <h2 className="text-3xl font-black leading-tight tracking-tight">{BLOG_POSTS[0].title}</h2>
                 <p className="text-muted-foreground text-sm line-clamp-3">
-                  A high-authority analysis of academic grading architectures. From credit-density weightings to global parity standards between 4.0 and 10.0 scale systems.
+                  {BLOG_POSTS[0].description}
                 </p>
                 <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2">
-                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> Academic Intelligence Unit</span>
-                  <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> 240 min read</span>
+                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> {BLOG_POSTS[0].author}</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> {BLOG_POSTS[0].readTime}</span>
                 </div>
-                <Link href="/blog/definitive-cgpa-masterclass">
+                <Link href={BLOG_POSTS[0].slug}>
                   <Button className="w-full md:w-fit mt-4 bg-primary text-primary-foreground font-bold uppercase tracking-widest text-[10px] h-10 px-8">
                     Access Masterclass
                   </Button>

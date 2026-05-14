@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { InstallPWA } from '@/components/chrono/InstallPWA';
 import { cn } from '@/lib/utils';
 import { 
@@ -127,7 +128,7 @@ export default function PrecisionCalculator() {
       
       const result = eval(cleanExpr);
       const formattedResult = formatResult(result);
-      setHistory(prev => [fullExpression + ' = ' + formattedResult, ...prev].slice(0, 5));
+      setHistory(prev => [fullExpression + ' = ' + formattedResult, ...prev].slice(0, 10));
       setDisplay(formattedResult);
       setExpression('');
     } catch (e) {
@@ -444,11 +445,14 @@ export default function PrecisionCalculator() {
                 <span className="text-[7px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-1 mb-2">
                   <History className="w-2.5 h-2.5" /> Registry
                 </span>
-                <div className="space-y-1">
-                  {history.slice(0, 2).map((item, i) => (
-                    <p key={i} className="text-[9px] font-mono text-muted-foreground/80 truncate border-l border-primary/20 pl-1.5">{item}</p>
-                  ))}
-                </div>
+                <ScrollArea className="h-[60px] pr-2">
+                  <div className="space-y-1">
+                    {history.map((item, i) => (
+                      <p key={i} className="text-[9px] font-mono text-muted-foreground/80 truncate border-l border-primary/20 pl-1.5">{item}</p>
+                    ))}
+                    {history.length === 0 && <p className="text-[8px] italic text-muted-foreground/40">No entries recorded.</p>}
+                  </div>
+                </ScrollArea>
               </div>
               <div className="glass-card !p-3 border-accent/20 bg-accent/5">
                 <span className="text-[7px] font-black uppercase tracking-widest text-accent flex items-center gap-1 mb-2">

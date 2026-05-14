@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { 
   Sun, Moon, Timer, ChevronRight, 
   Github, Twitter, Cpu, ShieldCheck, 
@@ -31,21 +31,22 @@ import { format } from 'date-fns';
 const homeSchema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "Camly Age Calculator",
+  "name": "Camly Premium Age Calculator",
   "url": "https://calculator.camly.org/",
-  "applicationCategory": "Utility",
-  "operatingSystem": "All",
-  "description": "A high-precision age and date difference calculator with real-time tracking and AI insights.",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Web, Windows, macOS, Android, iOS",
+  "description": "Professional high-precision age and date difference calculator with atomic-clock synchronization and real-time interval tracking.",
   "offers": {
     "@type": "Offer",
     "price": "0",
     "priceCurrency": "USD"
   },
   "featureList": [
-    "High-precision age calculation",
-    "Real-time chronological synchronization",
-    "Zodiac mapping",
-    "AI-driven fun facts"
+    "Atomic-sync chronological precision",
+    "Real-time age interval tracking (seconds/minutes)",
+    "Western Zodiac celestial mapping",
+    "AI-driven chronological fun facts",
+    "High-resolution report generation (PNG)"
   ]
 };
 
@@ -55,18 +56,18 @@ const faqSchema = {
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "How accurate is the Camly age calculator?",
+      "name": "How precise is the Camly age calculation algorithm?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Camly uses atomic-sync protocols and Stratum-1 NTP nodes to ensure sub-millisecond precision for all chronological calculations."
+        "text": "Camly utilizes atomic-sync protocols and Stratum-1 NTP nodes to ensure sub-millisecond precision, accounting for centurial leap years and Gregorian drift."
       }
     },
     {
       "@type": "Question",
-      "name": "Does Camly store my date of birth?",
+      "name": "Is my date of birth data stored on your servers?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. Camly operates on a 'Privacy by Design' principle. All calculations are handled locally in your browser."
+        "text": "No. Camly operates on a strict Privacy-by-Design architecture. All chronological processing occurs locally in the user's client-side environment."
       }
     }
   ]
@@ -78,7 +79,7 @@ const breadcrumbSchema = {
   "itemListElement": [{
     "@type": "ListItem",
     "position": 1,
-    "name": "Home",
+    "name": "Home / Age Engine",
     "item": "https://calculator.camly.org/"
   }]
 };
@@ -203,6 +204,16 @@ function ChronoFlowContent() {
     });
   };
 
+  const QUICK_NAV = [
+    { name: "Attendance Calculator", href: "/attendance-calculator" },
+    { name: "BMI Calculator", href: "/bmi-calculator" },
+    { name: "Calorie Calculator", href: "/calorie-calculator" },
+    { name: "CGPA Calculator", href: "/cgpa-calculator" },
+    { name: "Due Date Calculator", href: "/due-date-calculator" },
+    { name: "EMI Calculator", href: "/emi-calculator" },
+    { name: "Scientific Calculator", href: "/calculator" }
+  ];
+
   return (
     <div className="min-h-screen flex flex-col transition-all duration-700 overflow-x-hidden bg-background">
       <script
@@ -240,7 +251,7 @@ function ChronoFlowContent() {
       </nav>
 
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-6 md:py-12">
-        <div className="flex flex-col min-[480px]:flex-row items-start gap-6 md:gap-10">
+        <div className="flex flex-col min-[480px]:row items-start gap-6 md:gap-10">
           
           <aside className="w-full shrink-0 space-y-4 min-[480px]:w-[260px] md:w-[300px] lg:w-[340px] min-[480px]:sticky min-[480px]:top-24">
             <div className="glass-card !p-6 shadow-2xl transition-all duration-700 border-black dark:border-white border">
@@ -250,7 +261,6 @@ function ChronoFlowContent() {
                 onValueChange={(v) => {
                   if (v === 'calculator') router.push('/calculator');
                   if (v === 'due-date') router.push('/due-date-calculator');
-                  if (v === 'cgpa') router.push('/cgpa-calculator');
                 }}
               >
                 <TabsList className="grid w-full grid-cols-3 mb-6 rounded-xl h-10 bg-muted/50">
@@ -375,16 +385,7 @@ function ChronoFlowContent() {
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                {[
-                  { name: "Age Calculator", href: "/" },
-                  { name: "Attendance Calculator", href: "/attendance-calculator" },
-                  { name: "BMI Calculator", href: "/bmi-calculator" },
-                  { name: "Calorie Calculator", href: "/calorie-calculator" },
-                  { name: "CGPA Calculator", href: "/cgpa-calculator" },
-                  { name: "Due Date Calculator", href: "/due-date-calculator" },
-                  { name: "EMI Calculator", href: "/emi-calculator" },
-                  { name: "Scientific Calculator", href: "/calculator" }
-                ].filter(calc => calc.href !== "/").map((calc) => (
+                {QUICK_NAV.map((calc) => (
                   <Link key={calc.name} href={calc.href}>
                     <Button variant="outline" className="w-full justify-start h-10 text-[9px] font-black uppercase tracking-wider border-border/40 hover:border-primary/40 hover:bg-primary/5 transition-all px-2 overflow-hidden group">
                       <span className="truncate text-primary group-hover:text-primary/80 transition-colors">{calc.name}</span>
@@ -418,7 +419,7 @@ function ChronoFlowContent() {
                      </Link>
                      <Link href="/cgpa-calculator">
                         <Button variant="link" className="p-0 h-auto text-primary font-black uppercase tracking-widest text-[10px] gap-2">
-                           Academic Sync <ArrowUpRight className="w-3 h-3" />
+                           CGPA Sync <ArrowUpRight className="w-3 h-3" />
                         </Button>
                      </Link>
                    </div>

@@ -12,11 +12,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://calculator.camly.org'),
   title: {
-    default: 'Camly | Premium Age Calculator & Chronology Engine',
-    template: '%s | Camly'
+    default: 'Camly | Premium High-Precision Calculators & Chronology Engines',
+    template: '%s | Camly Professional'
   },
-  description: 'A high-precision age and date difference calculator. Features real-time tracking, zodiac mapping, and AI-driven chronological insights.',
-  keywords: ['age calculator', 'date difference', 'birthday countdown', 'chronological engine', 'time tracker', 'precision calculator', 'zodiac sign calculator', 'due date engine', 'pregnancy calculator'],
+  description: 'Access a suite of high-precision computational engines. Features clinical due date tracking, fiscal EMI inference, academic CGPA sync, and metabolic energy profiling.',
+  keywords: ['age calculator', 'date difference', 'scientific calculator', 'due date engine', 'EMI calculator', 'CGPA calculator', 'BMI sync', 'calorie tracker', 'attendance meter', 'precision logic'],
   authors: [{ name: 'Camly Operations Team' }],
   creator: 'Camly Inc',
   publisher: 'Camly Inc',
@@ -31,8 +31,8 @@ export const metadata: Metadata = {
     title: 'Camly',
   },
   openGraph: {
-    title: 'Camly | Premium Age Calculator',
-    description: 'High-precision chronological computation engine for professional and tactical use.',
+    title: 'Camly | Premium Computational Engines',
+    description: 'High-precision computational planning suite for professional and tactical management.',
     url: 'https://calculator.camly.org',
     siteName: 'Camly',
     locale: 'en_US',
@@ -40,8 +40,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Camly | Premium Age Calculator',
-    description: 'High-precision chronological computation engine with real-time tracking.',
+    title: 'Camly | Premium Calculators',
+    description: 'Mission-critical chronological and mathematical engines with real-time tracking.',
     creator: '@camly',
   },
   robots: {

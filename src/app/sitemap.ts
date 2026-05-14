@@ -30,19 +30,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/blog',
     '/privacy-protocol',
     '/terms-of-sync',
-    '/security-ops'
+    '/security-ops',
+    '/focus'
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'daily' as const,
-    priority: route === '' ? 1 : 0.8,
+    priority: route === '' ? 1 : 0.85,
   }));
 
   const blogRoutes = blogPosts.map((slug) => ({
     url: `${baseUrl}/blog/${slug}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
-    priority: 0.7,
+    priority: 0.75,
   }));
 
   return [...routes, ...blogRoutes];

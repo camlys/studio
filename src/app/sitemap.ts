@@ -21,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/due-date-calculator',
     '/cgpa-calculator',
     '/emi-calculator',
+    '/attendance-calculator',
     '/blog',
     '/privacy-protocol',
     '/terms-of-sync',

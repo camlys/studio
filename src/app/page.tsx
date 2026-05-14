@@ -12,7 +12,7 @@ import {
   Coins, Milestone, LayoutGrid, Download,
   Calculator as CalcIcon, CalendarDays, Copy,
   ArrowUpRight, Target, BarChart3, Settings,
-  FileType, GraduationCap, Wallet
+  FileType, GraduationCap, Wallet, UserCheck
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -27,14 +27,6 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from '@/lib/utils';
 import { toPng } from 'html-to-image';
 import { format } from 'date-fns';
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const homeSchema = {
   "@context": "https://schema.org",
@@ -241,77 +233,6 @@ function ChronoFlowContent() {
         </div>
 
         <div className="flex items-center gap-2">
-           <DropdownMenu>
-             <DropdownMenuTrigger asChild>
-               <Button 
-                 variant="ghost" 
-                 className="rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] gap-1.5 md:gap-2.5 transition-all group hover:bg-primary/5 text-primary/60 hover:text-primary"
-               >
-                 <LayoutGrid className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
-                 <span className="hidden min-[480px]:inline">Operational Tools</span>
-               </Button>
-             </DropdownMenuTrigger>
-             <DropdownMenuContent align="end" className="w-56 glass border-border/40 backdrop-blur-xl">
-               <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/5 rounded-lg m-1 mb-0">
-                 <Link href="https://camly.org" target="_blank" className="flex items-center gap-3 w-full px-2 py-2">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <FileType className="w-4 h-4 text-primary" />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-primary">camly.org</span>
-                      <span className="text-[7px] font-bold text-muted-foreground uppercase">Image & PDF Resizer</span>
-                    </div>
-                    <ExternalLink className="w-2.5 h-2.5 ml-auto opacity-30" />
-                 </Link>
-               </DropdownMenuItem>
-               <DropdownMenuSeparator className="bg-border/10 mx-2" />
-               <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 rounded-lg m-1">
-                 <Link href="/calculator" className="flex items-center gap-3 w-full px-2 py-2">
-                   <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                     <CalcIcon className="w-4 h-4 text-primary" />
-                   </div>
-                   <div className="flex flex-col">
-                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Calculator</span>
-                     <span className="text-[8px] font-bold text-muted-foreground uppercase">Precision ALU</span>
-                   </div>
-                 </Link>
-               </DropdownMenuItem>
-               <DropdownMenuItem asChild className="cursor-pointer focus:bg-accent/10 rounded-lg m-1">
-                 <Link href="/due-date-calculator" className="flex items-center gap-3 w-full px-2 py-2">
-                   <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
-                     <CalendarDays className="w-4 h-4 text-accent" />
-                   </div>
-                   <div className="flex flex-col">
-                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Due Date</span>
-                     <span className="text-[8px] font-bold text-muted-foreground uppercase">Tactical Planning</span>
-                   </div>
-                 </Link>
-               </DropdownMenuItem>
-               <DropdownMenuItem asChild className="cursor-pointer focus:bg-accent/10 rounded-lg m-1">
-                 <Link href="/cgpa-calculator" className="flex items-center gap-3 w-full px-2 py-2">
-                   <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
-                     <GraduationCap className="w-4 h-4 text-accent" />
-                   </div>
-                   <div className="flex flex-col">
-                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Academic Sync</span>
-                     <span className="text-[8px] font-bold text-muted-foreground uppercase">CGPA Calculator</span>
-                   </div>
-                 </Link>
-               </DropdownMenuItem>
-               <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 rounded-lg m-1">
-                 <Link href="/emi-calculator" className="flex items-center gap-3 w-full px-2 py-2">
-                   <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                     <Wallet className="w-4 h-4 text-primary" />
-                   </div>
-                   <div className="flex flex-col">
-                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">EMI Calculator</span>
-                     <span className="text-[8px] font-bold text-muted-foreground uppercase">Fiscal Inference</span>
-                   </div>
-                 </Link>
-               </DropdownMenuItem>
-             </DropdownMenuContent>
-           </DropdownMenu>
-
            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full hover:bg-accent/10 w-8 h-8">
              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
            </Button>
@@ -453,10 +374,11 @@ function ChronoFlowContent() {
                 <LayoutGrid className="w-4 h-4 text-primary" />
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {[
                   { name: "Academic Sync", href: "/cgpa-calculator" },
                   { name: "Age Calculator", href: "/" },
+                  { name: "Attendance Calculator", href: "/attendance-calculator" },
                   { name: "Due Date", href: "/due-date-calculator" },
                   { name: "EMI Calculator", href: "/emi-calculator" },
                   { name: "Scientific Calculator", href: "/calculator" }
@@ -492,9 +414,9 @@ function ChronoFlowContent() {
                            Academic Sync <ArrowUpRight className="w-3 h-3" />
                         </Button>
                      </Link>
-                     <Link href="/emi-calculator">
+                     <Link href="/attendance-calculator">
                         <Button variant="link" className="p-0 h-auto text-primary font-black uppercase tracking-widest text-[10px] gap-2">
-                           EMI Calculator <ArrowUpRight className="w-3 h-3" />
+                           Attendance <ArrowUpRight className="w-3 h-3" />
                         </Button>
                      </Link>
                    </div>
@@ -630,7 +552,7 @@ function ChronoFlowContent() {
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />
-                   <Link href="/emi-calculator">EMI Calculator</Link>
+                   <Link href="/attendance-calculator">Attendance</Link>
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />

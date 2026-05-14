@@ -12,7 +12,7 @@ import {
   Coins, Milestone, LayoutGrid, Download,
   Calculator as CalcIcon, CalendarDays, Copy,
   ArrowUpRight, Target, BarChart3, Settings,
-  FileType, GraduationCap
+  FileType, GraduationCap, Wallet
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -298,6 +298,17 @@ function ChronoFlowContent() {
                    </div>
                  </Link>
                </DropdownMenuItem>
+               <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 rounded-lg m-1">
+                 <Link href="/emi-calculator" className="flex items-center gap-3 w-full px-2 py-2">
+                   <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                     <Wallet className="w-4 h-4 text-primary" />
+                   </div>
+                   <div className="flex flex-col">
+                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">EMI Calculator</span>
+                     <span className="text-[8px] font-bold text-muted-foreground uppercase">Fiscal Inference</span>
+                   </div>
+                 </Link>
+               </DropdownMenuItem>
              </DropdownMenuContent>
            </DropdownMenu>
 
@@ -447,6 +458,7 @@ function ChronoFlowContent() {
                   { name: "Academic Sync", href: "/cgpa-calculator" },
                   { name: "Age Calculator", href: "/" },
                   { name: "Due Date", href: "/due-date-calculator" },
+                  { name: "EMI Calculator", href: "/emi-calculator" },
                   { name: "Scientific Calculator", href: "/calculator" }
                 ].map((calc) => (
                   <Link key={calc.name} href={calc.href}>
@@ -465,11 +477,11 @@ function ChronoFlowContent() {
              <div className="flex flex-col md:flex-row items-center gap-8">
                 <div className="flex-1 space-y-4">
                    <Badge variant="outline" className="border-accent/30 text-accent uppercase tracking-[0.3em] text-[10px] px-4 py-1.5 font-black">Professional Utility</Badge>
-                   <h3 className="text-3xl font-black tracking-tight">Milestone Planning</h3>
+                   <h3 className="text-3xl font-black tracking-tight">Computational Planning</h3>
                    <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
-                      Access our specialized high-precision academic and project engines for tactical planning.
+                      Access our specialized high-precision academic, fiscal, and project engines for tactical planning.
                    </p>
-                   <div className="flex gap-4">
+                   <div className="flex flex-wrap gap-4">
                      <Link href="/due-date-calculator">
                         <Button variant="link" className="p-0 h-auto text-primary font-black uppercase tracking-widest text-[10px] gap-2">
                            Due Date <ArrowUpRight className="w-3 h-3" />
@@ -478,6 +490,11 @@ function ChronoFlowContent() {
                      <Link href="/cgpa-calculator">
                         <Button variant="link" className="p-0 h-auto text-accent font-black uppercase tracking-widest text-[10px] gap-2">
                            Academic Sync <ArrowUpRight className="w-3 h-3" />
+                        </Button>
+                     </Link>
+                     <Link href="/emi-calculator">
+                        <Button variant="link" className="p-0 h-auto text-primary font-black uppercase tracking-widest text-[10px] gap-2">
+                           EMI Calculator <ArrowUpRight className="w-3 h-3" />
                         </Button>
                      </Link>
                    </div>
@@ -586,7 +603,7 @@ function ChronoFlowContent() {
                 </h2>
               </div>
               <p className="text-sm leading-relaxed max-w-xs font-medium text-muted-foreground">
-                Defining the standard for high-precision chronological computation. 
+                Defining the standard for high-precision chronological and academic computation. 
                 Camly Inc's flagship engine for professional and tactical management.
               </p>
               <div className="flex gap-5">
@@ -610,6 +627,10 @@ function ChronoFlowContent() {
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />
                    <Link href="/cgpa-calculator">CGPA Calculator</Link>
+                </li>
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                   <ChevronRight className="w-3 h-3 opacity-30" />
+                   <Link href="/emi-calculator">EMI Calculator</Link>
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />

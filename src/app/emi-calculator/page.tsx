@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/table";
 import { 
   PieChart as RePieChart, 
-  Pie, 
+  Pie as RePie, 
   Cell, 
   ResponsiveContainer, 
   Tooltip as ReTooltip,

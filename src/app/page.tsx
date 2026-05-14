@@ -251,7 +251,7 @@ function ChronoFlowContent() {
       </nav>
 
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-6 md:py-12">
-        <div className="flex flex-col min-[480px]:row items-start gap-6 md:gap-10">
+        <div className="flex flex-col min-[480px]:flex-row items-start gap-6 md:gap-10">
           
           <aside className="w-full shrink-0 space-y-4 min-[480px]:w-[260px] md:w-[300px] lg:w-[340px] min-[480px]:sticky min-[480px]:top-24">
             <div className="glass-card !p-6 shadow-2xl transition-all duration-700 border-black dark:border-white border">
@@ -283,6 +283,7 @@ function ChronoFlowContent() {
             </div>
 
             <div className="space-y-3">
+              <InstallPWA />
               <div className="glass-card !p-4 border-accent/20 bg-accent/5 overflow-hidden relative group">
                 <div className="absolute -top-4 -right-4 w-12 h-12 bg-accent/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-1000" />
                 <div className="flex items-center gap-2 mb-2">

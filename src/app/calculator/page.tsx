@@ -237,6 +237,8 @@ export default function PrecisionCalculator() {
               </div>
             </div>
 
+            <InstallPWA />
+
             <div className="glass-card !p-5 border-border/40 bg-muted/5">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">

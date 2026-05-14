@@ -12,6 +12,15 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const BLOG_POSTS = [
   {
+    title: "The Masterclass on Fiscal EMI Inference",
+    description: "An exhaustive technical whitepaper on loan amortization algorithms, principal-interest distribution, and capital velocity synchronization.",
+    date: "November 15, 2024",
+    author: "Fiscal Ops Team",
+    readTime: "320 min read",
+    slug: "/blog/ultimate-fiscal-emi-masterclass",
+    category: "Fiscal Whitepaper"
+  },
+  {
     title: "The Masterclass on Metabolic Calorie Inference",
     description: "An exhaustive technical whitepaper on thermodynamic synchronization, BMR algorithms, and the precision of macro-nutrient mapping.",
     date: "October 05, 2024",
@@ -201,7 +210,7 @@ export default function BlogHub() {
                 <GraduationCap className="w-24 h-24 text-primary opacity-20 group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div className="p-8 space-y-4 flex flex-col justify-center">
-                <Badge className="w-fit bg-primary text-primary-foreground text-[10px] uppercase tracking-widest font-black">EXHAUSTIVE METABOLIC WHITEPAPER</Badge>
+                <Badge className="w-fit bg-primary text-primary-foreground text-[10px] uppercase tracking-widest font-black">EXHAUSTIVE FISCAL WHITEPAPER</Badge>
                 <h2 className="text-3xl font-black leading-tight tracking-tight">{BLOG_POSTS[0].title}</h2>
                 <p className="text-muted-foreground text-sm line-clamp-3">
                   {BLOG_POSTS[0].description}

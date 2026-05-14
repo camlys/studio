@@ -276,14 +276,15 @@ export default function EMICalculator() {
                   { name: "Academic Sync", href: "/cgpa-calculator" },
                   { name: "Age Calculator", href: "/" },
                   { name: "Attendance Calculator", href: "/attendance-calculator" },
+                  { name: "BMI Calculator", href: "/bmi-calculator" },
                   { name: "Calorie Calculator", href: "/calorie-calculator" },
                   { name: "Due Date", href: "/due-date-calculator" },
                   { name: "EMI Calculator", href: "/emi-calculator" },
                   { name: "Scientific Calculator", href: "/calculator" }
                 ].map((calc) => (
                   <Link key={calc.name} href={calc.href}>
-                    <Button variant="outline" className="w-full justify-start h-10 text-[10px] font-bold uppercase tracking-widest border-black hover:border-primary/40 hover:bg-primary/5 transition-all">
-                      {calc.name}
+                    <Button variant="outline" className="w-full justify-start h-10 text-[9px] font-bold uppercase tracking-wider border-black hover:border-primary/40 hover:bg-primary/5 transition-all px-2 overflow-hidden">
+                      <span className="truncate">{calc.name}</span>
                     </Button>
                   </Link>
                 ))}
@@ -364,7 +365,7 @@ export default function EMICalculator() {
                </div>
                <div className="space-y-1">
                   <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/60">Fiscal Protocol</span>
-                  <p className="text-[10px] font-bold text-foreground leading-relaxed">Local-first inference. Your financial data is never transmitted.</p>
+                  <p className="text-[10px] font-bold text-foreground leading-relaxed">Local-first-first inference. Your financial data is never transmitted.</p>
                </div>
             </div>
           </aside>

@@ -21,13 +21,13 @@ const BLOG_POSTS = [
     category: "Academic Whitepaper"
   },
   {
-    title: "The 9000-Word Masterclass on Biometric Precision & Physiological Scaling",
-    description: "The definitive enterprise-grade guide to body mass analysis, surface area computation, and the future of high-precision biometric tracking.",
+    title: "The Science of Biometric Precision: An Exhaustive Masterclass",
+    description: "An unabridged enterprise-grade guide to body mass analysis, surface area computation, and the physics of physiological scaling.",
     date: "September 01, 2024",
     author: "Biometric Intelligence Unit",
-    readTime: "180 min read",
+    readTime: "300 min read",
     slug: "/blog/biometric-precision-masterclass",
-    category: "Masterclass"
+    category: "Exhaustive Masterclass"
   },
   {
     title: "The 9000-Word Masterclass on Pregnancy Due Date Calculation",

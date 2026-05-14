@@ -379,6 +379,7 @@ function ChronoFlowContent() {
                   { name: "Academic Sync", href: "/cgpa-calculator" },
                   { name: "Age Calculator", href: "/" },
                   { name: "Attendance Calculator", href: "/attendance-calculator" },
+                  { name: "BMI Calculator", href: "/bmi-calculator" },
                   { name: "Calorie Calculator", href: "/calorie-calculator" },
                   { name: "Due Date", href: "/due-date-calculator" },
                   { name: "EMI Calculator", href: "/emi-calculator" },
@@ -402,7 +403,7 @@ function ChronoFlowContent() {
                    <Badge variant="outline" className="border-accent/30 text-accent uppercase tracking-[0.3em] text-[10px] px-4 py-1.5 font-black">Professional Utility</Badge>
                    <h3 className="text-3xl font-black tracking-tight">Computational Planning</h3>
                    <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
-                      Access our specialized high-precision academic, fiscal, and project engines for tactical planning.
+                      Access our specialized high-precision academic, fiscal, and biometric engines for tactical planning.
                    </p>
                    <div className="flex flex-wrap gap-4">
                      <Link href="/due-date-calculator">
@@ -410,14 +411,14 @@ function ChronoFlowContent() {
                            Due Date <ArrowUpRight className="w-3 h-3" />
                         </Button>
                      </Link>
-                     <Link href="/cgpa-calculator">
+                     <Link href="/bmi-calculator">
                         <Button variant="link" className="p-0 h-auto text-accent font-black uppercase tracking-widest text-[10px] gap-2">
-                           Academic Sync <ArrowUpRight className="w-3 h-3" />
+                           BMI Sync <ArrowUpRight className="w-3 h-3" />
                         </Button>
                      </Link>
-                     <Link href="/attendance-calculator">
+                     <Link href="/cgpa-calculator">
                         <Button variant="link" className="p-0 h-auto text-primary font-black uppercase tracking-widest text-[10px] gap-2">
-                           Attendance <ArrowUpRight className="w-3 h-3" />
+                           Academic Sync <ArrowUpRight className="w-3 h-3" />
                         </Button>
                      </Link>
                    </div>
@@ -554,6 +555,10 @@ function ChronoFlowContent() {
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />
                    <Link href="/attendance-calculator">Attendance</Link>
+                </li>
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                   <ChevronRight className="w-3 h-3 opacity-30" />
+                   <Link href="/bmi-calculator">BMI Calculator</Link>
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />

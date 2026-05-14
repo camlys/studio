@@ -23,6 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/emi-calculator',
     '/attendance-calculator',
     '/calorie-calculator',
+    '/bmi-calculator',
     '/blog',
     '/privacy-protocol',
     '/terms-of-sync',

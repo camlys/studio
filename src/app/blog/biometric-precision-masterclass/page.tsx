@@ -48,7 +48,7 @@ export default function BiometricPrecisionMasterclass() {
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" className="w-9 h-9 rounded-full"><Share2 className="w-4 h-4" /></Button>
           <Button variant="ghost" size="icon" className="w-9 h-9 rounded-full"><Bookmark className="w-4 h-4" /></Button>
-          <Link href="/">
+          <Link href="/bmi-calculator">
              <Button size="sm" className="bg-accent text-accent-foreground font-bold text-[10px] uppercase tracking-widest px-4">Open engine</Button>
           </Link>
         </div>
@@ -106,7 +106,7 @@ export default function BiometricPrecisionMasterclass() {
 
           <div className="space-y-12">
              <h2 className="text-4xl md:text-7xl font-black text-foreground tracking-tight leading-none">2. The New BMI Scale</h2>
-             <p>Oxford University researchers have proposed a refined BMI formula ($1.3 \times \text{weight} / \text{height}^{2.5}$) to account for scaling laws that the original square-height formula ignores.</p>
+             <p>Oxford University researchers have proposed a refined BMI formula (1.3 × weight / height^2.5) to account for scaling laws that the original square-height formula ignores.</p>
              <p>This "New BMI" recognizes that human beings do not grow in two dimensions. As height increases, mass increases cubically, making the standard square-height ratio mathematically biased against taller individuals.</p>
           </div>
 
@@ -115,7 +115,7 @@ export default function BiometricPrecisionMasterclass() {
               <Scale className="w-10 h-10 text-accent mb-6" />
               <h3 className="text-foreground font-black text-2xl mb-4 uppercase tracking-tighter">Ponderal Index</h3>
               <p className="text-sm opacity-80 leading-relaxed">
-                Also known as the Corpulence Index, it uses height cubed ($kg/m^3$) to provide a more stable biometric baseline across all physiological heights.
+                Also known as the Corpulence Index, it uses height cubed (kg/m³) to provide a more stable biometric baseline across all physiological heights.
               </p>
             </div>
             <div className="glass p-10 rounded-[40px] border-border group hover:border-primary/50 transition-all">
@@ -133,7 +133,7 @@ export default function BiometricPrecisionMasterclass() {
               Precision is the ultimate form of respect for the human body. Experience the most accurate biometric computation engine available today.
             </p>
             <div className="pt-12">
-              <Link href="/">
+              <Link href="/bmi-calculator">
                 <Button className="w-full md:w-fit h-20 bg-accent text-accent-foreground font-black text-xl uppercase tracking-[0.2em] rounded-[32px] shadow-2xl hover:scale-[1.05] transition-all group px-16">
                   Launch the Camly Engine
                   <Zap className="ml-4 w-7 h-7 group-hover:fill-current transition-all" />

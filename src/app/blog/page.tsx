@@ -250,10 +250,6 @@ export default function BlogHub() {
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />
-                   <Link href="/focus">Pomodoro Focus</Link>
-                </li>
-                <li className="hover:text-primary transition-colors flex items-center gap-2">
-                   <ChevronRight className="w-3 h-3 opacity-30" />
                    <Link href="/cgpa-calculator">CGPA Calculator</Link>
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">

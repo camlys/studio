@@ -53,8 +53,7 @@ const homeSchema = {
     "High-precision age calculation",
     "Real-time chronological synchronization",
     "Zodiac mapping",
-    "AI-driven fun facts",
-    "Pomodoro focus timer"
+    "AI-driven fun facts"
   ]
 };
 
@@ -288,17 +287,6 @@ function ChronoFlowContent() {
                    </div>
                  </Link>
                </DropdownMenuItem>
-               <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 rounded-lg m-1">
-                 <Link href="/focus" className="flex items-center gap-3 w-full px-2 py-2">
-                   <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                     <Timer className="w-4 h-4 text-primary" />
-                   </div>
-                   <div className="flex flex-col">
-                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Focus Mode</span>
-                     <span className="text-[8px] font-bold text-muted-foreground uppercase">Pomodoro</span>
-                   </div>
-                 </Link>
-               </DropdownMenuItem>
                <DropdownMenuItem asChild className="cursor-pointer focus:bg-accent/10 rounded-lg m-1">
                  <Link href="/cgpa-calculator" className="flex items-center gap-3 w-full px-2 py-2">
                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
@@ -320,7 +308,7 @@ function ChronoFlowContent() {
       </nav>
 
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-6 md:py-12">
-        <div className="flex flex-col min-[480px]:flex-row items-start gap-10">
+        <div className="flex flex-col min-[480px]:row items-start gap-10">
           
           <aside className="w-full shrink-0 space-y-4 min-[480px]:w-[180px] sm:w-[240px] md:w-[300px] lg:w-[340px] min-[480px]:sticky min-[480px]:top-24">
             <div className="glass-card !p-6 shadow-2xl transition-all duration-700 border-black dark:border-white border">
@@ -328,14 +316,13 @@ function ChronoFlowContent() {
                 value="age"
                 className="w-full" 
                 onValueChange={(v) => {
-                  if (v === 'focus') router.push('/focus');
                   if (v === 'calculator') router.push('/calculator');
                   if (v === 'due-date') router.push('/due-date-calculator');
+                  if (v === 'cgpa') router.push('/cgpa-calculator');
                 }}
               >
-                <TabsList className="grid w-full grid-cols-4 mb-6 rounded-xl h-10 bg-muted/50">
+                <TabsList className="grid w-full grid-cols-3 mb-6 rounded-xl h-10 bg-muted/50">
                   <TabsTrigger value="age" className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Age</TabsTrigger>
-                  <TabsTrigger value="focus" className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Focus</TabsTrigger>
                   <TabsTrigger value="calculator" className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Calc</TabsTrigger>
                   <TabsTrigger value="due-date" className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Due</TabsTrigger>
                 </TabsList>
@@ -597,10 +584,6 @@ function ChronoFlowContent() {
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                   <ChevronRight className="w-3 h-3 opacity-30" />
                   <Link href="/calculator">Precision Calculator</Link>
-                </li>
-                <li className="hover:text-primary transition-colors flex items-center gap-2">
-                   <ChevronRight className="w-3 h-3 opacity-30" />
-                   <Link href="/focus">Pomodoro Focus</Link>
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />

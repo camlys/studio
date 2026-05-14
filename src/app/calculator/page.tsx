@@ -275,9 +275,9 @@ export default function PrecisionCalculator() {
       </nav>
 
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-8 md:py-16">
-        <div className="flex flex-col md:flex-row items-center md:items-start justify-center gap-8 lg:gap-20">
+        <div className="flex flex-col min-[480px]:flex-row items-center min-[480px]:items-start justify-center gap-6 md:gap-8 lg:gap-20">
           
-          <div className="flex-grow max-w-md text-center md:text-left space-y-6 pt-4 order-2 md:order-1">
+          <div className="flex-grow max-w-md text-center min-[480px]:text-left space-y-6 pt-4 order-2 min-[480px]:order-1">
             <div className="space-y-4">
               <Badge variant="outline" className="border-accent/30 text-accent uppercase tracking-[0.4em] text-[9px] px-3 py-1 font-black">
                 Mission-Critical Logic
@@ -331,7 +331,7 @@ export default function PrecisionCalculator() {
             </div>
           </div>
 
-          <div className="w-full max-w-[420px] flex flex-col gap-4 order-1 md:order-2">
+          <div className="w-full max-w-[420px] flex flex-col gap-4 order-1 min-[480px]:order-2">
             <div className="w-full glass-card !p-0 overflow-hidden shadow-2xl border-black dark:border-white border">
               <div className="bg-black/5 dark:bg-black/20 p-4 text-right space-y-1 border-b border-border/40 min-h-[90px] flex flex-col justify-end">
                 <div className="flex justify-between items-center mb-1">

@@ -254,20 +254,20 @@ export default function CGPACalculator() {
       </nav>
 
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-8 md:py-16">
-        <div className="mb-10 md:mb-12 space-y-3 text-center md:text-left">
+        <div className="mb-10 md:mb-12 space-y-3 text-center min-[480px]:text-left">
           <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-3 py-1 font-black">
             Academic Performance Layer
           </Badge>
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.85]">
             CGPA <span className="text-primary">Inference</span> Engine
           </h2>
-          <p className="text-muted-foreground text-sm leading-relaxed font-medium max-w-xl mx-auto md:mx-0">
+          <p className="text-muted-foreground text-sm leading-relaxed font-medium max-w-xl mx-auto min-[480px]:mx-0">
             Advanced academic synchronization for university grades, credit-weighted milestones, and high-fidelity educational tracking.
           </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-16">
-          <div className="w-full lg:flex-grow space-y-8">
+        <div className="flex flex-col min-[480px]:flex-row items-start gap-6 md:gap-8 lg:gap-16">
+          <div className="w-full min-[480px]:flex-grow space-y-8">
             {semesters.map((sem, sIdx) => (
               <div key={sem.id} className="glass-card !p-6 border-black dark:border-white border shadow-2xl relative">
                 <div className="flex items-center justify-between mb-6">
@@ -341,7 +341,7 @@ export default function CGPACalculator() {
             </Button>
           </div>
 
-          <aside className="w-full lg:w-[380px] space-y-6 lg:sticky lg:top-24">
+          <aside className="w-full min-[480px]:w-[320px] lg:w-[380px] space-y-6 min-[480px]:sticky min-[480px]:top-24">
             <div ref={reportRef} className="space-y-6">
               <div className="glass-card !p-8 border-accent/20 bg-accent/5 text-center relative overflow-hidden group shadow-2xl">
                 <div className="absolute top-0 right-0 p-4 opacity-10">

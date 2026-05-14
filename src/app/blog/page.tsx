@@ -12,6 +12,15 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const BLOG_POSTS = [
   {
+    title: "The Definitive Masterclass on Scholastic CGPA Synchronization",
+    description: "An exhaustive technical whitepaper on credit-weighted distribution, grading algorithms, and the future of global academic parity.",
+    date: "September 10, 2024",
+    author: "Academic Ops Team",
+    readTime: "240 min read",
+    slug: "/blog/definitive-cgpa-masterclass",
+    category: "Academic Whitepaper"
+  },
+  {
     title: "The 9000-Word Masterclass on Biometric Precision & Physiological Scaling",
     description: "The definitive enterprise-grade guide to body mass analysis, surface area computation, and the future of high-precision biometric tracking.",
     date: "September 01, 2024",
@@ -157,16 +166,16 @@ export default function BlogHub() {
             Knowledge Center
           </Badge>
           <h1 className="text-4xl md:text-6xl font-black tracking-tighter">
-            Digital <span className="text-primary">Optimization</span> & <span className="text-accent">Precision</span>
+            Scholastic <span className="text-primary">Intelligence</span> & <span className="text-accent">Precision</span>
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base leading-relaxed font-medium">
-            Exploring the intersection of file optimization, chronological precision, and the evolution of digital utility tools by Camly Inc.
+            Exploring the intersection of academic synchronization, physiological precision, and high-fidelity utility tools.
           </p>
           
           <div className="max-w-md mx-auto relative pt-4">
             <Search className="absolute left-3 top-7 w-4 h-4 text-muted-foreground" />
             <Input 
-              placeholder="Search articles..." 
+              placeholder="Search exhaustive whitepapers..." 
               className="pl-10 bg-muted/50 border-border h-12 rounded-xl focus:ring-2 focus:ring-primary/20"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -178,22 +187,22 @@ export default function BlogHub() {
           {/* Featured Post */}
           <div className="md:col-span-2 glass border border-border rounded-3xl overflow-hidden group hover:border-primary/30 transition-all">
             <div className="grid md:grid-cols-2">
-              <div className="bg-gradient-to-br from-accent/10 to-primary/10 h-64 md:h-full flex items-center justify-center relative">
+              <div className="bg-gradient-to-br from-primary/10 to-accent/10 h-64 md:h-full flex items-center justify-center relative">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_70%)] opacity-30" />
-                <BookOpen className="w-24 h-24 text-accent opacity-20 group-hover:scale-110 transition-transform duration-500" />
+                <GraduationCap className="w-24 h-24 text-primary opacity-20 group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div className="p-8 space-y-4 flex flex-col justify-center">
-                <Badge className="w-fit bg-accent text-accent-foreground text-[10px] uppercase tracking-widest font-black">9000-WORD BIOMETRIC MASTERCLASS</Badge>
-                <h2 className="text-3xl font-black leading-tight tracking-tight">The Science of Biometric Precision & Physiological Scaling</h2>
+                <Badge className="w-fit bg-primary text-primary-foreground text-[10px] uppercase tracking-widest font-black">EXHAUSTIVE SCHOLASTIC WHITEPAPER</Badge>
+                <h2 className="text-3xl font-black leading-tight tracking-tight">The Definitive Masterclass on Scholastic CGPA Synchronization</h2>
                 <p className="text-muted-foreground text-sm line-clamp-3">
-                  An exhaustive technical analysis of human physiological metrics. From Mosteller surface area computation to the New Oxford BMI scale and ponderal indexing.
+                  A high-authority analysis of academic grading architectures. From credit-density weightings to global parity standards between 4.0 and 10.0 scale systems.
                 </p>
                 <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2">
-                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> Biometric Intelligence Unit</span>
-                  <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> 180 min read</span>
+                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> Academic Intelligence Unit</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> 240 min read</span>
                 </div>
-                <Link href="/blog/biometric-precision-masterclass">
-                  <Button className="w-full md:w-fit mt-4 bg-accent text-accent-foreground font-bold uppercase tracking-widest text-[10px] h-10 px-8">
+                <Link href="/blog/definitive-cgpa-masterclass">
+                  <Button className="w-full md:w-fit mt-4 bg-primary text-primary-foreground font-bold uppercase tracking-widest text-[10px] h-10 px-8">
                     Access Masterclass
                   </Button>
                 </Link>
@@ -236,7 +245,7 @@ export default function BlogHub() {
                 </h2>
               </div>
               <p className="text-sm leading-relaxed max-w-xs font-medium text-muted-foreground">
-                Defining the standard for high-precision chronological computation. 
+                Defining the standard for high-precision chronological and academic computation. 
                 Camly Inc's flagship engine for professional and tactical management.
               </p>
               <div className="flex gap-5">

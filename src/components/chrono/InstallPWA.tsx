@@ -10,17 +10,13 @@ export function InstallPWA() {
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: Event) => {
-      // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
-      // Stash the event so it can be triggered later.
       setDeferredPrompt(e);
-      // Update UI notify the user they can install the PWA
       setIsInstallable(true);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // Check if already in standalone mode
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setIsInstallable(false);
     }
@@ -32,18 +28,11 @@ export function InstallPWA() {
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) return;
-
-    // Show the install prompt
     deferredPrompt.prompt();
-
-    // Wait for the user to respond to the prompt
     const { outcome } = await deferredPrompt.userChoice;
-    
     if (outcome === 'accepted') {
       setIsInstallable(false);
     }
-
-    // We've used the prompt, and can't use it again
     setDeferredPrompt(null);
   };
 
@@ -73,9 +62,9 @@ export function InstallPWA() {
         </Button>
 
         <div className="flex items-center justify-center gap-4 opacity-30 pt-1">
-          <Monitor className="w-3 h-3" />
-          <Smartphone className="w-3 h-3" />
-          <ShieldCheck className="w-3 h-3" />
+          <Monitor className="w-4 h-4" />
+          <Smartphone className="w-4 h-4" />
+          <ShieldCheck className="w-4 h-4" />
         </div>
       </div>
     </div>

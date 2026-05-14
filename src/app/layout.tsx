@@ -29,6 +29,8 @@ export const metadata: Metadata = {
     icon: [
       { url: '/camly.png' },
       { url: '/camly.png', sizes: '192x192', type: 'image/png' },
+      { url: '/camly.png', sizes: '384x384', type: 'image/png' },
+      { url: '/camly.png', sizes: '512x512', type: 'image/png' },
     ],
     apple: [
       { url: '/camly.png', sizes: '180x180', type: 'image/png' },

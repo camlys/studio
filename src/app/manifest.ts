@@ -18,6 +18,12 @@ export default function manifest(): MetadataRoute.Manifest {
       },
       {
         src: '/camly.png',
+        sizes: '384x384',
+        type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/camly.png',
         sizes: '512x512',
         type: 'image/png',
         purpose: 'any',

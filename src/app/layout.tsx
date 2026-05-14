@@ -25,6 +25,15 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
+  icons: {
+    icon: [
+      { url: '/camly.png' },
+      { url: '/camly.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/camly.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',

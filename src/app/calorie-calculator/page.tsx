@@ -315,7 +315,7 @@ export default function CalorieCalculator() {
                   { name: "Due Date", href: "/due-date-calculator" },
                   { name: "EMI Calculator", href: "/emi-calculator" },
                   { name: "Scientific Calculator", href: "/calculator" }
-                ].map((calc) => (
+                ].filter(calc => calc.href !== "/calorie-calculator").map((calc) => (
                   <Link key={calc.name} href={calc.href}>
                     <Button variant="outline" className="w-full justify-start h-10 text-[9px] font-bold uppercase tracking-wider border-black hover:border-primary/40 hover:bg-primary/5 transition-all px-2 overflow-hidden">
                       <span className="truncate">{calc.name}</span>

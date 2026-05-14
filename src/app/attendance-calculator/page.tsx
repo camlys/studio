@@ -305,12 +305,13 @@ export default function AttendanceCalculator() {
                   { name: "Academic Sync", href: "/cgpa-calculator" },
                   { name: "Age Calculator", href: "/" },
                   { name: "Attendance Calculator", href: "/attendance-calculator" },
+                  { name: "Calorie Calculator", href: "/calorie-calculator" },
                   { name: "Due Date", href: "/due-date-calculator" },
                   { name: "EMI Calculator", href: "/emi-calculator" },
                   { name: "Scientific Calculator", href: "/calculator" }
                 ].map((calc) => (
                   <Link key={calc.name} href={calc.href}>
-                    <Button variant="outline" className="w-full justify-start h-10 text-[10px] font-bold uppercase tracking-widest border-border/40 hover:border-primary/40 hover:bg-primary/5 transition-all">
+                    <Button variant="outline" className="w-full justify-start h-10 text-[10px] font-bold uppercase tracking-widest border-black hover:border-primary/40 hover:bg-primary/5 transition-all">
                       {calc.name}
                     </Button>
                   </Link>
@@ -379,7 +380,7 @@ export default function AttendanceCalculator() {
             <Button 
               onClick={downloadReport} 
               disabled={isDownloading}
-              className="w-full h-14 bg-primary text-primary-foreground font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all group gap-3 border-black dark:border-white border-2"
+              className="w-full h-14 bg-primary text-primary-foreground font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-xl hover:scale-[1.02] transition-all group gap-3 border-black border-2"
             >
               <Download className={cn("w-4 h-4", isDownloading && "animate-bounce")} />
               {isDownloading ? 'Capturing Matrix...' : 'Download Academic PNG'}

@@ -22,6 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/cgpa-calculator',
     '/emi-calculator',
     '/attendance-calculator',
+    '/calorie-calculator',
     '/blog',
     '/privacy-protocol',
     '/terms-of-sync',

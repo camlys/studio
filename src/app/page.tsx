@@ -12,7 +12,7 @@ import {
   Coins, Milestone, LayoutGrid, Download,
   Calculator as CalcIcon, CalendarDays, Copy,
   ArrowUpRight, Target, BarChart3, Settings,
-  FileType
+  FileType, GraduationCap
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -39,7 +39,7 @@ import {
 const homeSchema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "ChronoFlow Age Calculator",
+  "name": "Camly Age Calculator",
   "url": "https://calculator.camly.org/",
   "applicationCategory": "Utility",
   "operatingSystem": "All",
@@ -64,18 +64,18 @@ const faqSchema = {
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "How accurate is the ChronoFlow age calculator?",
+      "name": "How accurate is the Camly age calculator?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "ChronoFlow uses atomic-sync protocols and Stratum-1 NTP nodes to ensure sub-millisecond precision for all chronological calculations."
+        "text": "Camly uses atomic-sync protocols and Stratum-1 NTP nodes to ensure sub-millisecond precision for all chronological calculations."
       }
     },
     {
       "@type": "Question",
-      "name": "Does ChronoFlow store my date of birth?",
+      "name": "Does Camly store my date of birth?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. ChronoFlow operates on a 'Privacy by Design' principle. All calculations are handled locally in your browser."
+        "text": "No. Camly operates on a 'Privacy by Design' principle. All calculations are handled locally in your browser."
       }
     }
   ]
@@ -187,7 +187,7 @@ function ChronoFlowContent() {
         }
       });
       const link = document.createElement('a');
-      link.download = `ChronoFlow_Metrics_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
+      link.download = `Camly_Metrics_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {
@@ -204,7 +204,7 @@ function ChronoFlowContent() {
 
   const handleShare = () => {
     if (!results) return;
-    const text = `Age Metrics: ${results.years}y, ${results.months}m, ${results.days}d. Calculated via ChronoFlow.`;
+    const text = `Age Metrics: ${results.years}y, ${results.months}m, ${results.days}d. Calculated via Camly.`;
     navigator.clipboard.writeText(text);
     toast({
       title: "Copied!",
@@ -229,7 +229,7 @@ function ChronoFlowContent() {
       <nav className="relative z-50 h-14 flex items-center px-4 md:px-6 justify-between transition-colors duration-700 glass border-b border-border">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center transition-all group-hover:scale-110">
-            <Image src="/camly.png" alt="Camly Calculator" width={40} height={40} priority className="object-contain" />
+            <Image src="/camly.png" alt="Camly" width={40} height={40} priority className="object-contain" />
           </div>
           <div className="flex flex-col">
             <h1 className="text-lg font-black tracking-tighter leading-none font-roboto-slab uppercase bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
@@ -299,6 +299,17 @@ function ChronoFlowContent() {
                    </div>
                  </Link>
                </DropdownMenuItem>
+               <DropdownMenuItem asChild className="cursor-pointer focus:bg-accent/10 rounded-lg m-1">
+                 <Link href="/cgpa-calculator" className="flex items-center gap-3 w-full px-2 py-2">
+                   <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                     <GraduationCap className="w-4 h-4 text-accent" />
+                   </div>
+                   <div className="flex flex-col">
+                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Academic Sync</span>
+                     <span className="text-[8px] font-bold text-muted-foreground uppercase">CGPA Calculator</span>
+                   </div>
+                 </Link>
+               </DropdownMenuItem>
              </DropdownMenuContent>
            </DropdownMenu>
 
@@ -336,7 +347,7 @@ function ChronoFlowContent() {
                     className="w-full h-12 mt-6 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow border-black dark:border-white border"
                     onClick={handleCalculate}
                   >
-                    Compute Age Results
+                    Compute Results
                   </Button>
                 </TabsContent>
               </Tabs>
@@ -447,13 +458,20 @@ function ChronoFlowContent() {
                    <Badge variant="outline" className="border-accent/30 text-accent uppercase tracking-[0.3em] text-[10px] px-4 py-1.5 font-black">Professional Utility</Badge>
                    <h3 className="text-3xl font-black tracking-tight">Milestone Planning</h3>
                    <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
-                      Access our specialized high-precision due date engine for tactical project management.
+                      Access our specialized high-precision academic and project engines for tactical planning.
                    </p>
-                   <Link href="/due-date-calculator">
-                      <Button variant="link" className="p-0 h-auto text-primary font-black uppercase tracking-widest text-[10px] gap-2">
-                         Open Due Date <ArrowUpRight className="w-3 h-3" />
-                      </Button>
-                   </Link>
+                   <div className="flex gap-4">
+                     <Link href="/due-date-calculator">
+                        <Button variant="link" className="p-0 h-auto text-primary font-black uppercase tracking-widest text-[10px] gap-2">
+                           Due Date <ArrowUpRight className="w-3 h-3" />
+                        </Button>
+                     </Link>
+                     <Link href="/cgpa-calculator">
+                        <Button variant="link" className="p-0 h-auto text-accent font-black uppercase tracking-widest text-[10px] gap-2">
+                           Academic Sync <ArrowUpRight className="w-3 h-3" />
+                        </Button>
+                     </Link>
+                   </div>
                 </div>
                 <div className="w-full md:w-px h-px md:h-32 bg-border/40" />
                 <div className="flex-grow space-y-4 text-center md:text-left">
@@ -474,7 +492,7 @@ function ChronoFlowContent() {
           <section className="space-y-20">
             <div className="text-center space-y-4">
               <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-6 py-1.5 font-black">Technical whitepaper</Badge>
-              <h2 className="text-4xl md:text-7xl font-black tracking-tighter leading-none">The ChronoFlow <span className="text-primary">Methodology</span></h2>
+              <h2 className="text-4xl md:text-7xl font-black tracking-tighter leading-none">The Camly <span className="text-primary">Methodology</span></h2>
               <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-medium">We define the standard for high-definition chronological computation through atomic-sync protocols.</p>
             </div>
 
@@ -509,7 +527,7 @@ function ChronoFlowContent() {
             </div>
             <div className="text-center space-y-6 relative z-10">
               <h2 className="text-4xl md:text-6xl font-black tracking-tighter">Precision for <span className="text-primary">Global Verticals</span></h2>
-              <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto font-medium">ChronoFlow provides mission-critical data for sectors where time isn't just a number—it's a high-stakes record.</p>
+              <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto font-medium">Camly provides mission-critical data for sectors where time isn't just a number—it's a high-stakes record.</p>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
@@ -524,8 +542,8 @@ function ChronoFlowContent() {
                 <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
                   <HeartPulse className="w-7 h-7 text-accent" />
                 </div>
-                <h4 className="font-black text-sm uppercase tracking-[0.2em]">Healthcare Stats</h4>
-                <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Tracking pediatric developmental cycles and age-specific biological markers with absolute day-level granular precision.</p>
+                <h4 className="font-black text-sm uppercase tracking-[0.2em]">Academic & Med</h4>
+                <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Tracking pediatric developmental cycles and academic milestones with absolute day-level granular precision.</p>
               </div>
               <div className="space-y-5 group/item">
                 <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
@@ -552,7 +570,7 @@ function ChronoFlowContent() {
             <div className="col-span-2 lg:col-span-2 space-y-6">
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center transition-all">
-                  <Image src="/camly.png" alt="Camly Calculator" width={48} height={48} className="object-contain" />
+                  <Image src="/camly.png" alt="Camly" width={48} height={48} className="object-contain" />
                 </div>
                 <h2 className="text-xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase font-roboto-slab">
                   CALCULATOR
@@ -560,7 +578,7 @@ function ChronoFlowContent() {
               </div>
               <p className="text-sm leading-relaxed max-w-xs font-medium text-muted-foreground">
                 Defining the standard for high-precision chronological computation. 
-                Camly Inc's flagship engine for professional and tactical time management.
+                Camly Inc's flagship engine for professional and tactical management.
               </p>
               <div className="flex gap-5">
                 <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-accent/10 shadow-sm border border-border/50"><Github className="w-4 h-4" /></Button>
@@ -583,6 +601,10 @@ function ChronoFlowContent() {
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />
                    <Link href="/focus">Pomodoro Focus</Link>
+                </li>
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                   <ChevronRight className="w-3 h-3 opacity-30" />
+                   <Link href="/cgpa-calculator">CGPA Calculator</Link>
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />

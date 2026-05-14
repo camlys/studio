@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Timer, ArrowLeft, User, Clock, ChevronRight, Search, BookOpen, ExternalLink, Github, Twitter, Globe } from 'lucide-react';
+import { Timer, ArrowLeft, User, Clock, ChevronRight, Search, BookOpen, ExternalLink, Github, Twitter, Globe, GraduationCap } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -70,7 +70,7 @@ const BLOG_POSTS = [
 const blogSchema = {
   "@context": "https://schema.org",
   "@type": "Blog",
-  "name": "ChronoFlow Insights Hub",
+  "name": "Camly Insights Hub",
   "description": "Expert insights on file optimization, chronological precision, and the evolution of digital utility tools.",
   "publisher": {
     "@type": "Organization",
@@ -129,7 +129,7 @@ export default function BlogHub() {
       <nav className="relative z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between">
         <Link href="/" className="flex items-center gap-3 group">
           <div className="flex items-center justify-center transition-all group-hover:scale-110">
-            <Image src="/camly.png" alt="Camly Calculator" width={40} height={40} priority className="object-contain" />
+            <Image src="/camly.png" alt="Camly" width={40} height={40} priority className="object-contain" />
           </div>
           <h1 className="text-sm md:text-base font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
             CAMLY <span className="text-foreground/50 font-normal ml-2">INSIGHTS</span>
@@ -166,7 +166,7 @@ export default function BlogHub() {
         </header>
 
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Featured Post - The 9000 Word Pregnancy Masterpiece */}
+          {/* Featured Post */}
           <div className="md:col-span-2 glass border border-border rounded-3xl overflow-hidden group hover:border-primary/30 transition-all">
             <div className="grid md:grid-cols-2">
               <div className="bg-gradient-to-br from-accent/10 to-primary/10 h-64 md:h-full flex items-center justify-center relative">
@@ -220,7 +220,7 @@ export default function BlogHub() {
             <div className="col-span-2 lg:col-span-2 space-y-6">
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center transition-all">
-                  <Image src="/camly.png" alt="Camly Calculator" width={48} height={48} className="object-contain" />
+                  <Image src="/camly.png" alt="Camly" width={48} height={48} className="object-contain" />
                 </div>
                 <h2 className="text-xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase font-roboto-slab">
                   CALCULATOR
@@ -228,7 +228,7 @@ export default function BlogHub() {
               </div>
               <p className="text-sm leading-relaxed max-w-xs font-medium text-muted-foreground">
                 Defining the standard for high-precision chronological computation. 
-                Camly Inc's flagship engine for professional and tactical time management.
+                Camly Inc's flagship engine for professional and tactical management.
               </p>
               <div className="flex gap-5">
                 <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-accent/10 shadow-sm border border-border/50"><Github className="w-4 h-4" /></Button>
@@ -251,6 +251,10 @@ export default function BlogHub() {
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />
                    <Link href="/focus">Pomodoro Focus</Link>
+                </li>
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                   <ChevronRight className="w-3 h-3 opacity-30" />
+                   <Link href="/cgpa-calculator">CGPA Calculator</Link>
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />

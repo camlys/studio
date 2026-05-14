@@ -10,7 +10,8 @@ import {
   Atom, Database, Layers, Globe, 
   Settings, Target, Network, Server,
   Compass, FlaskConical, BarChart3, ChevronRight, ExternalLink,
-  LayoutGrid, Calculator as CalcIcon, CalendarDays, FileType, Github, Twitter
+  LayoutGrid, Calculator as CalcIcon, CalendarDays, FileType, Github, Twitter,
+  GraduationCap
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -188,7 +189,7 @@ export default function PrecisionCalculator() {
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="flex items-center justify-center transition-all group-hover:scale-110">
-              <Image src="/camly.png" alt="Camly Calculator" width={40} height={40} priority className="object-contain" />
+              <Image src="/camly.png" alt="Camly" width={40} height={40} priority className="object-contain" />
             </div>
             <div className="flex flex-col">
               <h1 className="text-lg font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase leading-none font-roboto-slab">
@@ -254,6 +255,17 @@ export default function PrecisionCalculator() {
                    <div className="flex flex-col">
                      <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Focus Mode</span>
                      <span className="text-[8px] font-bold text-muted-foreground uppercase">Pomodoro</span>
+                   </div>
+                 </Link>
+               </DropdownMenuItem>
+               <DropdownMenuItem asChild className="cursor-pointer focus:bg-accent/10 rounded-lg m-1">
+                 <Link href="/cgpa-calculator" className="flex items-center gap-3 w-full px-2 py-2">
+                   <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                     <GraduationCap className="w-4 h-4 text-accent" />
+                   </div>
+                   <div className="flex flex-col">
+                     <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Academic Sync</span>
+                     <span className="text-[8px] font-bold text-muted-foreground uppercase">CGPA Calculator</span>
                    </div>
                  </Link>
                </DropdownMenuItem>
@@ -533,7 +545,7 @@ export default function PrecisionCalculator() {
             <div className="pt-4">
                <Link href="https://camly.org" target="_blank">
                  <Button className="h-16 px-12 bg-primary text-primary-foreground font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all group">
-                   Explore Camly Ecosystem <ExternalLink className="ml-2 w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                   Explore Ecosystem <ExternalLink className="ml-2 w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                  </Button>
                </Link>
             </div>
@@ -547,15 +559,15 @@ export default function PrecisionCalculator() {
             <div className="col-span-2 lg:col-span-2 space-y-6">
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center transition-all">
-                  <Image src="/camly.png" alt="Camly Calculator" width={48} height={48} className="object-contain" />
+                  <Image src="/camly.png" alt="Camly" width={48} height={48} className="object-contain" />
                 </div>
                 <h2 className="text-xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent uppercase font-roboto-slab">
                   CALCULATOR
                 </h2>
               </div>
               <p className="text-sm leading-relaxed max-w-xs font-medium text-muted-foreground">
-                Defining the standard for high-precision chronological computation. 
-                Camly Inc's flagship engine for professional and tactical time management.
+                Defining the standard for high-precision chronological and academic computation. 
+                Camly Inc's flagship engine for professional and tactical management.
               </p>
               <div className="flex gap-5">
                 <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-accent/10 shadow-sm border border-border/50"><Github className="w-4 h-4" /></Button>
@@ -578,6 +590,10 @@ export default function PrecisionCalculator() {
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />
                    <Link href="/focus">Pomodoro Focus</Link>
+                </li>
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                   <ChevronRight className="w-3 h-3 opacity-30" />
+                   <Link href="/cgpa-calculator">CGPA Calculator</Link>
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />

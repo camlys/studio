@@ -12,6 +12,15 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const BLOG_POSTS = [
   {
+    title: "The 9000-Word Masterclass on Biometric Precision & Physiological Scaling",
+    description: "The definitive enterprise-grade guide to body mass analysis, surface area computation, and the future of high-precision biometric tracking.",
+    date: "September 01, 2024",
+    author: "Biometric Intelligence Unit",
+    readTime: "180 min read",
+    slug: "/blog/biometric-precision-masterclass",
+    category: "Masterclass"
+  },
+  {
     title: "The 9000-Word Masterclass on Pregnancy Due Date Calculation",
     description: "The definitive clinical guide to high-precision maternity chronology, ultrasound dating, and IVF milestone synchronization.",
     date: "August 15, 2024",
@@ -174,16 +183,16 @@ export default function BlogHub() {
                 <BookOpen className="w-24 h-24 text-accent opacity-20 group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div className="p-8 space-y-4 flex flex-col justify-center">
-                <Badge className="w-fit bg-accent text-accent-foreground text-[10px]">9000-WORD CLINICAL MASTERCLASS</Badge>
-                <h2 className="text-3xl font-black leading-tight tracking-tight">The Definitive Guide to Pregnancy Due Date & Biological Logic</h2>
+                <Badge className="w-fit bg-accent text-accent-foreground text-[10px] uppercase tracking-widest font-black">9000-WORD BIOMETRIC MASTERCLASS</Badge>
+                <h2 className="text-3xl font-black leading-tight tracking-tight">The Science of Biometric Precision & Physiological Scaling</h2>
                 <p className="text-muted-foreground text-sm line-clamp-3">
-                  An exhaustive technical analysis of maternity chronology. From Naegele’s Rule to ultrasound CRL precision and IVF embryo transfer dating.
+                  An exhaustive technical analysis of human physiological metrics. From Mosteller surface area computation to the New Oxford BMI scale and ponderal indexing.
                 </p>
                 <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2">
-                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> Clinical Ops Team</span>
+                  <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> Biometric Intelligence Unit</span>
                   <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> 180 min read</span>
                 </div>
-                <Link href="/blog/ultimate-pregnancy-due-date-masterclass">
+                <Link href="/blog/biometric-precision-masterclass">
                   <Button className="w-full md:w-fit mt-4 bg-accent text-accent-foreground font-bold uppercase tracking-widest text-[10px] h-10 px-8">
                     Access Masterclass
                   </Button>

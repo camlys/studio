@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { 
   ArrowLeft, UserCheck, Percent, Calculator as CalcIcon, 
   Download, Zap, ShieldCheck, Database, 
   ExternalLink, LayoutGrid, CalendarDays, Timer, 
-  Github, Twitter, ChevronRight, Target, 
-  BarChart3, FileType, CheckCircle2, AlertCircle,
-  GraduationCap, Wallet, Info, Users
+  Plus, Trash2, BookOpen, AlertTriangle, 
+  CheckCircle2, AlertCircle, Info, BarChart3,
+  Github, Twitter, ChevronRight, Target, GraduationCap,
+  Users, Globe, Copy
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,15 +30,16 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 import { cn } from '@/lib/utils';
 import { toPng } from 'html-to-image';
 import { format } from 'date-fns';
+import { useToast } from '@/hooks/use-toast';
 
 const attendanceSchema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "Academic Attendance Engine",
+  "name": "Advanced Academic Attendance Engine",
   "applicationCategory": "Education",
   "operatingSystem": "All",
-  "description": "High-precision attendance threshold calculator with target percentage inference and class allowance logic.",
-  "softwareVersion": "1.0.0",
+  "description": "Professional multi-course attendance tracker with bunk-meter logic and target percentage inference.",
+  "softwareVersion": "2.0.0",
   "offers": {
     "@type": "Offer",
     "price": "0",
@@ -45,35 +47,82 @@ const attendanceSchema = {
   }
 };
 
+type Course = {
+  id: string;
+  name: string;
+  total: number;
+  attended: number;
+};
+
 export default function AttendanceCalculator() {
-  const [totalClasses, setTotalClasses] = useState(40);
-  const [attendedClasses, setAttendedClasses] = useState(30);
+  const { toast } = useToast();
+  const [courses, setCourses] = useState<Course[]>([
+    { id: '1', name: 'Advanced Engineering Math', total: 40, attended: 32 },
+  ]);
   const [targetPercentage, setTargetPercentage] = useState(75);
   const [isDownloading, setIsDownloading] = useState(false);
-  const reportRef = React.useRef<HTMLDivElement>(null);
+  const reportRef = useRef<HTMLDivElement>(null);
 
-  const currentPercentage = totalClasses > 0 ? (attendedClasses / totalClasses) * 100 : 0;
-  
-  // Logic for classes to attend
-  const getRequiredToAttend = () => {
-    if (currentPercentage >= targetPercentage) return 0;
-    // (attended + x) / (total + x) = target / 100
-    // x = (target*total - 100*attended) / (100 - target)
-    const needed = Math.ceil((targetPercentage * totalClasses - 100 * attendedClasses) / (100 - targetPercentage));
-    return Math.max(0, needed);
+  // Load from LocalStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('camly_attendance_data');
+    if (saved) {
+      try {
+        const { courses: sCourses, target } = JSON.parse(saved);
+        if (sCourses) setCourses(sCourses);
+        if (target) setTargetPercentage(target);
+      } catch (e) {
+        console.error("Failed to load attendance", e);
+      }
+    }
+  }, []);
+
+  // Save to LocalStorage
+  useEffect(() => {
+    localStorage.setItem('camly_attendance_data', JSON.stringify({ courses, target: targetPercentage }));
+  }, [courses, targetPercentage]);
+
+  const addCourse = () => {
+    setCourses([...courses, { id: Date.now().toString(), name: `New Subject ${courses.length + 1}`, total: 0, attended: 0 }]);
   };
 
-  // Logic for classes safe to miss
-  const getSafeToMiss = () => {
-    if (currentPercentage <= targetPercentage) return 0;
-    // attended / (total + x) = target / 100
-    // x = (100 * attended / target) - total
-    const possible = Math.floor((100 * attendedClasses / targetPercentage) - totalClasses);
-    return Math.max(0, possible);
+  const removeCourse = (id: string) => {
+    if (courses.length > 1) {
+      setCourses(courses.filter(c => c.id !== id));
+    } else {
+      toast({ title: "Operation Denied", description: "At least one course must remain active.", variant: "destructive" });
+    }
   };
 
-  const requiredToAttend = getRequiredToAttend();
-  const safeToMiss = getSafeToMiss();
+  const updateCourse = (id: string, field: keyof Course, value: any) => {
+    setCourses(courses.map(c => {
+      if (c.id === id) {
+        const updated = { ...c, [field]: value };
+        if (field === 'total' && updated.attended > (value as number)) updated.attended = value as number;
+        if (field === 'attended' && updated.total < (value as number)) updated.total = value as number;
+        return updated;
+      }
+      return c;
+    }));
+  };
+
+  const getInference = (course: Course) => {
+    const current = course.total > 0 ? (course.attended / course.total) * 100 : 0;
+    
+    // Classes to attend
+    let required = 0;
+    if (current < targetPercentage) {
+      required = Math.ceil((targetPercentage * course.total - 100 * course.attended) / (100 - targetPercentage));
+    }
+
+    // Safe to miss
+    let bunkable = 0;
+    if (current > targetPercentage) {
+      bunkable = Math.floor((100 * course.attended / targetPercentage) - course.total);
+    }
+
+    return { current, required, bunkable };
+  };
 
   const downloadReport = async () => {
     if (!reportRef.current) return;
@@ -84,7 +133,7 @@ export default function AttendanceCalculator() {
         backgroundColor: '#f9f9f9',
       });
       const link = document.createElement('a');
-      link.download = `Camly_Attendance_Report_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
+      link.download = `Camly_Academic_Attendance_${format(new Date(), 'yyyyMMdd')}.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {
@@ -93,6 +142,10 @@ export default function AttendanceCalculator() {
       setIsDownloading(false);
     }
   };
+
+  const globalTotal = courses.reduce((acc, c) => acc + c.total, 0);
+  const globalAttended = courses.reduce((acc, c) => acc + c.attended, 0);
+  const globalPercentage = globalTotal > 0 ? (globalAttended / globalTotal) * 100 : 0;
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -123,87 +176,131 @@ export default function AttendanceCalculator() {
       </nav>
 
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-8 md:py-16">
-        <div className="mb-10 md:mb-12 space-y-3 text-center min-[480px]:text-left">
-          <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-3 py-1 font-black">
-            Academic Integrity Layer
-          </Badge>
-          <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.85]">
-            Attendance <span className="text-primary">Inference</span> Engine
-          </h2>
-          <p className="text-muted-foreground text-sm leading-relaxed font-medium max-w-xl mx-auto min-[480px]:mx-0">
-            High-precision threshold calculations for university attendance. Determine missing-class allowances and target synchronization milestones.
-          </p>
-        </div>
+        <header className="mb-10 md:mb-16 space-y-4 text-center min-[480px]:text-left">
+          <div className="flex flex-col min-[480px]:flex-row min-[480px]:items-end gap-4 justify-between">
+            <div className="space-y-3">
+              <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-3 py-1 font-black">
+                Academic Integrity Layer
+              </Badge>
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.85] text-primary">
+                Attendance <span className="text-foreground">Course Matrix</span>
+              </h2>
+              <p className="text-muted-foreground text-sm font-medium max-w-xl">
+                Advanced high-fidelity curriculum tracking. Monitor multiple subjects, determine bunk allowances, and synchronize mission-critical thresholds.
+              </p>
+            </div>
+            <div className="bg-white/5 border border-black dark:border-white p-4 rounded-2xl flex items-center gap-6 shadow-xl">
+               <div className="space-y-1">
+                 <Label className="text-[8px] font-black uppercase tracking-widest text-primary/60 block">Target Sync</Label>
+                 <div className="flex items-center gap-3">
+                   <span className="text-xl font-black text-primary">{targetPercentage}%</span>
+                   <div className="flex gap-1">
+                     {[75, 80, 85].map(v => (
+                       <Button key={v} onClick={() => setTargetPercentage(v)} variant="ghost" size="sm" className={cn("h-6 px-2 text-[8px] font-black", targetPercentage === v && "bg-primary text-primary-foreground")}>{v}%</Button>
+                     ))}
+                   </div>
+                 </div>
+               </div>
+            </div>
+          </div>
+        </header>
 
-        <div className="flex flex-col min-[480px]:flex-row items-start gap-6 md:gap-8 lg:gap-16">
-          <div className="w-full min-[480px]:flex-grow space-y-8">
-            <div className="glass-card !p-8 border-black dark:border-white border shadow-2xl space-y-10">
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Total Conducted Classes</Label>
-                  <span className="text-sm font-black text-foreground">{totalClasses}</span>
-                </div>
-                <Slider 
-                  value={[totalClasses]} 
-                  min={1} 
-                  max={200} 
-                  step={1} 
-                  onValueChange={([v]) => {
-                    setTotalClasses(v);
-                    if (attendedClasses > v) setAttendedClasses(v);
-                  }}
-                />
-              </div>
+        <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-12">
+          {/* Main Course List */}
+          <div className="w-full lg:flex-grow space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {courses.map((course) => {
+                const { current, required, bunkable } = getInference(course);
+                const isSafe = current >= targetPercentage;
 
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Classes Attended</Label>
-                  <span className="text-sm font-black text-foreground">{attendedClasses}</span>
-                </div>
-                <Slider 
-                  value={[attendedClasses]} 
-                  min={0} 
-                  max={totalClasses} 
-                  step={1} 
-                  onValueChange={([v]) => setAttendedClasses(v)}
-                />
-              </div>
+                return (
+                  <div key={course.id} className="glass-card !p-6 border-black dark:border-white border-2 shadow-2xl relative group overflow-hidden transition-all hover:scale-[1.01]">
+                    <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                      <BookOpen className="w-16 h-16 text-primary" />
+                    </div>
+                    
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex-grow">
+                        <Input 
+                          value={course.name} 
+                          onChange={(e) => updateCourse(course.id, 'name', e.target.value)}
+                          className="bg-transparent border-none p-0 text-primary font-black uppercase text-xs tracking-widest focus-visible:ring-0 placeholder:text-primary/20"
+                          placeholder="Course Title"
+                        />
+                      </div>
+                      <Button variant="ghost" size="icon" onClick={() => removeCourse(course.id)} className="text-muted-foreground/40 hover:text-destructive h-7 w-7">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
 
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Target Threshold (%)</Label>
-                  <span className="text-sm font-black text-foreground">{targetPercentage}%</span>
+                    <div className="grid grid-cols-2 gap-6 mb-6">
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <Label className="text-[7px] font-black uppercase tracking-widest text-muted-foreground/60">Conducted</Label>
+                          <span className="text-xs font-black">{course.total}</span>
+                        </div>
+                        <Slider 
+                          value={[course.total]} 
+                          min={0} max={150} step={1} 
+                          onValueChange={([v]) => updateCourse(course.id, 'total', v)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <Label className="text-[7px] font-black uppercase tracking-widest text-muted-foreground/60">Attended</Label>
+                          <span className="text-xs font-black">{course.attended}</span>
+                        </div>
+                        <Slider 
+                          value={[course.attended]} 
+                          min={0} max={course.total} step={1} 
+                          onValueChange={([v]) => updateCourse(course.id, 'attended', v)}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 pt-4 border-t border-border/10">
+                      <div className="shrink-0 text-center">
+                        <div className={cn("text-2xl font-black tracking-tighter tabular-nums", isSafe ? "text-accent" : "text-destructive")}>
+                          {current.toFixed(1)}%
+                        </div>
+                        <span className="text-[7px] font-bold uppercase tracking-widest opacity-40">Integrity</span>
+                      </div>
+                      <Separator orientation="vertical" className="h-8 opacity-10" />
+                      <div className="flex-grow">
+                        {required > 0 ? (
+                          <div className="flex items-center gap-2">
+                            <AlertCircle className="w-3.5 h-3.5 text-destructive" />
+                            <p className="text-[9px] font-bold text-foreground">Attend <span className="text-destructive font-black underline">{required}</span> more to hit {targetPercentage}%</p>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-accent" />
+                            <p className="text-[9px] font-bold text-foreground">You can miss <span className="text-accent font-black underline">{bunkable}</span> more classes</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <button 
+                onClick={addCourse}
+                className="h-full min-h-[160px] border-2 border-dashed border-primary/20 rounded-3xl flex flex-col items-center justify-center gap-3 text-primary/40 hover:bg-primary/5 hover:border-primary/40 transition-all group"
+              >
+                <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Plus className="w-6 h-6" />
                 </div>
-                <Slider 
-                  value={[targetPercentage]} 
-                  min={1} 
-                  max={99} 
-                  step={1} 
-                  onValueChange={([v]) => setTargetPercentage(v)}
-                />
-                <div className="flex gap-2">
-                  {[75, 80, 85, 90].map(p => (
-                    <Button 
-                      key={p} 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => setTargetPercentage(p)}
-                      className={cn("h-7 text-[8px] font-black uppercase", targetPercentage === p && "bg-primary text-primary-foreground border-primary")}
-                    >
-                      {p}%
-                    </Button>
-                  ))}
-                </div>
-              </div>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Add Course Node</span>
+              </button>
             </div>
 
-            {/* Quick Navigation Section */}
             <section className="mt-12 space-y-4">
               <div className="flex items-center gap-2 px-2">
                 <LayoutGrid className="w-4 h-4 text-primary" />
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {[
                   { name: "Academic Sync", href: "/cgpa-calculator" },
                   { name: "Age Calculator", href: "/" },
@@ -222,91 +319,70 @@ export default function AttendanceCalculator() {
             </section>
           </div>
 
-          <aside className="w-full min-[480px]:w-[320px] lg:w-[380px] space-y-6 min-[480px]:sticky min-[480px]:top-24">
+          {/* Right Sidebar Status */}
+          <aside className="w-full lg:w-[320px] space-y-6 lg:sticky lg:top-24">
             <div ref={reportRef} className="space-y-6">
               <div className={cn(
-                "glass-card !p-8 text-center relative overflow-hidden group shadow-2xl border transition-colors",
-                currentPercentage >= targetPercentage ? "border-accent/20 bg-accent/5" : "border-destructive/20 bg-destructive/5"
+                "glass-card !p-8 text-center border-2 transition-all relative overflow-hidden",
+                globalPercentage >= targetPercentage ? "border-accent shadow-[0_20px_50px_rgba(16,185,129,0.1)]" : "border-destructive shadow-[0_20px_50px_rgba(239,68,68,0.1)]"
               )}>
-                <div className="absolute top-0 right-0 p-4 opacity-10">
-                   <Percent className={cn("w-24 h-24", currentPercentage >= targetPercentage ? "text-accent" : "text-destructive")} />
+                <div className="absolute top-0 right-0 p-4 opacity-5">
+                   <GraduationCap className="w-20 h-24" />
                 </div>
                 <span className={cn(
                   "text-[9px] font-black uppercase tracking-[0.5em] mb-4 block",
-                  currentPercentage >= targetPercentage ? "text-accent" : "text-destructive"
+                  globalPercentage >= targetPercentage ? "text-accent" : "text-destructive"
                 )}>
-                  Current Integrity
+                  Global Academic Status
                 </span>
-                <div className="text-6xl md:text-8xl font-black tracking-tighter text-foreground mb-4 tabular-nums">
-                  {currentPercentage.toFixed(1)}%
+                <div className="text-7xl font-black tracking-tighter text-foreground mb-4 tabular-nums">
+                  {globalPercentage.toFixed(1)}%
                 </div>
-                <div className="flex items-center justify-center gap-3 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">
-                  <Target className="w-4 h-4" /> Threshold: {targetPercentage}%
-                  <Separator orientation="vertical" className="h-4 bg-border" />
-                  <StatusBadge current={currentPercentage} target={targetPercentage} />
+                <div className="flex items-center justify-center gap-3 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                   <Target className="w-3.5 h-3.5 text-primary" /> Target: {targetPercentage}%
                 </div>
 
                 <div className="mt-10 space-y-2">
-                   <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                      <span>Threshold Alignment</span>
-                      <span>{Math.min(100, Math.round((currentPercentage / targetPercentage) * 100))}%</span>
+                   <div className="flex justify-between text-[8px] font-black uppercase tracking-widest text-muted-foreground/60">
+                      <span>Curriculum Alignment</span>
+                      <span>{Math.min(100, Math.round((globalPercentage / targetPercentage) * 100))}%</span>
                    </div>
-                   <Progress value={(currentPercentage / targetPercentage) * 100} className="h-2 bg-muted" />
+                   <Progress value={(globalPercentage / targetPercentage) * 100} className="h-1.5 bg-muted" />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-4">
-                {requiredToAttend > 0 ? (
-                  <div className="glass-card !p-6 border-destructive/20 bg-destructive/5 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-destructive/10 flex items-center justify-center shrink-0">
-                       <AlertCircle className="w-6 h-6 text-destructive" />
-                    </div>
-                    <div className="space-y-1">
-                       <span className="text-[8px] font-black uppercase tracking-widest text-destructive/60">Mission Critical</span>
-                       <p className="text-[11px] font-bold text-foreground leading-tight">
-                         Attend <span className="text-destructive font-black text-sm">{requiredToAttend}</span> more classes to reach {targetPercentage}%.
-                       </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="glass-card !p-6 border-accent/20 bg-accent/5 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center shrink-0">
-                       <CheckCircle2 className="w-6 h-6 text-accent" />
-                    </div>
-                    <div className="space-y-1">
-                       <span className="text-[8px] font-black uppercase tracking-widest text-accent/60">Safety protocol</span>
-                       <p className="text-[11px] font-bold text-foreground leading-tight">
-                         You can miss <span className="text-accent font-black text-sm">{safeToMiss}</span> more classes and stay above {targetPercentage}%.
-                       </p>
-                    </div>
-                  </div>
-                )}
-
-                <div className="glass-card !p-5 border-border/40 space-y-4">
-                   <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                      <BarChart3 className="w-4 h-4 text-primary" /> Metric Overview
-                   </h4>
-                   <div className="space-y-3">
-                     <div className="flex justify-between items-center py-2 border-b border-border/10">
-                       <span className="text-xs font-bold text-foreground/70">Attended</span>
-                       <Badge variant="outline" className="text-[10px] font-black border-primary/20 text-primary">{attendedClasses}</Badge>
-                     </div>
-                     <div className="flex justify-between items-center py-2 border-b border-border/10">
-                       <span className="text-xs font-bold text-foreground/70">Total Classes</span>
-                       <Badge variant="outline" className="text-[10px] font-black border-primary/20 text-primary">{totalClasses}</Badge>
-                     </div>
+              <div className="glass-card !p-6 border-black dark:border-white border shadow-xl space-y-5">
+                 <h4 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4" /> Mission Logistics
+                 </h4>
+                 <div className="space-y-4">
+                   <div className="flex justify-between items-center py-2 border-b border-border/10">
+                     <span className="text-[10px] font-bold text-muted-foreground uppercase">Subjects</span>
+                     <Badge className="bg-primary text-primary-foreground font-black text-[10px]">{courses.length}</Badge>
                    </div>
-                </div>
+                   <div className="flex justify-between items-center py-2 border-b border-border/10">
+                     <span className="text-[10px] font-bold text-muted-foreground uppercase">Critical Risk</span>
+                     <Badge variant="destructive" className="font-black text-[10px]">
+                       {courses.filter(c => getInference(c).current < targetPercentage).length}
+                     </Badge>
+                   </div>
+                   <div className="flex justify-between items-center py-2 border-b border-border/10">
+                     <span className="text-[10px] font-bold text-muted-foreground uppercase">Safe Protocol</span>
+                     <Badge className="bg-accent text-accent-foreground font-black text-[10px]">
+                        {courses.filter(c => getInference(c).current >= targetPercentage).length}
+                     </Badge>
+                   </div>
+                 </div>
               </div>
             </div>
 
             <Button 
               onClick={downloadReport} 
               disabled={isDownloading}
-              className="w-full h-12 bg-primary text-primary-foreground font-black text-[10px] uppercase tracking-[0.2em] rounded-xl shadow-xl hover:scale-[1.02] transition-all group gap-3 border-black dark:border-white border"
+              className="w-full h-14 bg-primary text-primary-foreground font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all group gap-3 border-black dark:border-white border-2"
             >
               <Download className={cn("w-4 h-4", isDownloading && "animate-bounce")} />
-              {isDownloading ? 'Capturing...' : 'Download Academic Report'}
+              {isDownloading ? 'Capturing Matrix...' : 'Download Academic PNG'}
             </Button>
 
             <div className="glass-card !p-5 border-primary/20 bg-primary/5 flex items-center gap-4">
@@ -315,7 +391,7 @@ export default function AttendanceCalculator() {
                </div>
                <div className="space-y-1">
                   <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/60">Local Sovereignty</span>
-                  <p className="text-[10px] font-bold text-foreground leading-relaxed">Processing handled locally. Your records remain private.</p>
+                  <p className="text-[10px] font-bold text-foreground leading-relaxed">Processing handled locally. Your academic metrics remain private.</p>
                </div>
             </div>
           </aside>
@@ -403,10 +479,4 @@ export default function AttendanceCalculator() {
       </footer>
     </div>
   );
-}
-
-function StatusBadge({ current, target }: { current: number, target: number }) {
-  if (current >= target) return <span className="text-accent font-black">SAFE</span>;
-  if (current >= target - 5) return <span className="text-primary font-black">CRITICAL</span>;
-  return <span className="text-destructive font-black">UNSAFE</span>;
 }

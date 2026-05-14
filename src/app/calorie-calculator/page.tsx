@@ -10,7 +10,7 @@ import {
   CalendarDays, Timer, Github, Twitter, ChevronRight,
   Target, BarChart3, FileType, CheckCircle2,
   TrendingUp, Utensils, HeartPulse, Beef, Wheat, Droplets,
-  ArrowRight, Info, GraduationCap, Wallet, UserCheck
+  ArrowRight, Info, GraduationCap, Wallet, UserCheck, Globe
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -374,7 +374,7 @@ export default function CalorieCalculator() {
             <Button 
               onClick={downloadReport} 
               disabled={isDownloading}
-              className="w-full h-14 bg-primary text-primary-foreground font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-2xl hover:scale-[1.02] transition-all group gap-3 border-black border-2"
+              className="w-full h-14 bg-primary text-primary-foreground font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-xl hover:scale-[1.02] transition-all group gap-3 border-black border-2"
             >
               <Download className={cn("w-4 h-4", isDownloading && "animate-bounce")} />
               {isDownloading ? 'Capturing Metabolism...' : 'Download Report'}

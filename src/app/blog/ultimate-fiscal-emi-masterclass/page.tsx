@@ -106,7 +106,7 @@ export default function EMIMasterclass() {
 
           <div className="space-y-12">
              <h2 className="text-4xl md:text-7xl font-black text-foreground tracking-tight leading-none">2. The Periodic Payment Algorithm</h2>
-             <p>The standard EMI algorithm is a derivation of the present value of an ordinary annuity. The formula represents a weighted average of debt service: [E = P \cdot r \cdot \frac{(1+r)^n}{(1+r)^n - 1}], where P is the principal origin, r is the periodic interest rate, and n is the total number of monthly intervals. This equation ensures that the borrower provides a constant payment stream while the underlying balance is handled with precision.</p>
+             <p>The standard EMI algorithm is a derivation of the present value of an ordinary annuity. The formula represents a weighted average of debt service: E = [P x r x (1+r)^n] / [(1+r)^n - 1], where P is the principal origin, r is the periodic interest rate, and n is the total number of monthly intervals. This equation ensures that the borrower provides a constant payment stream while the underlying balance is handled with precision.</p>
              <p>At Camly, our engine utilizes this high-fidelity protocol as the baseline. By recalibrating the periodic rate to account for monthly compounding vs daily rests, we achieve a fiscal dashboard that aligns with actual bank ledger entries across global financial institutions.</p>
           </div>
 

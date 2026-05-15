@@ -11,7 +11,7 @@ import {
   Settings, Target, Network, Server,
   Compass, FlaskConical, BarChart3, ChevronRight, ExternalLink,
   LayoutGrid, Calculator as CalcIcon, CalendarDays, FileType, Github, Twitter,
-  GraduationCap, Copy
+  GraduationCap, Copy, Download
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,14 +20,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { InstallPWA } from '@/components/chrono/InstallPWA';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { format } from 'date-fns';
 
 const calculatorSchema = {
   "@context": "https://schema.org",
@@ -173,10 +166,8 @@ export default function PrecisionCalculator() {
     setIsDecimalMode(nextMode);
     
     if (nextMode) {
-      // Switch to Decimal
       setDisplay(currentVal.toFixed(10).replace(/\.?0+$/, ""));
     } else {
-      // Switch to Scientific
       setDisplay(currentVal.toExponential(6));
     }
   };
@@ -193,6 +184,32 @@ export default function PrecisionCalculator() {
     if (action === 'M+') setMemory(prev => prev + parseFloat(display));
     if (action === 'MR') setDisplay(memory.toString());
     if (action === 'MC') setMemory(0);
+  };
+
+  const downloadHistory = () => {
+    if (history.length === 0) {
+      toast({
+        title: "Download Aborted",
+        description: "Instruction registry is currently empty.",
+        variant: "destructive"
+      });
+      return;
+    }
+    const content = history.join('\n');
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Camly_Instruction_Registry_${format(new Date(), 'yyyyMMdd_HHmm')}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "History Exported",
+      description: "Full instruction registry synchronized to your local storage.",
+    });
   };
 
   const clear = () => {
@@ -382,11 +399,16 @@ export default function PrecisionCalculator() {
             </div>
 
             <div className="grid grid-cols-1 gap-3">
-              <div className="glass-card !p-3 border-border/40 h-[120px]">
-                <span className="text-[7px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-1 mb-2">
-                  <History className="w-2.5 h-2.5" /> Instruction Registry (Last 50)
-                </span>
-                <ScrollArea className="h-[75px] w-full">
+              <div className="glass-card !p-3 border-border/40 h-[160px] flex flex-col">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[7px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-1">
+                    <History className="w-2.5 h-2.5" /> Instruction Registry (Last 50)
+                  </span>
+                  <button onClick={downloadHistory} className="text-primary hover:text-primary/70 transition-colors">
+                    <Download className="w-3 h-3" />
+                  </button>
+                </div>
+                <ScrollArea className="flex-grow w-full">
                   <div className="space-y-1 pr-3">
                     {history.map((item, i) => (
                       <p key={i} className="text-[9px] font-mono text-muted-foreground/80 truncate border-l border-primary/20 pl-1.5 py-0.5">{item}</p>
@@ -416,7 +438,6 @@ export default function PrecisionCalculator() {
               </div>
             </div>
 
-            {/* Quick Navigation Section */}
             <section className="mt-4 space-y-4">
               <div className="flex items-center gap-2 px-2">
                 <LayoutGrid className="w-4 h-4 text-primary" />
@@ -444,7 +465,6 @@ export default function PrecisionCalculator() {
           </div>
         </div>
 
-        {/* Rich Content Sections */}
         <div className="mt-32 space-y-40">
           <section className="space-y-20">
             <div className="text-center space-y-4">
@@ -527,7 +547,6 @@ export default function PrecisionCalculator() {
             </div>
           </section>
 
-          {/* Brand Synchronization Section */}
           <section className="container max-w-4xl mx-auto text-center space-y-12">
             <div className="space-y-4">
               <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-4 py-1.5 font-black">Global Infrastructure</Badge>

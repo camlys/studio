@@ -87,6 +87,30 @@ export default function CalorieCalculator() {
   const [isDownloading, setIsDownloading] = useState(false);
   const reportRef = useRef<HTMLDivElement>(null);
 
+  // Persistence: Load
+  useEffect(() => {
+    const saved = localStorage.getItem('camly_calorie_data');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.age) setAge(parsed.age);
+        if (parsed.gender) setGender(parsed.gender);
+        if (parsed.weight) setWeight(parsed.weight);
+        if (parsed.height) setHeight(parsed.height);
+        if (parsed.activity) setActivity(parsed.activity);
+        if (parsed.goal) setGoal(parsed.goal);
+        if (parsed.split) setSplit(parsed.split);
+      } catch (e) {
+        console.error("Failed to load metabolic profile", e);
+      }
+    }
+  }, []);
+
+  // Persistence: Save
+  useEffect(() => {
+    localStorage.setItem('camly_calorie_data', JSON.stringify({ age, gender, weight, height, activity, goal, split }));
+  }, [age, gender, weight, height, activity, goal, split]);
+
   const calculateMetabolics = () => {
     // Mifflin-St Jeor Equation
     let bmr = (10 * weight) + (6.25 * height) - (5 * age);

@@ -74,6 +74,27 @@ export default function BMICalculator() {
   const [isDownloading, setIsDownloading] = useState(false);
   const reportRef = useRef<HTMLDivElement>(null);
 
+  // Persistence: Load
+  useEffect(() => {
+    const saved = localStorage.getItem('camly_bmi_data');
+    if (saved) {
+      try {
+        const { units: sUnits, gender: sGender, weight: sWeight, height: sHeight } = JSON.parse(saved);
+        if (sUnits) setUnit(sUnits);
+        if (sGender) setGender(sGender);
+        if (sWeight) setWeight(sWeight);
+        if (sHeight) setHeight(sHeight);
+      } catch (e) {
+        console.error("Failed to load BMI data", e);
+      }
+    }
+  }, []);
+
+  // Persistence: Save
+  useEffect(() => {
+    localStorage.setItem('camly_bmi_data', JSON.stringify({ units, gender, weight, height }));
+  }, [units, gender, weight, height]);
+
   const calculateMetrics = () => {
     let wKg = weight;
     let hM = height / 100;

@@ -87,6 +87,27 @@ export default function EMICalculator() {
   const [isDownloading, setIsDownloading] = useState(false);
   const reportRef = useRef<HTMLDivElement>(null);
 
+  // Persistence: Load
+  useEffect(() => {
+    const saved = localStorage.getItem('camly_emi_data');
+    if (saved) {
+      try {
+        const p = JSON.parse(saved);
+        if (p.loanAmount) setLoanAmount(p.loanAmount);
+        if (p.interestRate) setInterestRate(p.interestRate);
+        if (p.tenure) setTenure(p.tenure);
+        if (p.tenureUnit) setTenureUnit(p.tenureUnit);
+      } catch (e) {
+        console.error("Failed to load fiscal registry", e);
+      }
+    }
+  }, []);
+
+  // Persistence: Save
+  useEffect(() => {
+    localStorage.setItem('camly_emi_data', JSON.stringify({ loanAmount, interestRate, tenure, tenureUnit }));
+  }, [loanAmount, interestRate, tenure, tenureUnit]);
+
   const calculateEMI = () => {
     const p = loanAmount;
     const r = interestRate / 12 / 100;

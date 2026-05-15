@@ -95,6 +95,26 @@ export default function CGPACalculator() {
   const [isDownloading, setIsDownloading] = useState(false);
   const reportRef = useRef<HTMLDivElement>(null);
 
+  // Persistence: Load
+  useEffect(() => {
+    const saved = localStorage.getItem('camly_cgpa_data');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setSemesters(parsed);
+        }
+      } catch (e) {
+        console.error("Failed to load academic sync", e);
+      }
+    }
+  }, []);
+
+  // Persistence: Save
+  useEffect(() => {
+    localStorage.setItem('camly_cgpa_data', JSON.stringify(semesters));
+  }, [semesters]);
+
   const addSemester = () => {
     const newId = `sem-${semesters.length + 1}`;
     setSemesters([...semesters, { 

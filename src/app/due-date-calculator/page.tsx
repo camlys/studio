@@ -118,6 +118,30 @@ export default function DueDateCalculator() {
   const yearInputRef = useRef<HTMLInputElement>(null);
   const reportRef = useRef<HTMLDivElement>(null);
 
+  // Persistence: Load
+  useEffect(() => {
+    const saved = localStorage.getItem('camly_duedate_data');
+    if (saved) {
+      try {
+        const p = JSON.parse(saved);
+        if (p.method) setMethod(p.method);
+        if (p.startValues) setStartValues(p.startValues);
+        if (p.duration) setDuration(p.duration);
+        if (p.unit) setUnit(p.unit);
+        if (p.cycleCount) setCycleCount(p.cycleCount);
+        if (p.ivfType) setIvfType(p.ivfType);
+        if (p.crlValue) setCrlValue(p.crlValue);
+      } catch (e) {
+        console.error("Failed to load tactical registry", e);
+      }
+    }
+  }, []);
+
+  // Persistence: Save
+  useEffect(() => {
+    localStorage.setItem('camly_duedate_data', JSON.stringify({ method, startValues, duration, unit, cycleCount, ivfType, crlValue }));
+  }, [method, startValues, duration, unit, cycleCount, ivfType, crlValue]);
+
   const handleInputChange = (field: 'day' | 'month' | 'year', value: string) => {
     const numericValue = value.replace(/\D/g, '');
     let finalValue = numericValue;
@@ -371,7 +395,7 @@ export default function DueDateCalculator() {
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.85]">
             Milestone <span className="text-primary">Inference</span> Engine
           </h2>
-          <p className="text-muted-foreground text-sm leading-relaxed font-medium max-w-xl mx-auto md:mx-0">
+          <p className="text-muted-foreground text-sm leading-relaxed font-medium max-xl mx-auto md:mx-0">
             Advanced due date synchronization for Indian corporate cycles, IVF protocols, clinical ultrasound dating, and IST tactical planning.
           </p>
         </div>

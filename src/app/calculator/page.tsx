@@ -68,6 +68,28 @@ export default function PrecisionCalculator() {
   const [memory, setMemory] = useState<number>(0);
   const [entropy, setEntropy] = useState(0.000);
 
+  // Persistence: Load
+  useEffect(() => {
+    const saved = localStorage.getItem('camly_calc_data');
+    if (saved) {
+      try {
+        const { history: sHistory, memory: sMemory, isScientific: sSci, isRadians: sRad, isDecimalMode: sDec } = JSON.parse(saved);
+        if (sHistory) setHistory(sHistory);
+        if (sMemory) setMemory(sMemory);
+        if (typeof sSci === 'boolean') setIsScientific(sSci);
+        if (typeof sRad === 'boolean') setIsRadians(sRad);
+        if (typeof sDec === 'boolean') setIsDecimalMode(sDec);
+      } catch (e) {
+        console.error("Failed to load calculator registry", e);
+      }
+    }
+  }, []);
+
+  // Persistence: Save
+  useEffect(() => {
+    localStorage.setItem('camly_calc_data', JSON.stringify({ history, memory, isScientific, isRadians, isDecimalMode }));
+  }, [history, memory, isScientific, isRadians, isDecimalMode]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setEntropy(Math.random() * 0.05);

@@ -161,6 +161,18 @@ export default function PrecisionCalculator() {
     if (action === 'MC') setMemory(0);
   };
 
+  const handleToNormal = () => {
+    try {
+      const num = parseFloat(display);
+      if (isNaN(num)) return;
+      // Convert to fixed notation and remove trailing zeros
+      const normal = num.toFixed(10).replace(/\.?0+$/, "");
+      setDisplay(normal);
+    } catch (e) {
+      // fallback
+    }
+  };
+
   const clear = () => {
     setDisplay('0');
     setExpression('');
@@ -279,6 +291,9 @@ export default function PrecisionCalculator() {
               <div className="flex border-b border-border/20 bg-muted/30">
                 <button onClick={() => setIsRadians(!isRadians)} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 border-r border-border/10 transition-colors">
                   {isRadians ? 'Set Degrees' : 'Set Radians'}
+                </button>
+                <button onClick={handleToNormal} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 border-r border-border/10 transition-colors">
+                  To Normal
                 </button>
                 <button onClick={() => setIsScientific(!isScientific)} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 transition-colors">
                   {isScientific ? 'Standard' : 'Scientific'}

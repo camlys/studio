@@ -11,7 +11,7 @@ import {
   Settings, Target, Network, Server,
   Compass, FlaskConical, BarChart3, ChevronRight, ExternalLink,
   LayoutGrid, Calculator as CalcIcon, CalendarDays, FileType, Github, Twitter,
-  GraduationCap
+  GraduationCap, Copy
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { InstallPWA } from '@/components/chrono/InstallPWA';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -64,6 +65,7 @@ const breadcrumbSchema = {
 };
 
 export default function PrecisionCalculator() {
+  const { toast } = useToast();
   const [display, setDisplay] = useState('0');
   const [expression, setExpression] = useState('');
   const [history, setHistory] = useState<string[]>([]);
@@ -179,6 +181,14 @@ export default function PrecisionCalculator() {
     }
   };
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(display);
+    toast({
+      title: "Result Copied",
+      description: "Computational coordinate successfully synchronized to clipboard.",
+    });
+  };
+
   const handleMemory = (action: 'M+' | 'MR' | 'MC') => {
     if (action === 'M+') setMemory(prev => prev + parseFloat(display));
     if (action === 'MR') setDisplay(memory.toString());
@@ -266,7 +276,7 @@ export default function PrecisionCalculator() {
             <div className="glass-card !p-5 border-border/40 bg-muted/5">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
-                  <Terminal className="w-3 h-3" /> System Logs
+                  <History className="w-3 h-3" /> System Logs
                 </span>
                 <span className="text-[9px] font-bold text-accent animate-pulse">LIVE SYNCING</span>
               </div>
@@ -293,8 +303,13 @@ export default function PrecisionCalculator() {
                     <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black transition-colors", isDecimalMode ? "text-accent border-accent/20" : "text-muted-foreground")}>DEC</Badge>
                     <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black transition-colors", !isDecimalMode ? "text-accent border-accent/20" : "text-muted-foreground")}>SCI</Badge>
                   </div>
-                  <div className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/50 h-3 truncate max-w-[150px]">
-                    {expression}
+                  <div className="flex items-center gap-2">
+                    <div className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/50 h-3 truncate max-w-[150px]">
+                      {expression}
+                    </div>
+                    <button onClick={handleCopy} className="text-muted-foreground/40 hover:text-primary transition-colors">
+                      <Copy className="w-3 h-3" />
+                    </button>
                   </div>
                 </div>
                 <div className="text-2xl font-black tracking-tight tabular-nums overflow-hidden text-ellipsis">

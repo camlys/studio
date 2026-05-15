@@ -278,6 +278,7 @@ export default function PrecisionCalculator() {
                   <div className="flex gap-1.5">
                     <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black", isRadians ? "text-primary border-primary/20" : "text-muted-foreground")}>RAD</Badge>
                     <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black", !isRadians ? "text-primary border-primary/20" : "text-muted-foreground")}>DEG</Badge>
+                    <Badge variant="outline" className="text-[7px] px-1.5 py-0 h-3.5 uppercase font-black text-accent border-accent/20">DEC</Badge>
                   </div>
                   <div className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/50 h-3 truncate max-w-[150px]">
                     {expression}
@@ -293,7 +294,7 @@ export default function PrecisionCalculator() {
                   {isRadians ? 'Set Degrees' : 'Set Radians'}
                 </button>
                 <button onClick={handleToNormal} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 border-r border-border/10 transition-colors">
-                  To Normal
+                  Decimal
                 </button>
                 <button onClick={() => setIsScientific(!isScientific)} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 transition-colors">
                   {isScientific ? 'Standard' : 'Scientific'}

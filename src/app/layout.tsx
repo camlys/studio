@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: '%s | Camly Professional'
   },
   description: 'Access a suite of high-precision computational engines. Features clinical due date tracking, fiscal EMI inference, academic CGPA sync, and metabolic energy profiling.',
-  keywords: ['age calculator', 'date difference', 'scientific calculator', 'due date engine', 'EMI calculator', 'CGPA calculator', 'BMI sync', 'calorie tracker', 'attendance meter', 'precision logic'],
+  keywords: ['age calculator', 'date difference', 'scientific calculator', 'due date engine', 'EMI calculator', 'CGPA calculator', 'BMI sync', 'calorie tracker', 'attendance meter', 'precision logic', 'high precision calculation'],
   authors: [{ name: 'Camly Operations Team' }],
   creator: 'Camly Inc',
   publisher: 'Camly Inc',

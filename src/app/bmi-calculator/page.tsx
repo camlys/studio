@@ -45,6 +45,25 @@ const bmiSchema = {
   }
 };
 
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://calculator.camly.org/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "BMI Calculator",
+      "item": "https://calculator.camly.org/bmi-calculator"
+    }
+  ]
+};
+
 type UnitSystem = 'metric' | 'imperial';
 
 export default function BMICalculator() {
@@ -110,6 +129,7 @@ export default function BMICalculator() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bmiSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       
       <nav className="relative z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between transition-colors">
         <div className="flex items-center gap-3">

@@ -50,6 +50,25 @@ const cgpaSchema = {
   }
 };
 
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://calculator.camly.org/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "CGPA Calculator",
+      "item": "https://calculator.camly.org/cgpa-calculator"
+    }
+  ]
+};
+
 type Grade = 'O' | 'A+' | 'A' | 'B+' | 'B' | 'C' | 'P' | 'F';
 
 const GRADE_POINTS: Record<Grade, number> = {
@@ -171,6 +190,7 @@ export default function CGPACalculator() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(cgpaSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       
       <nav className="relative z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between transition-colors">
         <div className="flex items-center gap-3">
@@ -422,6 +442,14 @@ export default function CGPACalculator() {
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />
                    <Link href="/cgpa-calculator">CGPA Calculator</Link>
+                </li>
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                   <ChevronRight className="w-3 h-3 opacity-30" />
+                   <Link href="/attendance-calculator">Attendance</Link>
+                </li>
+                <li className="hover:text-primary transition-colors flex items-center gap-2">
+                   <ChevronRight className="w-3 h-3 opacity-30" />
+                   <Link href="/bmi-calculator">BMI Calculator</Link>
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />

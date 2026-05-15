@@ -60,6 +60,25 @@ const emiSchema = {
   }
 };
 
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://calculator.camly.org/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "EMI Calculator",
+      "item": "https://calculator.camly.org/emi-calculator"
+    }
+  ]
+};
+
 export default function EMICalculator() {
   const [loanAmount, setLoanAmount] = useState(500000);
   const [interestRate, setInterestRate] = useState(8.5);
@@ -131,6 +150,7 @@ export default function EMICalculator() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(emiSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       
       <nav className="relative z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between transition-colors">
         <div className="flex items-center gap-3">

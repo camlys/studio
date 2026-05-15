@@ -79,7 +79,12 @@ const breadcrumbSchema = {
   "itemListElement": [{
     "@type": "ListItem",
     "position": 1,
-    "name": "Home / Age Engine",
+    "name": "Home",
+    "item": "https://calculator.camly.org/"
+  }, {
+    "@type": "ListItem",
+    "position": 2,
+    "name": "Age Engine",
     "item": "https://calculator.camly.org/"
   }]
 };
@@ -443,7 +448,7 @@ function ChronoFlowContent() {
 
           <section className="space-y-20">
             <div className="text-center space-y-4">
-              <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-6 py-1.5 font-black">Technical whitepaper</Badge>
+              <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[10px] px-6 py-1.5 font-black">Technical whitepaper</Badge>
               <h2 className="text-4xl md:text-7xl font-black tracking-tighter leading-none">The Camly <span className="text-primary">Methodology</span></h2>
               <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-medium">We define the standard for high-definition chronological computation through atomic-sync protocols.</p>
             </div>

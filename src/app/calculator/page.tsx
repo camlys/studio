@@ -69,6 +69,7 @@ export default function PrecisionCalculator() {
   const [history, setHistory] = useState<string[]>([]);
   const [isScientific, setIsScientific] = useState(true);
   const [isRadians, setIsRadians] = useState(true);
+  const [isDecimalMode, setIsDecimalMode] = useState(true);
   const [memory, setMemory] = useState<number>(0);
   const [entropy, setEntropy] = useState(0.000);
 
@@ -83,7 +84,7 @@ export default function PrecisionCalculator() {
     setDisplay(prev => {
       if (prev === '0' && num !== '.') return num;
       if (prev.includes('.') && num === '.') return prev;
-      if (prev.length > 15) return prev;
+      if (prev.length > 25) return prev;
       return prev + num;
     });
   };
@@ -101,6 +102,13 @@ export default function PrecisionCalculator() {
     return res;
   };
 
+  const formatResult = (num: number) => {
+    if (isNaN(num)) return "Error";
+    if (!isDecimalMode) return num.toExponential(6);
+    const str = num.toString();
+    return str.length > 15 ? num.toExponential(6) : str;
+  };
+
   const calculate = () => {
     try {
       const fullExpression = expression + display;
@@ -111,8 +119,8 @@ export default function PrecisionCalculator() {
         .replace(/mod/g, '%');
       
       const result = eval(cleanExpr);
-      const formattedResult = result.toString().length > 12 ? result.toExponential(6) : result.toString();
-      setHistory(prev => [fullExpression + ' = ' + formattedResult, ...prev].slice(0, 5));
+      const formattedResult = formatResult(result);
+      setHistory(prev => [fullExpression + ' = ' + formattedResult, ...prev].slice(0, 50));
       setDisplay(formattedResult);
       setExpression('');
     } catch (e) {
@@ -149,9 +157,25 @@ export default function PrecisionCalculator() {
         case 'e': setDisplay(Math.E.toString()); return;
         case 'c': setDisplay('299792458'); return;
       }
-      setDisplay(res.toString().length > 12 ? res.toExponential(6) : res.toString());
+      setDisplay(formatResult(res));
     } catch (e) {
       setDisplay('Error');
+    }
+  };
+
+  const handleNotationToggle = () => {
+    const currentVal = parseFloat(display);
+    if (isNaN(currentVal)) return;
+    
+    const nextMode = !isDecimalMode;
+    setIsDecimalMode(nextMode);
+    
+    if (nextMode) {
+      // Switch to Decimal
+      setDisplay(currentVal.toFixed(10).replace(/\.?0+$/, ""));
+    } else {
+      // Switch to Scientific
+      setDisplay(currentVal.toExponential(6));
     }
   };
 
@@ -159,18 +183,6 @@ export default function PrecisionCalculator() {
     if (action === 'M+') setMemory(prev => prev + parseFloat(display));
     if (action === 'MR') setDisplay(memory.toString());
     if (action === 'MC') setMemory(0);
-  };
-
-  const handleToNormal = () => {
-    try {
-      const num = parseFloat(display);
-      if (isNaN(num)) return;
-      // Convert to fixed notation and remove trailing zeros
-      const normal = num.toFixed(10).replace(/\.?0+$/, "");
-      setDisplay(normal);
-    } catch (e) {
-      // fallback
-    }
   };
 
   const clear = () => {
@@ -278,7 +290,8 @@ export default function PrecisionCalculator() {
                   <div className="flex gap-1.5">
                     <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black", isRadians ? "text-primary border-primary/20" : "text-muted-foreground")}>RAD</Badge>
                     <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black", !isRadians ? "text-primary border-primary/20" : "text-muted-foreground")}>DEG</Badge>
-                    <Badge variant="outline" className="text-[7px] px-1.5 py-0 h-3.5 uppercase font-black text-accent border-accent/20">DEC</Badge>
+                    <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black transition-colors", isDecimalMode ? "text-accent border-accent/20" : "text-muted-foreground")}>DEC</Badge>
+                    <Badge variant="outline" className={cn("text-[7px] px-1.5 py-0 h-3.5 uppercase font-black transition-colors", !isDecimalMode ? "text-accent border-accent/20" : "text-muted-foreground")}>SCI</Badge>
                   </div>
                   <div className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/50 h-3 truncate max-w-[150px]">
                     {expression}
@@ -293,8 +306,8 @@ export default function PrecisionCalculator() {
                 <button onClick={() => setIsRadians(!isRadians)} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 border-r border-border/10 transition-colors">
                   {isRadians ? 'Set Degrees' : 'Set Radians'}
                 </button>
-                <button onClick={handleToNormal} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 border-r border-border/10 transition-colors">
-                  Decimal
+                <button onClick={handleNotationToggle} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 border-r border-border/10 transition-colors">
+                  Notation
                 </button>
                 <button onClick={() => setIsScientific(!isScientific)} className="flex-1 py-1.5 text-[7px] font-black uppercase tracking-widest hover:bg-white/5 transition-colors">
                   {isScientific ? 'Standard' : 'Scientific'}
@@ -353,30 +366,36 @@ export default function PrecisionCalculator() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div className="glass-card !p-3 border-border/40">
+            <div className="grid grid-cols-1 gap-3">
+              <div className="glass-card !p-3 border-border/40 h-[120px]">
                 <span className="text-[7px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-1 mb-2">
-                  <History className="w-2.5 h-2.5" /> Registry
+                  <History className="w-2.5 h-2.5" /> Instruction Registry (Last 50)
                 </span>
-                <div className="space-y-1">
-                  {history.map((item, i) => (
-                    <p key={i} className="text-[9px] font-mono text-muted-foreground/80 truncate border-l border-primary/20 pl-1.5">{item}</p>
-                  ))}
-                  {history.length === 0 && <p className="text-[8px] italic text-muted-foreground/40">No entries recorded.</p>}
-                </div>
+                <ScrollArea className="h-[75px] w-full">
+                  <div className="space-y-1 pr-3">
+                    {history.map((item, i) => (
+                      <p key={i} className="text-[9px] font-mono text-muted-foreground/80 truncate border-l border-primary/20 pl-1.5 py-0.5">{item}</p>
+                    ))}
+                    {history.length === 0 && <p className="text-[8px] italic text-muted-foreground/40">No entries recorded.</p>}
+                  </div>
+                </ScrollArea>
               </div>
               <div className="glass-card !p-3 border-accent/20 bg-accent/5">
                 <span className="text-[7px] font-black uppercase tracking-widest text-accent flex items-center gap-1 mb-2">
-                  <Database className="w-2.5 h-2.5" /> Parameters
+                  <Database className="w-2.5 h-2.5" /> Global Parameters
                 </span>
                 <div className="space-y-1 text-[8px] font-bold">
                   <div className="flex justify-between">
-                    <span className="opacity-40 uppercase">Mode</span>
+                    <span className="opacity-40 uppercase">Angular Unit</span>
                     <span className="text-accent">{isRadians ? 'RAD' : 'DEG'}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="opacity-40 uppercase">Mem</span>
-                    <span className="text-accent truncate max-w-[40px]">{memory}</span>
+                    <span className="opacity-40 uppercase">Format Protocol</span>
+                    <span className="text-accent">{isDecimalMode ? 'DECIMAL' : 'SCIENTIFIC'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="opacity-40 uppercase">Stack Memory</span>
+                    <span className="text-accent truncate max-w-[80px]">{memory}</span>
                   </div>
                 </div>
               </div>

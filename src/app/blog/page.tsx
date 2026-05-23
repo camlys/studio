@@ -12,6 +12,15 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const BLOG_POSTS = [
   {
+    title: "The Masterclass on Academic Attendance Logic",
+    description: "An exhaustive technical whitepaper on attendance thresholds, bunk-meter synchronization, and percentage inference models.",
+    date: "January 15, 2025",
+    author: "Academic Intelligence Unit",
+    readTime: "320 min read",
+    slug: "/blog/academic-attendance-logic-masterclass",
+    category: "Academic Whitepaper"
+  },
+  {
     title: "The Exhaustive Masterclass on Cognitive Focus Velocity",
     description: "An exhaustive technical whitepaper on neural flow state synchronization, deep work architectures, and high-fidelity temporal productivity protocols.",
     date: "December 05, 2024",
@@ -219,7 +228,7 @@ export default function BlogHub() {
                 <Brain className="w-24 h-24 text-primary opacity-20 group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div className="p-8 space-y-4 flex flex-col justify-center">
-                <Badge className="w-fit bg-primary text-primary-foreground text-[10px] uppercase tracking-widest font-black">EXHAUSTIVE COGNITIVE WHITEPAPER</Badge>
+                <Badge className="w-fit bg-primary text-primary-foreground text-[10px] uppercase tracking-widest font-black">LATEST ACADEMIC WHITEPAPER</Badge>
                 <h2 className="text-3xl font-black leading-tight tracking-tight">{BLOG_POSTS[0].title}</h2>
                 <p className="text-muted-foreground text-sm line-clamp-3">
                   {BLOG_POSTS[0].description}

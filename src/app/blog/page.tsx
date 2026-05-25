@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Timer, ArrowLeft, User, Clock, ChevronRight, Search, BookOpen, ExternalLink, Github, Twitter, Globe, GraduationCap, Brain } from 'lucide-react';
+import { Timer, ArrowLeft, User, Clock, ChevronRight, Search, BookOpen, ExternalLink, Github, Twitter, Globe, GraduationCap, Brain, Briefcase } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +11,15 @@ import { Separator } from "@/components/ui/separator";
 import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const BLOG_POSTS = [
+  {
+    title: "The Definitive Masterclass on Tactical Project Chronology",
+    description: "An exhaustive 10,000-word whitepaper on the science of milestone synchronization, critical path inference, and high-fidelity project management.",
+    date: "February 10, 2025",
+    author: "Project Intelligence Unit",
+    readTime: "10 hour read",
+    slug: "/blog/tactical-project-chronology-masterclass",
+    category: "Project Science"
+  },
   {
     title: "The Masterclass on Academic Attendance Logic",
     description: "An exhaustive technical whitepaper on attendance thresholds, bunk-meter synchronization, and percentage inference models.",
@@ -225,10 +234,10 @@ export default function BlogHub() {
             <div className="grid md:grid-cols-2">
               <div className="bg-gradient-to-br from-primary/10 to-accent/10 h-64 md:h-full flex items-center justify-center relative">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_70%)] opacity-30" />
-                <Brain className="w-24 h-24 text-primary opacity-20 group-hover:scale-110 transition-transform duration-500" />
+                <Briefcase className="w-24 h-24 text-primary opacity-20 group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div className="p-8 space-y-4 flex flex-col justify-center">
-                <Badge className="w-fit bg-primary text-primary-foreground text-[10px] uppercase tracking-widest font-black">LATEST ACADEMIC WHITEPAPER</Badge>
+                <Badge className="w-fit bg-primary text-primary-foreground text-[10px] uppercase tracking-widest font-black">LATEST PROJECT WHITEPAPER</Badge>
                 <h2 className="text-3xl font-black leading-tight tracking-tight">{BLOG_POSTS[0].title}</h2>
                 <p className="text-muted-foreground text-sm line-clamp-3">
                   {BLOG_POSTS[0].description}

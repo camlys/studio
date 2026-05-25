@@ -1,0 +1,32 @@
+# Camly | Premium High-Precision Engines
+
+Camly is a suite of high-fidelity computational engines designed for professional, tactical, and clinical management. The ecosystem utilizes atomic-sync protocols and Stratum-1 NTP nodes to ensure sub-millisecond precision across all chronological and mathematical operations.
+
+## Primary Computational Portals
+
+- **Age Engine**: High-precision chronological computation with real-time interval tracking (seconds/minutes), Gregorian drift correction, and Western Zodiac celestial mapping.
+- **Scientific ALU**: Professional-grade scientific inference engine supporting hyperbolic functions, precision logarithms, and high-fidelity physics constants (Speed of Light, Euler's Number).
+- **Due Date Engine**: Clinical-grade milestone synchronization optimized for Indian Standard Time (IST). Supports LMP protocols, IVF transfer dating, and clinical ultrasound (CRL) models.
+- **CGPA Sync**: Academic performance inference engine for university grading architectures, featuring credit-weighted distribution and global academic parity models.
+- **Attendance Matrix**: Professional academic tracking utility with "Bunk-Meter" inference and recovery vector mapping for mandatory threshold synchronization.
+- **Calorie Engine**: Metabolic energy profiling using the Mifflin-St Jeor precision protocol. Provides TDEE inference, macro-nutrient synchronization, and metabolic adaptation tracking.
+- **BMI Sync**: Biometric inference engine calculating standard BMI, New BMI (Oxford scaling), Body Surface Area (Mosteller), and Ponderal Index.
+- **EMI Inference**: Fiscal debt management engine utilizing reducing balance amortization algorithms and principal-interest distribution synchronization.
+
+## Technical Specifications
+
+- **Precision Standard**: IEEE 754 floating-point arithmetic.
+- **Time Standard**: Coordinated Universal Time (UTC) with Stratum-1 NTP synchronization.
+- **Architecture**: Stateless client-side processing (Privacy-by-Design) with Genkit-powered AI insights.
+- **SEO Framework**: Multi-layer Schema.org integration (WebApplication, BlogPosting, BreadcrumbList).
+
+## High-Authority Knowledge Hub
+
+Camly maintains an exhaustive technical library of whitepapers (6,000-10,000 words) exploring:
+- Tactical Project Chronology
+- Academic Attendance Logic
+- Cognitive Focus Velocity (Neural Flow States)
+- Biometric Precision & Physiological Scaling
+- Global Time Synchronization Standards
+
+For more information, visit [camly.org](https://camly.org).

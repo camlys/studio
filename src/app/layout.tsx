@@ -49,12 +49,21 @@ export const metadata: Metadata = {
     siteName: 'Camly',
     locale: 'en_US',
     type: 'website',
+    images: [
+      {
+        url: '/camly.png',
+        width: 1200,
+        height: 630,
+        alt: 'Camly Premium High-Precision Engines',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Camly | Premium Calculators',
     description: 'Mission-critical chronological and mathematical engines with real-time tracking.',
     creator: '@camly',
+    images: ['/camly.png'],
   },
   robots: {
     index: true,

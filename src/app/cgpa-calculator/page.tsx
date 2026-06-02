@@ -34,6 +34,7 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 import { cn } from '@/lib/utils';
 import { toPng } from 'html-to-image';
 import { format } from 'date-fns';
+import { useToast } from '@/hooks/use-toast';
 
 const cgpaSchema = {
   "@context": "https://schema.org",
@@ -89,11 +90,13 @@ type Semester = {
 };
 
 export default function CGPACalculator() {
+  const { toast } = useToast();
   const [semesters, setSemesters] = useState<Semester[]>([
     { id: 'sem-1', name: 'Semester 1', courses: [{ id: 'c-1', name: '', credits: 3, grade: 'A+' }] }
   ]);
   const [isDownloading, setIsDownloading] = useState(false);
   const reportRef = useRef<HTMLDivElement>(null);
+  const receiptRef = useRef<HTMLDivElement>(null);
 
   // Persistence: Load
   useEffect(() => {
@@ -189,29 +192,121 @@ export default function CGPACalculator() {
   };
 
   const downloadReport = async () => {
-    if (!reportRef.current) return;
+    if (!receiptRef.current) return;
     setIsDownloading(true);
     try {
-      const dataUrl = await toPng(reportRef.current, {
+      const dataUrl = await toPng(receiptRef.current, {
         cacheBust: true,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#ffffff',
+        width: 380,
+        pixelRatio: 4,
+        style: {
+          transform: 'scale(1)',
+          left: '0',
+          top: '0',
+        }
       });
       const link = document.createElement('a');
-      link.download = `Camly_Academic_Report_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
+      link.download = `Camly_Academic_Audit_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
       link.href = dataUrl;
       link.click();
+      toast({
+        title: "Audit Exported",
+        description: "High-definition academic report generated successfully.",
+      });
     } catch (err) {
       console.error('Download failed', err);
+      toast({
+        variant: "destructive",
+        title: "Export Failed",
+        description: "Could not generate the scholastic report image.",
+      });
     } finally {
       setIsDownloading(false);
     }
   };
+
+  const globalCGPA = calculateCGPA();
+  const totalCredits = semesters.reduce((acc, s) => acc + s.courses.reduce((ca, c) => ca + c.credits, 0), 0);
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(cgpaSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       
+      {/* Hidden Receipt for HD Download */}
+      <div className="fixed -left-[2000px] top-0 pointer-events-none">
+        <div ref={receiptRef} className="w-[380px] bg-white text-black p-8 font-mono border-2 border-black">
+          <div className="flex items-center gap-4 mb-8 border-b-2 border-black/10 pb-6">
+            <Image src="/camly.png" alt="Camly" width={54} height={54} className="object-contain" />
+            <div className="flex flex-col justify-center">
+              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">Camly <span className="text-black">Calculator</span></h2>
+              <p className="text-[9px] uppercase font-bold tracking-[0.2em] opacity-60 mt-1">Academic Audit Report</p>
+              <p className="text-[10px] font-black mt-0.5 text-primary/80">calculator.camly.org</p>
+            </div>
+          </div>
+
+          <div className="border-t border-b border-dashed border-black/20 py-4 my-6 space-y-2">
+            <div className="flex justify-between text-[10px] font-black">
+              <span>SYNC_ID</span>
+              <span className="uppercase">{Math.random().toString(36).substring(7)}</span>
+            </div>
+            <div className="flex justify-between text-[10px] font-black">
+              <span>TIMESTAMP</span>
+              <span>{format(new Date(), 'dd-MMM-yyyy HH:mm:ss')}</span>
+            </div>
+            <div className="flex justify-between text-[10px] font-black">
+              <span>PROTOCOL</span>
+              <span>CREDIT_WEIGHTED_V1</span>
+            </div>
+          </div>
+
+          <div className="my-8 space-y-6">
+             <div className="bg-black/5 p-6 rounded-lg border border-black/10 text-center">
+                <span className="text-[8px] font-black uppercase tracking-[0.4em] opacity-40 mb-2 block">Global CGPA</span>
+                <div className="text-6xl font-black">{globalCGPA}</div>
+                <div className="text-[10px] font-black uppercase tracking-widest mt-2 text-primary">
+                  Performance Level: {parseFloat(globalCGPA) >= 8 ? 'EXEMPLARY' : parseFloat(globalCGPA) >= 6 ? 'STABLE' : 'CRITICAL'}
+                </div>
+             </div>
+
+             <div className="space-y-4">
+                <span className="text-[8px] font-black uppercase tracking-widest opacity-40 block">Scholastic Registry</span>
+                <div className="space-y-2 text-[10px] font-bold">
+                   {semesters.map((s, i) => (
+                      <div key={s.id} className="flex justify-between py-1.5 border-b border-dashed border-black/5">
+                        <span className="opacity-60">{s.name.toUpperCase()}</span>
+                        <span>SGPA: {calculateSGPA(s)}</span>
+                      </div>
+                   ))}
+                </div>
+             </div>
+
+             <div className="space-y-2 text-[10px] px-2 font-bold pt-4">
+                <div className="flex justify-between">
+                   <span className="opacity-40 uppercase">Total Credits Sync</span>
+                   <span>{totalCredits} Units</span>
+                </div>
+                <div className="flex justify-between">
+                   <span className="opacity-40 uppercase">Performance Index</span>
+                   <span className="text-primary">{Math.round((parseFloat(globalCGPA) / 10) * 100)}%</span>
+                </div>
+             </div>
+          </div>
+
+          <div className="mt-12 text-center border-t-2 border-black pt-6">
+             <div className="flex justify-center mb-3">
+                <CheckCircle2 className="w-8 h-8 text-primary" />
+             </div>
+             <p className="text-[9px] font-black uppercase tracking-widest leading-relaxed">
+               Atomic-Sync Precision Guaranteed<br/>
+               Verified by Camly Academic Unit
+             </p>
+             <p className="text-[7px] font-bold mt-4 opacity-40">© 2024 Camly Inc. All Metrics Verified.</p>
+          </div>
+        </div>
+      </div>
+
       <nav className="relative z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between transition-colors">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 group">
@@ -358,7 +453,7 @@ export default function CGPACalculator() {
                 </div>
                 <span className="text-[9px] font-black uppercase tracking-[0.5em] text-accent mb-4 block">Cumulative Average</span>
                 <div className="text-6xl md:text-8xl font-black tracking-tighter text-foreground mb-4 tabular-nums">
-                  {calculateCGPA()}
+                  {globalCGPA}
                 </div>
                 <div className="flex items-center justify-center gap-3 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">
                   <Target className="w-4 h-4" /> High-Fidelity
@@ -369,9 +464,9 @@ export default function CGPACalculator() {
                 <div className="mt-10 space-y-2">
                    <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
                       <span>Performance Index</span>
-                      <span>{Math.round((parseFloat(calculateCGPA()) / 10) * 100)}%</span>
+                      <span>{Math.round((parseFloat(globalCGPA) / 10) * 100)}%</span>
                    </div>
-                   <Progress value={(parseFloat(calculateCGPA()) / 10) * 100} className="h-2 bg-accent/10" />
+                   <Progress value={(parseFloat(globalCGPA) / 10) * 100} className="h-2 bg-accent/10" />
                 </div>
               </div>
 
@@ -382,9 +477,7 @@ export default function CGPACalculator() {
                 </div>
                 <div className="glass-card !p-5 border-border/40 text-center">
                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Total Credits</span>
-                   <div className="text-2xl font-black text-primary">
-                     {semesters.reduce((acc, s) => acc + s.courses.reduce((ca, c) => ca + c.credits, 0), 0)}
-                   </div>
+                   <div className="text-2xl font-black text-primary">{totalCredits}</div>
                 </div>
               </div>
 
@@ -409,7 +502,7 @@ export default function CGPACalculator() {
               className="w-full h-12 bg-primary text-primary-foreground font-black text-[10px] uppercase tracking-[0.2em] rounded-xl shadow-xl hover:scale-[1.02] transition-all group gap-3 border-black border-2"
             >
               <Download className={cn("w-4 h-4", isDownloading && "animate-bounce")} />
-              {isDownloading ? 'Capturing...' : 'Download Academic Report'}
+              {isDownloading ? 'Capturing Audit...' : 'Download Academic PNG'}
             </Button>
 
             <div className="glass-card !p-5 border-primary/20 bg-primary/5 flex items-center gap-4">

@@ -12,6 +12,15 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const BLOG_POSTS = [
   {
+    title: "The 8000-Word Masterclass on Due Date Calculator SEO: The Science of Maternity Search Intent",
+    description: "The definitive technical whitepaper on optimizing due date calculators for maximum organic authority, featuring maternity keyword clustering, healthcare schema synchronization, and performance velocity.",
+    date: "March 02, 2025",
+    author: "Search Intelligence Unit",
+    readTime: "8 hour read",
+    slug: "/blog/seo-due-date-calculator-masterclass",
+    category: "SEO Whitepaper"
+  },
+  {
     title: "The 8000-Word Masterclass on BMI Calculator SEO: The Science of Biometric Search Intent",
     description: "The definitive technical whitepaper on optimizing BMI calculators for maximum organic reach, featuring biometric keyword clustering, clinical schema synchronization, and performance velocity.",
     date: "February 28, 2025",

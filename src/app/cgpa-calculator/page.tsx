@@ -227,7 +227,8 @@ export default function CGPACalculator() {
   };
 
   const globalCGPA = calculateCGPA();
-  const totalCredits = semesters.reduce((acc, s) => acc + s.courses.reduce((ca, c) => ca + c.credits, 0), 0);
+  const totalCreditsGlobal = semesters.reduce((acc, s) => acc + s.courses.reduce((ca, c) => ca + c.credits, 0), 0);
+  const totalCoursesGlobal = semesters.reduce((acc, s) => acc + s.courses.length, 0);
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -271,21 +272,34 @@ export default function CGPACalculator() {
              </div>
 
              <div className="space-y-4">
-                <span className="text-[8px] font-black uppercase tracking-widest opacity-40 block">Scholastic Registry</span>
-                <div className="space-y-2 text-[10px] font-bold">
-                   {semesters.map((s, i) => (
-                      <div key={s.id} className="flex justify-between py-1.5 border-b border-dashed border-black/5">
-                        <span className="opacity-60">{s.name.toUpperCase()}</span>
-                        <span>SGPA: {calculateSGPA(s)}</span>
-                      </div>
-                   ))}
+                <span className="text-[8px] font-black uppercase tracking-widest opacity-40 block">Semester Registry Breakdown</span>
+                <div className="space-y-2">
+                   {semesters.map((s, i) => {
+                     const semCredits = s.courses.reduce((acc, c) => acc + c.credits, 0);
+                     return (
+                        <div key={s.id} className="p-3 bg-black/[0.02] border border-black/5 rounded-lg space-y-1">
+                          <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                            <span className="text-primary">{s.name}</span>
+                            <span>SGPA: {calculateSGPA(s)}</span>
+                          </div>
+                          <div className="flex justify-between text-[8px] font-bold opacity-60 uppercase">
+                            <span>Credits: {semCredits} Units</span>
+                            <span>Courses: {s.courses.length}</span>
+                          </div>
+                        </div>
+                     );
+                   })}
                 </div>
              </div>
 
              <div className="space-y-2 text-[10px] px-2 font-bold pt-4">
                 <div className="flex justify-between">
-                   <span className="opacity-40 uppercase">Total Credits Sync</span>
-                   <span>{totalCredits} Units</span>
+                   <span className="opacity-40 uppercase">Total Study Load</span>
+                   <span>{totalCreditsGlobal} Credits</span>
+                </div>
+                <div className="flex justify-between">
+                   <span className="opacity-40 uppercase">Course Registry</span>
+                   <span>{totalCoursesGlobal} Subjects</span>
                 </div>
                 <div className="flex justify-between">
                    <span className="opacity-40 uppercase">Performance Index</span>
@@ -477,7 +491,7 @@ export default function CGPACalculator() {
                 </div>
                 <div className="glass-card !p-5 border-border/40 text-center">
                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Total Credits</span>
-                   <div className="text-2xl font-black text-primary">{totalCredits}</div>
+                   <div className="text-2xl font-black text-primary">{totalCreditsGlobal}</div>
                 </div>
               </div>
 

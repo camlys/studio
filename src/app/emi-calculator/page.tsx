@@ -138,7 +138,7 @@ export default function EMICalculator() {
     const r = interestRate / 12 / 100;
     const schedule = [];
 
-    for (let i = 1; i <= Math.min(totalMonths, 360); i++) {
+    for (let i = 1; i <= Math.min(totalMonths, 480); i++) { // Max 40 years for safety
       const interest = balance * r;
       const principal = emi - interest;
       balance -= principal;
@@ -245,6 +245,30 @@ export default function EMICalculator() {
                 </div>
              </div>
 
+             <div className="space-y-4">
+                <span className="text-[8px] font-black uppercase tracking-widest opacity-40 block">Fiscal Distribution</span>
+                <div className="h-40 w-full relative flex items-center justify-center">
+                   {/* Visual Representation of Chart for Receipt */}
+                   <div className="w-32 h-32 rounded-full border-[16px] border-primary flex items-center justify-center relative">
+                      <div className="absolute inset-0 rounded-full border-[16px] border-accent" style={{ clipPath: `polygon(50% 50%, 50% 0%, ${50 + 50 * Math.sin(2 * Math.PI * (totalInterest / totalAmount))}% ${50 - 50 * Math.cos(2 * Math.PI * (totalInterest / totalAmount))}%` }} />
+                      <div className="text-center">
+                        <div className="text-[10px] font-black">{Math.round((loanAmount / totalAmount) * 100)}%</div>
+                        <div className="text-[6px] font-bold opacity-40">PRIN.</div>
+                      </div>
+                   </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-[10px] font-bold">
+                   <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-primary rounded-full" />
+                      <span>Principal: ₹{loanAmount.toLocaleString()}</span>
+                   </div>
+                   <div className="flex items-center gap-2 justify-end">
+                      <div className="w-2 h-2 bg-accent rounded-full" />
+                      <span>Interest: ₹{Math.round(totalInterest).toLocaleString()}</span>
+                   </div>
+                </div>
+             </div>
+
              <div className="space-y-3 text-[10px] px-2 font-bold">
                 <div className="flex justify-between py-1 border-b border-dashed border-black/10">
                    <span className="opacity-40 uppercase">Total Interest</span>
@@ -257,14 +281,14 @@ export default function EMICalculator() {
              </div>
 
              <div className="space-y-3">
-                <span className="text-[8px] font-black uppercase tracking-widest opacity-40 block mb-2">Amortization Snapshot (Initial)</span>
+                <span className="text-[8px] font-black uppercase tracking-widest opacity-40 block mb-2">Exhaustive Amortization Schedule</span>
                 <div className="space-y-1 border border-black/5 rounded-lg overflow-hidden">
                    <div className="grid grid-cols-3 gap-1 bg-black/5 p-2 text-[8px] font-black uppercase">
                       <span>Month</span>
                       <span className="text-right">Principal</span>
                       <span className="text-right">Interest</span>
                    </div>
-                   {getAmortizationSchedule().slice(0, 5).map((row) => (
+                   {getAmortizationSchedule().map((row) => (
                       <div key={row.month} className="grid grid-cols-3 gap-1 p-2 text-[9px] font-bold border-b border-black/[0.02] last:border-0">
                          <span className="opacity-60">{row.month}</span>
                          <span className="text-right">₹{Math.round(parseFloat(row.principal)).toLocaleString()}</span>

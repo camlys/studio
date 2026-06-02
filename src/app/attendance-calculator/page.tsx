@@ -183,6 +183,17 @@ export default function AttendanceCalculator() {
   const globalAttended = courses.reduce((acc, c) => acc + c.attended, 0);
   const globalPercentage = globalTotal > 0 ? (globalAttended / globalTotal) * 100 : 0;
 
+  const NAV_ITEMS = [
+    { name: "Age Calculator", href: "/" },
+    { name: "Attendance Calculator", href: "/attendance-calculator" },
+    { name: "BMI Calculator", href: "/bmi-calculator" },
+    { name: "Calorie Calculator", href: "/calorie-calculator" },
+    { name: "CGPA Calculator", href: "/cgpa-calculator" },
+    { name: "Due Date Calculator", href: "/due-date-calculator" },
+    { name: "EMI Calculator", href: "/emi-calculator" },
+    { name: "Scientific Calculator", href: "/calculator" }
+  ].filter(calc => calc.href !== "/attendance-calculator");
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(attendanceSchema) }} />
@@ -420,22 +431,14 @@ export default function AttendanceCalculator() {
               </button>
             </div>
 
-            <section className="mt-12 space-y-4">
+            {/* Quick Navigation - Desktop Layout */}
+            <section className="hidden lg:block mt-12 space-y-4">
               <div className="flex items-center gap-2 px-2">
                 <LayoutGrid className="w-4 h-4 text-primary" />
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                {[
-                  { name: "Age Calculator", href: "/" },
-                  { name: "Attendance Calculator", href: "/attendance-calculator" },
-                  { name: "BMI Calculator", href: "/bmi-calculator" },
-                  { name: "Calorie Calculator", href: "/calorie-calculator" },
-                  { name: "CGPA Calculator", href: "/cgpa-calculator" },
-                  { name: "Due Date Calculator", href: "/due-date-calculator" },
-                  { name: "EMI Calculator", href: "/emi-calculator" },
-                  { name: "Scientific Calculator", href: "/calculator" }
-                ].filter(calc => calc.href !== "/attendance-calculator").map((calc) => (
+                {NAV_ITEMS.map((calc) => (
                   <Link key={calc.name} href={calc.href}>
                     <Button variant="outline" className="w-full justify-start h-10 text-[9px] font-black uppercase tracking-wider border-black hover:border-primary/40 hover:bg-primary/5 transition-all px-2 overflow-hidden group">
                       <span className="truncate text-primary group-hover:text-primary/80 transition-colors">{calc.name}</span>
@@ -521,6 +524,23 @@ export default function AttendanceCalculator() {
                   <p className="text-[10px] font-bold text-foreground leading-relaxed">Processing handled locally. Your academic metrics remain private.</p>
                </div>
             </div>
+
+            {/* Quick Navigation - Mobile/Phablet Layout */}
+            <section className="lg:hidden mt-8 space-y-4">
+              <div className="flex items-center gap-2 px-2">
+                <LayoutGrid className="w-4 h-4 text-primary" />
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {NAV_ITEMS.map((calc) => (
+                  <Link key={calc.name} href={calc.href}>
+                    <Button variant="outline" className="w-full justify-start h-10 text-[9px] font-black uppercase tracking-wider border-black hover:border-primary/40 hover:bg-primary/5 transition-all px-2 overflow-hidden group">
+                      <span className="truncate text-primary group-hover:text-primary/80 transition-colors">{calc.name}</span>
+                    </Button>
+                  </Link>
+                ))}
+              </div>
+            </section>
           </aside>
         </div>
       </main>

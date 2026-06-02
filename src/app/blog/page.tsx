@@ -12,6 +12,15 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const BLOG_POSTS = [
   {
+    title: "The 8000-Word Masterclass on Age Calculator SEO: The Science of Chronological Search Intent",
+    description: "The definitive technical whitepaper on optimizing age calculators for maximum search authority, featuring keyword clustering, structured data synchronization, and performance velocity.",
+    date: "February 25, 2025",
+    author: "Search Intelligence Unit",
+    readTime: "8 hour read",
+    slug: "/blog/seo-age-calculator-masterclass",
+    category: "SEO Whitepaper"
+  },
+  {
     title: "The 8000-Word Masterclass on SEO Precision and Performance Velocity",
     description: "The definitive technical whitepaper on search index synchronization, Core Web Vitals optimization, and the science of organic performance velocity.",
     date: "February 20, 2025",

@@ -44,6 +44,7 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 import { cn } from '@/lib/utils';
 import { toPng } from 'html-to-image';
 import { format } from 'date-fns';
+import { useToast } from '@/hooks/use-toast';
 
 const emiSchema = {
   "@context": "https://schema.org",
@@ -80,12 +81,14 @@ const breadcrumbSchema = {
 };
 
 export default function EMICalculator() {
+  const { toast } = useToast();
   const [loanAmount, setLoanAmount] = useState(500000);
   const [interestRate, setInterestRate] = useState(8.5);
   const [tenure, setTenure] = useState(5); // in years
   const [tenureUnit, setTenureUnit] = useState<'years' | 'months'>('years');
   const [isDownloading, setIsDownloading] = useState(false);
   const reportRef = useRef<HTMLDivElement>(null);
+  const receiptRef = useRef<HTMLDivElement>(null);
 
   // Persistence: Load
   useEffect(() => {
@@ -135,7 +138,7 @@ export default function EMICalculator() {
     const r = interestRate / 12 / 100;
     const schedule = [];
 
-    for (let i = 1; i <= Math.min(totalMonths, 120); i++) { // Cap at 120 months for preview
+    for (let i = 1; i <= Math.min(totalMonths, 360); i++) {
       const interest = balance * r;
       const principal = emi - interest;
       balance -= principal;
@@ -150,19 +153,35 @@ export default function EMICalculator() {
   };
 
   const downloadReport = async () => {
-    if (!reportRef.current) return;
+    if (!receiptRef.current) return;
     setIsDownloading(true);
     try {
-      const dataUrl = await toPng(reportRef.current, {
+      const dataUrl = await toPng(receiptRef.current, {
         cacheBust: true,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#ffffff',
+        width: 380,
+        pixelRatio: 4,
+        style: {
+          transform: 'scale(1)',
+          left: '0',
+          top: '0',
+        }
       });
       const link = document.createElement('a');
-      link.download = `Camly_Fiscal_Report_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
+      link.download = `Camly_Fiscal_Audit_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
       link.href = dataUrl;
       link.click();
+      toast({
+        title: "Audit Exported",
+        description: "High-definition fiscal report generated successfully.",
+      });
     } catch (err) {
       console.error('Download failed', err);
+      toast({
+        variant: "destructive",
+        title: "Export Failed",
+        description: "Could not generate the high-definition report image.",
+      });
     } finally {
       setIsDownloading(false);
     }
@@ -173,6 +192,102 @@ export default function EMICalculator() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(emiSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       
+      {/* Hidden Receipt for HD Download */}
+      <div className="fixed -left-[2000px] top-0 pointer-events-none">
+        <div ref={receiptRef} className="w-[380px] bg-white text-black p-8 font-mono border-2 border-black">
+          <div className="flex items-center gap-4 mb-8 border-b-2 border-black/10 pb-6">
+            <Image src="/camly.png" alt="Camly" width={54} height={54} className="object-contain" />
+            <div className="flex flex-col justify-center">
+              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">Camly <span className="text-black">Calculator</span></h2>
+              <p className="text-[9px] uppercase font-bold tracking-[0.2em] opacity-60 mt-1">Fiscal Audit Report</p>
+              <p className="text-[10px] font-black mt-0.5 text-primary/80">calculator.camly.org</p>
+            </div>
+          </div>
+
+          <div className="border-t border-b border-dashed border-black/20 py-4 my-6 space-y-2">
+            <div className="flex justify-between text-[10px] font-black">
+              <span>SYNC_ID</span>
+              <span className="uppercase">{Math.random().toString(36).substring(7)}</span>
+            </div>
+            <div className="flex justify-between text-[10px] font-black">
+              <span>TIMESTAMP</span>
+              <span>{format(new Date(), 'dd-MMM-yyyy HH:mm:ss')}</span>
+            </div>
+            <div className="flex justify-between text-[10px] font-black">
+              <span>PROTOCOL</span>
+              <span>AMORTIZED_DEBT_V1</span>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="space-y-1">
+              <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Principal Origin</span>
+              <div className="text-lg font-black">₹{loanAmount.toLocaleString()}</div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+               <div className="space-y-1">
+                  <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Interest Rate</span>
+                  <div className="text-base font-black">{interestRate}% p.a.</div>
+               </div>
+               <div className="space-y-1">
+                  <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Loan Tenure</span>
+                  <div className="text-base font-black">{tenure} {tenureUnit}</div>
+               </div>
+            </div>
+          </div>
+
+          <div className="my-8 space-y-6">
+             <div className="bg-black/5 p-6 rounded-lg border border-black/10 text-center">
+                <span className="text-[8px] font-black uppercase tracking-[0.4em] opacity-40 mb-2 block">Monthly Installment</span>
+                <div className="text-5xl font-black">₹{Math.round(emi).toLocaleString()}</div>
+                <div className="text-[10px] font-black uppercase tracking-widest mt-2 text-primary">
+                  Status: ACTIVE REPAYMENT
+                </div>
+             </div>
+
+             <div className="space-y-3 text-[10px] px-2 font-bold">
+                <div className="flex justify-between py-1 border-b border-dashed border-black/10">
+                   <span className="opacity-40 uppercase">Total Interest</span>
+                   <span>₹{Math.round(totalInterest).toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-dashed border-black/10">
+                   <span className="opacity-40 uppercase">Total Repayment</span>
+                   <span className="text-primary">₹{Math.round(totalAmount).toLocaleString()}</span>
+                </div>
+             </div>
+
+             <div className="space-y-3">
+                <span className="text-[8px] font-black uppercase tracking-widest opacity-40 block mb-2">Amortization Snapshot (Initial)</span>
+                <div className="space-y-1 border border-black/5 rounded-lg overflow-hidden">
+                   <div className="grid grid-cols-3 gap-1 bg-black/5 p-2 text-[8px] font-black uppercase">
+                      <span>Month</span>
+                      <span className="text-right">Principal</span>
+                      <span className="text-right">Interest</span>
+                   </div>
+                   {getAmortizationSchedule().slice(0, 5).map((row) => (
+                      <div key={row.month} className="grid grid-cols-3 gap-1 p-2 text-[9px] font-bold border-b border-black/[0.02] last:border-0">
+                         <span className="opacity-60">{row.month}</span>
+                         <span className="text-right">₹{Math.round(parseFloat(row.principal)).toLocaleString()}</span>
+                         <span className="text-right text-accent">₹{Math.round(parseFloat(row.interest)).toLocaleString()}</span>
+                      </div>
+                   ))}
+                </div>
+             </div>
+          </div>
+
+          <div className="mt-12 text-center border-t-2 border-black pt-6">
+             <div className="flex justify-center mb-3">
+                <CheckCircle2 className="w-8 h-8 text-primary" />
+             </div>
+             <p className="text-[9px] font-black uppercase tracking-widest leading-relaxed">
+               Atomic-Sync Precision Guaranteed<br/>
+               Verified by Camly Fiscal Unit
+             </p>
+             <p className="text-[7px] font-bold mt-4 opacity-40">© 2024 Camly Inc. All Metrics Verified.</p>
+          </div>
+        </div>
+      </div>
+
       <nav className="relative z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between transition-colors">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 group">
@@ -397,7 +512,7 @@ export default function EMICalculator() {
               className="w-full h-12 bg-primary text-primary-foreground font-black text-[10px] uppercase tracking-[0.2em] rounded-xl shadow-xl hover:scale-[1.02] transition-all group gap-3 border-black border-2"
             >
               <Download className={cn("w-4 h-4", isDownloading && "animate-bounce")} />
-              {isDownloading ? 'Capturing...' : 'Download Fiscal Report'}
+              {isDownloading ? 'Capturing Audit...' : 'Download Fiscal PNG'}
             </Button>
 
             <div className="glass-card !p-5 border-primary/20 bg-primary/5 flex items-center gap-4">

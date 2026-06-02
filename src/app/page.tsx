@@ -182,6 +182,7 @@ function ChronoFlowContent() {
         cacheBust: true,
         backgroundColor: theme === 'dark' ? '#09090b' : '#ffffff',
         width: 380,
+        pixelRatio: 4, // High-definition quality (4x density)
       });
       const link = document.createElement('a');
       link.download = `Camly_Chronological_Report_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
@@ -192,7 +193,7 @@ function ChronoFlowContent() {
       toast({
         variant: "destructive",
         title: "Download Failed",
-        description: "Could not generate the report image.",
+        description: "Could not generate the high-definition report image.",
       });
     } finally {
       setIsDownloading(false);
@@ -453,7 +454,7 @@ function ChronoFlowContent() {
                     disabled={isDownloading}
                   >
                     <Download className={cn("w-4 h-4", isDownloading && "animate-bounce")} /> 
-                    {isDownloading ? 'Capturing...' : 'Download Report'}
+                    {isDownloading ? 'Capturing HD...' : 'Download Report'}
                   </Button>
                   <Button variant="outline" className="rounded-xl h-11 px-6 gap-2.5 text-[10px] font-black uppercase tracking-widest border-primary/20 hover:bg-primary/5 hover:text-primary transition-all" onClick={handleShare}>
                     <Copy className="w-4 h-4" /> Copy Metrics

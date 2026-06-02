@@ -187,6 +187,17 @@ export default function EMICalculator() {
     }
   };
 
+  const NAV_ITEMS = [
+    { name: "Age Calculator", href: "/" },
+    { name: "Attendance Calculator", href: "/attendance-calculator" },
+    { name: "BMI Calculator", href: "/bmi-calculator" },
+    { name: "Calorie Calculator", href: "/calorie-calculator" },
+    { name: "CGPA Calculator", href: "/cgpa-calculator" },
+    { name: "Due Date Calculator", href: "/due-date-calculator" },
+    { name: "EMI Calculator", href: "/emi-calculator" },
+    { name: "Scientific Calculator", href: "/calculator" }
+  ].filter(calc => calc.href !== "/emi-calculator");
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(emiSchema) }} />
@@ -248,7 +259,6 @@ export default function EMICalculator() {
              <div className="space-y-4">
                 <span className="text-[8px] font-black uppercase tracking-widest opacity-40 block">Fiscal Distribution</span>
                 <div className="h-40 w-full relative flex items-center justify-center">
-                   {/* Visual Representation of Chart for Receipt */}
                    <div className="w-32 h-32 rounded-full border-[16px] border-primary flex items-center justify-center relative">
                       <div className="absolute inset-0 rounded-full border-[16px] border-accent" style={{ clipPath: `polygon(50% 50%, 50% 0%, ${50 + 50 * Math.sin(2 * Math.PI * (totalInterest / totalAmount))}% ${50 - 50 * Math.cos(2 * Math.PI * (totalInterest / totalAmount))}%` }} />
                       <div className="text-center">
@@ -445,23 +455,14 @@ export default function EMICalculator() {
               </div>
             </div>
 
-            {/* Quick Navigation Section */}
-            <section className="mt-12 space-y-4">
+            {/* Quick Navigation Section - Desktop */}
+            <section className="hidden lg:block mt-12 space-y-4">
               <div className="flex items-center gap-2 px-2">
                 <LayoutGrid className="w-4 h-4 text-primary" />
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                {[
-                  { name: "Age Calculator", href: "/" },
-                  { name: "Attendance Calculator", href: "/attendance-calculator" },
-                  { name: "BMI Calculator", href: "/bmi-calculator" },
-                  { name: "Calorie Calculator", href: "/calorie-calculator" },
-                  { name: "CGPA Calculator", href: "/cgpa-calculator" },
-                  { name: "Due Date Calculator", href: "/due-date-calculator" },
-                  { name: "EMI Calculator", href: "/emi-calculator" },
-                  { name: "Scientific Calculator", href: "/calculator" }
-                ].filter(calc => calc.href !== "/emi-calculator").map((calc) => (
+                {NAV_ITEMS.map((calc) => (
                   <Link key={calc.name} href={calc.href}>
                     <Button variant="outline" className="w-full justify-start h-10 text-[9px] font-black uppercase tracking-wider border-black hover:border-primary/40 hover:bg-primary/5 transition-all px-2 overflow-hidden group">
                       <span className="truncate text-primary group-hover:text-primary/80 transition-colors">{calc.name}</span>
@@ -539,6 +540,23 @@ export default function EMICalculator() {
               {isDownloading ? 'Capturing Audit...' : 'Download Fiscal PNG'}
             </Button>
 
+            {/* Quick Navigation - Standard Mobile only (< 5 inches) */}
+            <section className="min-[480px]:hidden space-y-4">
+              <div className="flex items-center gap-2 px-2">
+                <LayoutGrid className="w-4 h-4 text-primary" />
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {NAV_ITEMS.map((calc) => (
+                  <Link key={calc.name} href={calc.href}>
+                    <Button variant="outline" className="w-full justify-start h-10 text-[9px] font-black uppercase tracking-wider border-black hover:border-primary/40 hover:bg-primary/5 transition-all px-2 overflow-hidden group">
+                      <span className="truncate text-primary group-hover:text-primary/80 transition-colors">{calc.name}</span>
+                    </Button>
+                  </Link>
+                ))}
+              </div>
+            </section>
+
             <div className="glass-card !p-5 border-primary/20 bg-primary/5 flex items-center gap-4">
                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
                   <Database className="w-6 h-6 text-primary" />
@@ -548,6 +566,23 @@ export default function EMICalculator() {
                   <p className="text-[10px] font-bold text-foreground leading-relaxed">Local-first-first inference. Your financial data is never transmitted.</p>
                </div>
             </div>
+
+            {/* Quick Navigation - Phablet only (5-8 inches range) */}
+            <section className="hidden min-[480px]:block lg:hidden mt-8 space-y-4">
+              <div className="flex items-center gap-2 px-2">
+                <LayoutGrid className="w-4 h-4 text-primary" />
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {NAV_ITEMS.map((calc) => (
+                  <Link key={calc.name} href={calc.href}>
+                    <Button variant="outline" className="w-full justify-start h-10 text-[9px] font-black uppercase tracking-wider border-black hover:border-primary/40 hover:bg-primary/5 transition-all px-2 overflow-hidden group">
+                      <span className="truncate text-primary group-hover:text-primary/80 transition-colors">{calc.name}</span>
+                    </Button>
+                  </Link>
+                ))}
+              </div>
+            </section>
           </aside>
         </div>
       </main>

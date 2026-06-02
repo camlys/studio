@@ -112,6 +112,7 @@ export default function DueDateCalculator() {
   const monthInputRef = useRef<HTMLInputElement>(null);
   const yearInputRef = useRef<HTMLInputElement>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
+  const reportRef = useRef<HTMLDivElement>(null);
 
   // Persistence: Load
   useEffect(() => {
@@ -829,10 +830,36 @@ export default function DueDateCalculator() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Quick Navigation Section - Small Mobiles ONLY */}
+                  <section className="pt-4 space-y-4 block min-[480px]:hidden">
+                    <div className="flex items-center gap-2 px-2">
+                      <LayoutGrid className="w-4 h-4 text-primary" />
+                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { name: "Age Calculator", href: "/" },
+                        { name: "Attendance Calculator", href: "/attendance-calculator" },
+                        { name: "BMI Calculator", href: "/bmi-calculator" },
+                        { name: "Calorie Calculator", href: "/calorie-calculator" },
+                        { name: "CGPA Calculator", href: "/cgpa-calculator" },
+                        { name: "Due Date Calculator", href: "/due-date-calculator" },
+                        { name: "EMI Calculator", href: "/emi-calculator" },
+                        { name: "Scientific Calculator", href: "/calculator" }
+                      ].filter(calc => calc.href !== "/due-date-calculator").map((calc) => (
+                        <Link key={calc.name} href={calc.href}>
+                          <Button variant="outline" className="w-full justify-start h-10 text-[9px] font-black uppercase tracking-wider border-black hover:border-primary/40 hover:bg-primary/5 transition-all px-2 overflow-hidden group">
+                            <span className="truncate text-primary group-hover:text-primary/80 transition-colors">{calc.name}</span>
+                          </Button>
+                        </Link>
+                      ))}
+                    </div>
+                  </section>
                 </div>
 
-                {/* Quick Navigation Section */}
-                <section className="pt-4 space-y-4">
+                {/* Quick Navigation Section - Phablet & Desktop */}
+                <section className="pt-4 space-y-4 hidden min-[480px]:block">
                   <div className="flex items-center gap-2 px-2">
                     <LayoutGrid className="w-4 h-4 text-primary" />
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>

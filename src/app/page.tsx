@@ -237,14 +237,12 @@ function ChronoFlowContent() {
       {/* Hidden Receipt for Download */}
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[380px] bg-white dark:bg-black text-black dark:text-white p-8 font-mono border-2 border-black dark:border-white">
-          <div className="text-center space-y-4 mb-8">
-            <div className="flex justify-center mb-2">
-               <Image src="/camly.png" alt="Camly" width={60} height={60} className="object-contain" />
-            </div>
-            <div>
-              <h2 className="text-xl font-black tracking-widest uppercase">Camly Engine</h2>
-              <p className="text-[10px] uppercase font-bold tracking-widest opacity-60">Chronological Audit Report</p>
-              <p className="text-[9px] font-bold mt-1 text-primary">calculator.camly.org</p>
+          <div className="flex items-center gap-4 mb-8 border-b-2 border-black/10 dark:border-white/10 pb-6">
+            <Image src="/camly.png" alt="Camly" width={54} height={54} className="object-contain" />
+            <div className="flex flex-col justify-center">
+              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none">Camly <span className="text-primary">Calculator</span></h2>
+              <p className="text-[9px] uppercase font-bold tracking-[0.2em] opacity-60 mt-1">Chronological Audit Report</p>
+              <p className="text-[10px] font-black mt-0.5 text-primary/80">calculator.camly.org</p>
             </div>
           </div>
 

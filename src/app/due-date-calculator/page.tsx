@@ -111,7 +111,6 @@ export default function DueDateCalculator() {
   const dayInputRef = useRef<HTMLInputElement>(null);
   const monthInputRef = useRef<HTMLInputElement>(null);
   const yearInputRef = useRef<HTMLInputElement>(null);
-  const reportRef = useRef<HTMLDivElement>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
 
   // Persistence: Load
@@ -375,7 +374,7 @@ export default function DueDateCalculator() {
           <div className="flex items-center gap-4 mb-8 border-b-2 border-black/10 pb-6">
             <Image src="/camly.png" alt="Camly" width={54} height={54} className="object-contain" />
             <div className="flex flex-col justify-center">
-              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none">Camly <span className="text-primary">Calculator</span></h2>
+              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">Camly <span className="text-black">Calculator</span></h2>
               <p className="text-[9px] uppercase font-bold tracking-[0.2em] opacity-60 mt-1">Tactical Audit Report</p>
               <p className="text-[10px] font-black mt-0.5 text-primary/80">calculator.camly.org</p>
             </div>
@@ -653,7 +652,7 @@ export default function DueDateCalculator() {
               </Button>
             </div>
 
-            <div className="glass-card !p-4 border-border/40">
+            <div className="glass-card !p-4 border-border/40 hidden min-[480px]:block">
               <h4 className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
                 <Database className="w-3.5 h-3.5" /> IST Registry History
               </h4>
@@ -804,7 +803,7 @@ export default function DueDateCalculator() {
                   </div>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex flex-col gap-5">
                   <Button 
                     onClick={downloadReport} 
                     disabled={isDownloading}
@@ -813,6 +812,23 @@ export default function DueDateCalculator() {
                     <Download className={cn("w-4 h-4", isDownloading && "animate-bounce")} />
                     {isDownloading ? 'Capturing Report...' : 'Download Detailed PNG'}
                   </Button>
+
+                  {/* IST Registry History - Small Mobiles ONLY (Below Download Button) */}
+                  <div className="glass-card !p-4 border-border/40 block min-[480px]:hidden">
+                    <h4 className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
+                      <Database className="w-3.5 h-3.5" /> IST Registry History
+                    </h4>
+                    <div className="space-y-1.5 opacity-50">
+                      <div className="flex justify-between text-[9px] font-mono">
+                        <span>LOCALE_SET</span>
+                        <span className="text-accent">EN_IN</span>
+                      </div>
+                      <div className="flex justify-between text-[9px] font-mono">
+                        <span>STRATUM_FEED</span>
+                        <span className="text-primary">ACTIVE</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Quick Navigation Section */}

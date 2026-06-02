@@ -183,6 +183,11 @@ function ChronoFlowContent() {
         backgroundColor: theme === 'dark' ? '#09090b' : '#ffffff',
         width: 380,
         pixelRatio: 4, // High-definition quality (4x density)
+        style: {
+          transform: 'scale(1)',
+          left: '0',
+          top: '0',
+        }
       });
       const link = document.createElement('a');
       link.download = `Camly_Chronological_Report_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;

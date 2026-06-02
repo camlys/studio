@@ -29,6 +29,7 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 import { cn } from '@/lib/utils';
 import { toPng } from 'html-to-image';
 import { format } from 'date-fns';
+import { useToast } from '@/hooks/use-toast';
 
 const bmiSchema = {
   "@context": "https://schema.org",
@@ -67,12 +68,14 @@ const breadcrumbSchema = {
 type UnitSystem = 'metric' | 'imperial';
 
 export default function BMICalculator() {
+  const { toast } = useToast();
   const [units, setUnit] = useState<UnitSystem>('metric');
   const [gender, setGender] = useState<'male' | 'female'>('male');
   const [weight, setWeight] = useState(70); // kg or lbs
   const [height, setHeight] = useState(175); // cm or inches
   const [isDownloading, setIsDownloading] = useState(false);
   const reportRef = useRef<HTMLDivElement>(null);
+  const receiptRef = useRef<HTMLDivElement>(null);
 
   // Persistence: Load
   useEffect(() => {
@@ -129,19 +132,31 @@ export default function BMICalculator() {
   const category = getBMICategory(metrics.standardBMI);
 
   const downloadReport = async () => {
-    if (!reportRef.current) return;
+    if (!receiptRef.current) return;
     setIsDownloading(true);
     try {
-      const dataUrl = await toPng(reportRef.current, {
+      const dataUrl = await toPng(receiptRef.current, {
         cacheBust: true,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#ffffff',
+        width: 380,
+        pixelRatio: 4,
+        style: {
+          transform: 'scale(1)',
+          left: '0',
+          top: '0',
+        }
       });
       const link = document.createElement('a');
-      link.download = `Camly_Biometric_Report_${format(new Date(), 'yyyyMMdd')}.png`;
+      link.download = `Camly_Biometric_Report_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {
       console.error('Download failed', err);
+      toast({
+        variant: "destructive",
+        title: "Download Failed",
+        description: "Could not generate the high-definition report image.",
+      });
     } finally {
       setIsDownloading(false);
     }
@@ -152,6 +167,83 @@ export default function BMICalculator() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bmiSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       
+      {/* Hidden Receipt for Download */}
+      <div className="fixed -left-[2000px] top-0 pointer-events-none">
+        <div ref={receiptRef} className="w-[380px] bg-white text-black p-8 font-mono border-2 border-black">
+          <div className="flex items-center gap-4 mb-8 border-b-2 border-black/10 pb-6">
+            <Image src="/camly.png" alt="Camly" width={54} height={54} className="object-contain" />
+            <div className="flex flex-col justify-center">
+              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">Camly <span className="text-black">Calculator</span></h2>
+              <p className="text-[9px] uppercase font-bold tracking-[0.2em] opacity-60 mt-1">Biometric Audit Report</p>
+              <p className="text-[10px] font-black mt-0.5 text-primary/80">calculator.camly.org</p>
+            </div>
+          </div>
+
+          <div className="border-t border-b border-dashed border-black/20 py-4 my-6 space-y-2">
+            <div className="flex justify-between text-[10px] font-black">
+              <span>SYNC_ID</span>
+              <span className="uppercase">{Math.random().toString(36).substring(7)}</span>
+            </div>
+            <div className="flex justify-between text-[10px] font-black">
+              <span>TIMESTAMP</span>
+              <span>{format(new Date(), 'dd-MMM-yyyy HH:mm:ss')}</span>
+            </div>
+            <div className="flex justify-between text-[10px] font-black">
+              <span>PROTOCOL</span>
+              <span>MOST_OXFORD_V2</span>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="space-y-1">
+              <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Input Coordinates</span>
+              <div className="text-lg font-black">{weight} {units === 'metric' ? 'kg' : 'lbs'} / {height} {units === 'metric' ? 'cm' : 'in'}</div>
+              <p className="text-[9px] font-bold opacity-60">Biological Sex: {gender.toUpperCase()}</p>
+            </div>
+          </div>
+
+          <div className="my-8 space-y-6">
+             <div className="bg-black/5 p-5 rounded-lg border border-black/10 text-center">
+                <span className="text-[8px] font-black uppercase tracking-[0.4em] opacity-40 mb-2 block">Standard BMI</span>
+                <div className="text-5xl font-black">{metrics.standardBMI.toFixed(1)}</div>
+                <div className={cn("text-[10px] font-black uppercase tracking-widest mt-2", category.color)}>
+                  {category.label}
+                </div>
+             </div>
+
+             <div className="space-y-3 text-[10px] px-2 font-bold">
+                <div className="flex justify-between py-1 border-b border-dashed border-black/10">
+                   <span className="opacity-40 uppercase">New BMI (Oxford)</span>
+                   <span>{metrics.newBMI.toFixed(1)}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-dashed border-black/10">
+                   <span className="opacity-40 uppercase">Ponderal Index</span>
+                   <span>{metrics.ponderalIndex.toFixed(1)}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-dashed border-black/10">
+                   <span className="opacity-40 uppercase">Surface Area (BSA)</span>
+                   <span>{metrics.bsa.toFixed(2)} m²</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-dashed border-black/10">
+                   <span className="opacity-40 uppercase">Ideal Weight (Devine)</span>
+                   <span className="text-primary">{metrics.idealWeight.toFixed(1)} {units === 'metric' ? 'kg' : 'lb'}</span>
+                </div>
+             </div>
+          </div>
+
+          <div className="mt-12 text-center border-t-2 border-black pt-6">
+             <div className="flex justify-center mb-3">
+                <CheckCircle2 className="w-8 h-8 text-primary" />
+             </div>
+             <p className="text-[9px] font-black uppercase tracking-widest leading-relaxed">
+               Atomic-Sync Precision Guaranteed<br/>
+               Verified by Camly Biometric Unit
+             </p>
+             <p className="text-[7px] font-bold mt-4 opacity-40">© 2024 Camly Inc. All Metrics Verified.</p>
+          </div>
+        </div>
+      </div>
+
       <nav className="relative z-50 glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between transition-colors">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 group">
@@ -184,7 +276,7 @@ export default function BMICalculator() {
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.85] text-primary">
             Physiological <span className="text-foreground">Inference</span> Engine
           </h2>
-          <p className="text-muted-foreground text-sm leading-relaxed font-medium max-w-xl mx-auto min-[480px]:mx-0">
+          <p className="text-muted-foreground text-sm leading-relaxed font-medium max-xl mx-auto min-[480px]:mx-0">
             Advanced scaling protocols for body mass analysis, surface area mapping, and high-fidelity ponderal indexing across global clinical standards.
           </p>
         </header>

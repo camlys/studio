@@ -169,6 +169,17 @@ export default function CalorieCalculator() {
     }
   };
 
+  const NAV_ITEMS = [
+    { name: "Age Calculator", href: "/" },
+    { name: "Attendance Calculator", href: "/attendance-calculator" },
+    { name: "BMI Calculator", href: "/bmi-calculator" },
+    { name: "Calorie Calculator", href: "/calorie-calculator" },
+    { name: "CGPA Calculator", href: "/cgpa-calculator" },
+    { name: "Due Date Calculator", href: "/due-date-calculator" },
+    { name: "EMI Calculator", href: "/emi-calculator" },
+    { name: "Scientific Calculator", href: "/calculator" }
+  ].filter(calc => calc.href !== "/calorie-calculator");
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(calorieSchema) }} />
@@ -206,7 +217,7 @@ export default function CalorieCalculator() {
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.85] text-primary">
             Calorie <span className="text-foreground">Inference</span> Engine
           </h2>
-          <p className="text-muted-foreground text-sm leading-relaxed font-medium max-w-xl mx-auto min-[480px]:mx-0">
+          <p className="text-muted-foreground text-sm leading-relaxed font-medium max-xl mx-auto min-[480px]:mx-0">
             Advanced physiological synchronization for TDEE profiling, macro-nutrient optimization, and high-fidelity nutritional tracking.
           </p>
         </header>
@@ -344,22 +355,13 @@ export default function CalorieCalculator() {
               </div>
             </div>
 
-            <section className="mt-12 space-y-4">
+            <section className="hidden lg:block mt-12 space-y-4">
               <div className="flex items-center gap-2 px-2">
                 <LayoutGrid className="w-4 h-4 text-primary" />
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                {[
-                  { name: "Age Calculator", href: "/" },
-                  { name: "Attendance Calculator", href: "/attendance-calculator" },
-                  { name: "BMI Calculator", href: "/bmi-calculator" },
-                  { name: "Calorie Calculator", href: "/calorie-calculator" },
-                  { name: "CGPA Calculator", href: "/cgpa-calculator" },
-                  { name: "Due Date Calculator", href: "/due-date-calculator" },
-                  { name: "EMI Calculator", href: "/emi-calculator" },
-                  { name: "Scientific Calculator", href: "/calculator" }
-                ].filter(calc => calc.href !== "/calorie-calculator").map((calc) => (
+                {NAV_ITEMS.map((calc) => (
                   <Link key={calc.name} href={calc.href}>
                     <Button variant="outline" className="w-full justify-start h-10 text-[9px] font-black uppercase tracking-wider border-black hover:border-primary/40 hover:bg-primary/5 transition-all px-2 overflow-hidden group">
                       <span className="truncate text-primary group-hover:text-primary/80 transition-colors">{calc.name}</span>
@@ -434,6 +436,22 @@ export default function CalorieCalculator() {
                   <p className="text-[10px] font-bold text-foreground leading-relaxed">Processing handled locally. Your physiological data remains private.</p>
                </div>
             </div>
+
+            <section className="lg:hidden mt-8 space-y-4">
+              <div className="flex items-center gap-2 px-2">
+                <LayoutGrid className="w-4 h-4 text-primary" />
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {NAV_ITEMS.map((calc) => (
+                  <Link key={calc.name} href={calc.href}>
+                    <Button variant="outline" className="w-full justify-start h-10 text-[9px] font-black uppercase tracking-wider border-black hover:border-primary/40 hover:bg-primary/5 transition-all px-2 overflow-hidden group">
+                      <span className="truncate text-primary group-hover:text-primary/80 transition-colors">{calc.name}</span>
+                    </Button>
+                  </Link>
+                ))}
+              </div>
+            </section>
           </aside>
         </div>
       </main>

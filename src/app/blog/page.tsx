@@ -12,6 +12,15 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const BLOG_POSTS = [
   {
+    title: "The 8000-Word Masterclass on BMI Calculator SEO: The Science of Biometric Search Intent",
+    description: "The definitive technical whitepaper on optimizing BMI calculators for maximum organic reach, featuring biometric keyword clustering, clinical schema synchronization, and performance velocity.",
+    date: "February 28, 2025",
+    author: "Search Intelligence Unit",
+    readTime: "8 hour read",
+    slug: "/blog/ultimate-bmi-seo-masterclass",
+    category: "SEO Whitepaper"
+  },
+  {
     title: "The 8000-Word Masterclass on Age Calculator SEO: The Science of Chronological Search Intent",
     description: "The definitive technical whitepaper on optimizing age calculators for maximum search authority, featuring keyword clustering, structured data synchronization, and performance velocity.",
     date: "February 25, 2025",

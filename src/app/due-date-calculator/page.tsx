@@ -13,7 +13,8 @@ import {
   Flag, LayoutGrid, Download,
   Calculator as CalcIcon, Timer,
   Clock, Dna, Activity, Scaling, HeartPulse, Sparkles,
-  FileType, Github, Twitter, ChevronRight, GraduationCap
+  FileType, Github, Twitter, ChevronRight, GraduationCap,
+  CheckCircle2
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,14 +31,7 @@ import { cn } from '@/lib/utils';
 import { addDays, addWeeks, addMonths, format, differenceInDays, isWeekend, addBusinessDays, isValid, getQuarter, getDayOfYear, getISOWeek, differenceInHours, differenceInMinutes, differenceInSeconds } from 'date-fns';
 import { getZodiacSign } from '@/lib/date-utils';
 import { toPng } from 'html-to-image';
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { useToast } from '@/hooks/use-toast';
 
 const dueDateSchema = {
   "@context": "https://schema.org",
@@ -96,6 +90,7 @@ type DetailedStats = {
 };
 
 export default function DueDateCalculator() {
+  const { toast } = useToast();
   const [method, setMethod] = useState<CalcMethod>('medical');
   const [startValues, setStartValues] = useState({
     day: format(new Date(), 'dd'),
@@ -117,6 +112,7 @@ export default function DueDateCalculator() {
   const monthInputRef = useRef<HTMLInputElement>(null);
   const yearInputRef = useRef<HTMLInputElement>(null);
   const reportRef = useRef<HTMLDivElement>(null);
+  const receiptRef = useRef<HTMLDivElement>(null);
 
   // Persistence: Load
   useEffect(() => {
@@ -273,7 +269,7 @@ export default function DueDateCalculator() {
         else if (weeks < 27) trimesterStr = "2nd Trimester";
         else trimesterStr = "3rd Trimester";
 
-        const fetalAgeStr = `${weeks > 2 ? weeks - 2 : 0}w ${remainingDays}d`;
+        fetalAgeStr = `${weeks > 2 ? weeks - 2 : 0}w ${remainingDays}d`;
 
         if (weeks >= 4 && weeks < 9) { bioInsight = "Organogenesis Phase"; sizeComparison = "Blueberry"; }
         else if (weeks >= 9 && weeks < 13) { bioInsight = "Fetal Transition"; sizeComparison = "Grape"; }
@@ -328,14 +324,18 @@ export default function DueDateCalculator() {
   };
 
   const downloadReport = async () => {
-    if (!reportRef.current) return;
+    if (!receiptRef.current) return;
     setIsDownloading(true);
     try {
-      const dataUrl = await toPng(reportRef.current, {
+      const dataUrl = await toPng(receiptRef.current, {
         cacheBust: true,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#ffffff',
+        width: 380,
+        pixelRatio: 4,
         style: {
           transform: 'scale(1)',
+          left: '0',
+          top: '0',
         }
       });
       const link = document.createElement('a');
@@ -343,7 +343,12 @@ export default function DueDateCalculator() {
       link.href = dataUrl;
       link.click();
     } catch (err) {
-      console.error('oops, something went wrong!', err);
+      console.error('Download failed', err);
+      toast({
+        variant: "destructive",
+        title: "Download Failed",
+        description: "Could not generate the high-definition report image.",
+      });
     } finally {
       setIsDownloading(false);
     }
@@ -363,6 +368,102 @@ export default function DueDateCalculator() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
+      
+      {/* Hidden Receipt for Download */}
+      <div className="fixed -left-[2000px] top-0 pointer-events-none">
+        <div ref={receiptRef} className="w-[380px] bg-white text-black p-8 font-mono border-2 border-black">
+          <div className="flex items-center gap-4 mb-8 border-b-2 border-black/10 pb-6">
+            <Image src="/camly.png" alt="Camly" width={54} height={54} className="object-contain" />
+            <div className="flex flex-col justify-center">
+              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none">Camly <span className="text-primary">Calculator</span></h2>
+              <p className="text-[9px] uppercase font-bold tracking-[0.2em] opacity-60 mt-1">Tactical Audit Report</p>
+              <p className="text-[10px] font-black mt-0.5 text-primary/80">calculator.camly.org</p>
+            </div>
+          </div>
+
+          <div className="border-t border-b border-dashed border-black/20 py-4 my-6 space-y-2">
+            <div className="flex justify-between text-[10px] font-black">
+              <span>SYNC_ID</span>
+              <span className="uppercase">{Math.random().toString(36).substring(7)}</span>
+            </div>
+            <div className="flex justify-between text-[10px] font-black">
+              <span>TIMESTAMP</span>
+              <span>{format(new Date(), 'dd-MMM-yyyy HH:mm:ss')}</span>
+            </div>
+            <div className="flex justify-between text-[10px] font-black">
+              <span>PROTOCOL</span>
+              <span className="uppercase">{method}</span>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="space-y-1">
+              <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Origin Coordinate</span>
+              <div className="text-lg font-black">{startValues.day}-{startValues.month}-{startValues.year}</div>
+            </div>
+            <div className="space-y-1">
+              <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Target Coordinate</span>
+              <div className="text-lg font-black">{result ? format(result, 'dd MMM, yyyy') : 'N/A'}</div>
+            </div>
+          </div>
+
+          <div className="my-8 space-y-4">
+             <div className="bg-black/5 p-4 rounded-lg border border-black/10">
+                <div className="grid grid-cols-2 gap-2 text-center">
+                   <div className="space-y-1">
+                      <span className="text-[7px] font-black uppercase opacity-40">Remaining Days</span>
+                      <div className="text-2xl font-black">{stats?.remaining}</div>
+                   </div>
+                   <div className="space-y-1 border-l border-black/10">
+                      <span className="text-[7px] font-black uppercase opacity-40">Clinical Phase</span>
+                      <div className="text-lg font-black truncate px-1">{stats?.trimester || 'Tactical'}</div>
+                   </div>
+                </div>
+             </div>
+
+             {stats?.milestones && stats.milestones.length > 0 && (
+               <div className="space-y-2">
+                  <span className="text-[8px] font-black uppercase tracking-widest opacity-40 block mb-2">Authority Milestones</span>
+                  <div className="space-y-1">
+                    {stats.milestones.slice(0, 5).map((ms, idx) => (
+                      <div key={idx} className="flex justify-between text-[9px] font-bold py-1 border-b border-dashed border-black/5">
+                        <span className="opacity-60">{ms.label}</span>
+                        <span>{ms.date}</span>
+                      </div>
+                    ))}
+                  </div>
+               </div>
+             )}
+
+             <div className="space-y-2 text-[10px] px-2 font-bold pt-4">
+                <div className="flex justify-between">
+                   <span className="opacity-40 uppercase">Gestation Age</span>
+                   <span>{stats?.gestation || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between">
+                   <span className="opacity-40 uppercase">Size Comparison</span>
+                   <span className="text-primary">{stats?.sizeComparison || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between">
+                   <span className="opacity-40 uppercase">Zodiac Mapping</span>
+                   <span>{result ? getZodiacSign(result.getDate(), result.getMonth() + 1) : 'N/A'}</span>
+                </div>
+             </div>
+          </div>
+
+          <div className="mt-12 text-center border-t-2 border-black pt-6">
+             <div className="flex justify-center mb-3">
+                <CheckCircle2 className="w-8 h-8 text-primary" />
+             </div>
+             <p className="text-[9px] font-black uppercase tracking-widest leading-relaxed">
+               Atomic-Sync Precision Guaranteed<br/>
+               Verified by Camly Intelligence Unit
+             </p>
+             <p className="text-[7px] font-bold mt-4 opacity-40">© 2024 Camly Inc. All Metrics Verified.</p>
+          </div>
+        </div>
+      </div>
+
       <nav className="relative z-50 h-14 flex items-center px-4 md:px-6 justify-between transition-colors duration-700 glass border-b border-border">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 group">

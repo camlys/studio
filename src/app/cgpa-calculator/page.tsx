@@ -230,6 +230,17 @@ export default function CGPACalculator() {
   const totalCreditsGlobal = semesters.reduce((acc, s) => acc + s.courses.reduce((ca, c) => ca + c.credits, 0), 0);
   const totalCoursesGlobal = semesters.reduce((acc, s) => acc + s.courses.length, 0);
 
+  const QUICK_NAV_ITEMS = [
+    { name: "Age Calculator", href: "/" },
+    { name: "Attendance Calculator", href: "/attendance-calculator" },
+    { name: "BMI Calculator", href: "/bmi-calculator" },
+    { name: "Calorie Calculator", href: "/calorie-calculator" },
+    { name: "CGPA Calculator", href: "/cgpa-calculator" },
+    { name: "Due Date Calculator", href: "/due-date-calculator" },
+    { name: "EMI Calculator", href: "/emi-calculator" },
+    { name: "Scientific Calculator", href: "/calculator" }
+  ].filter(calc => calc.href !== "/cgpa-calculator");
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(cgpaSchema) }} />
@@ -274,7 +285,7 @@ export default function CGPACalculator() {
              <div className="space-y-4">
                 <span className="text-[8px] font-black uppercase tracking-widest opacity-40 block">Semester Registry Breakdown</span>
                 <div className="space-y-2">
-                   {semesters.map((s, i) => {
+                   {semesters.map((s) => {
                      const semCredits = s.courses.reduce((acc, c) => acc + c.credits, 0);
                      return (
                         <div key={s.id} className="p-3 bg-black/[0.02] border border-black/5 rounded-lg space-y-1">
@@ -360,7 +371,7 @@ export default function CGPACalculator() {
 
         <div className="flex flex-col min-[480px]:flex-row items-start gap-6 md:gap-8 lg:gap-16">
           <div className="w-full min-[480px]:flex-grow space-y-8">
-            {semesters.map((sem, sIdx) => (
+            {semesters.map((sem) => (
               <div key={sem.id} className="glass-card !p-6 border-black dark:border-white border shadow-2xl relative">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
@@ -432,23 +443,14 @@ export default function CGPACalculator() {
               <Plus className="mr-2 w-5 h-5" /> Initialize New Semester Sync
             </Button>
 
-            {/* Quick Navigation Section */}
-            <section className="mt-12 space-y-4">
+            {/* Quick Navigation Section - Desktop & Phablet */}
+            <section className="mt-12 space-y-4 hidden min-[480px]:block">
               <div className="flex items-center gap-2 px-2">
                 <LayoutGrid className="w-4 h-4 text-primary" />
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                {[
-                  { name: "Age Calculator", href: "/" },
-                  { name: "Attendance Calculator", href: "/attendance-calculator" },
-                  { name: "BMI Calculator", href: "/bmi-calculator" },
-                  { name: "Calorie Calculator", href: "/calorie-calculator" },
-                  { name: "CGPA Calculator", href: "/cgpa-calculator" },
-                  { name: "Due Date Calculator", href: "/due-date-calculator" },
-                  { name: "EMI Calculator", href: "/emi-calculator" },
-                  { name: "Scientific Calculator", href: "/calculator" }
-                ].filter(calc => calc.href !== "/cgpa-calculator").map((calc) => (
+                {QUICK_NAV_ITEMS.map((calc) => (
                   <Link key={calc.name} href={calc.href}>
                     <Button variant="outline" className="w-full justify-start h-10 text-[9px] font-black uppercase tracking-wider border-black hover:border-primary/40 hover:bg-primary/5 transition-all px-2 overflow-hidden group">
                       <span className="truncate text-primary group-hover:text-primary/80 transition-colors">{calc.name}</span>
@@ -528,6 +530,23 @@ export default function CGPACalculator() {
                   <p className="text-[10px] font-bold text-foreground leading-relaxed">Local-first-first processing. Your grades are never transmitted.</p>
                </div>
             </div>
+
+            {/* Quick Navigation Section - Mobile ONLY */}
+            <section className="pt-4 space-y-4 min-[480px]:hidden">
+              <div className="flex items-center gap-2 px-2">
+                <LayoutGrid className="w-4 h-4 text-primary" />
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Quick Navigation</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {QUICK_NAV_ITEMS.map((calc) => (
+                  <Link key={calc.name} href={calc.href}>
+                    <Button variant="outline" className="w-full justify-start h-10 text-[9px] font-black uppercase tracking-wider border-black hover:border-primary/40 hover:bg-primary/5 transition-all px-2 overflow-hidden group">
+                      <span className="truncate text-primary group-hover:text-primary/80 transition-colors">{calc.name}</span>
+                    </Button>
+                  </Link>
+                ))}
+              </div>
+            </section>
           </aside>
         </div>
       </main>

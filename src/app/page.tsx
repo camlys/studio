@@ -289,23 +289,25 @@ function ChronoFlowContent() {
 
             <div className="space-y-3">
               <InstallPWA />
-              <div className="glass-card !p-4 border-accent/20 bg-accent/5 overflow-hidden relative group">
-                <div className="absolute -top-4 -right-4 w-12 h-12 bg-accent/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-1000" />
-                <div className="flex items-center gap-2 mb-2">
-                  <Activity className="w-3 h-3 text-accent" />
-                  <p className="text-[9px] uppercase font-black tracking-widest text-accent">Real-Time Sync</p>
+              <div className="hidden min-[480px]:block space-y-3">
+                <div className="glass-card !p-4 border-accent/20 bg-accent/5 overflow-hidden relative group">
+                  <div className="absolute -top-4 -right-4 w-12 h-12 bg-accent/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-1000" />
+                  <div className="flex items-center gap-2 mb-2">
+                    <Activity className="w-3 h-3 text-accent" />
+                    <p className="text-[9px] uppercase font-black tracking-widest text-accent">Real-Time Sync</p>
+                  </div>
+                  <h4 className="text-xs font-black tracking-tight mb-1">Atomic Precision Control</h4>
+                  <p className="text-[10px] text-muted-foreground/80 leading-relaxed">Engine synchronizing with primary time servers via Stratum-1 NTP nodes.</p>
                 </div>
-                <h4 className="text-xs font-black tracking-tight mb-1">Atomic Precision Control</h4>
-                <p className="text-[10px] text-muted-foreground/80 leading-relaxed">Engine synchronizing with primary time servers via Stratum-1 NTP nodes.</p>
-              </div>
-              
-              <div className="glass-card !p-4 border-primary/20 bg-primary/5 relative overflow-hidden group">
-                <div className="flex items-center gap-2 mb-2">
-                  <ShieldCheck className="w-3 h-3 text-primary" />
-                  <p className="text-[9px] uppercase font-black tracking-widest text-primary">Security Ops</p>
+                
+                <div className="glass-card !p-4 border-primary/20 bg-primary/5 relative overflow-hidden group">
+                  <div className="flex items-center gap-2 mb-2">
+                    <ShieldCheck className="w-3 h-3 text-primary" />
+                    <p className="text-[9px] uppercase font-black tracking-widest text-primary">Security Ops</p>
+                  </div>
+                  <h4 className="text-xs font-black tracking-tight mb-1">Encrypted Payload</h4>
+                  <p className="text-[10px] text-muted-foreground/80 leading-relaxed">Calculation processing is handled locally. Zero-knowledge data sovereignty.</p>
                 </div>
-                <h4 className="text-xs font-black tracking-tight mb-1">Encrypted Payload</h4>
-                <p className="text-[10px] text-muted-foreground/80 leading-relaxed">Calculation processing is handled locally. Zero-knowledge data sovereignty.</p>
               </div>
             </div>
           </aside>
@@ -398,6 +400,28 @@ function ChronoFlowContent() {
                     </Button>
                   </Link>
                 ))}
+              </div>
+            </section>
+
+            {/* Tactical Status Section - Small Mobiles Only */}
+            <section className="block min-[480px]:hidden mt-6 space-y-3">
+              <div className="glass-card !p-4 border-accent/20 bg-accent/5 overflow-hidden relative group">
+                <div className="absolute -top-4 -right-4 w-12 h-12 bg-accent/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-1000" />
+                <div className="flex items-center gap-2 mb-2">
+                  <Activity className="w-3 h-3 text-accent" />
+                  <p className="text-[9px] uppercase font-black tracking-widest text-accent">Real-Time Sync</p>
+                </div>
+                <h4 className="text-xs font-black tracking-tight mb-1">Atomic Precision Control</h4>
+                <p className="text-[10px] text-muted-foreground/80 leading-relaxed">Engine synchronizing with primary time servers via Stratum-1 NTP nodes.</p>
+              </div>
+              
+              <div className="glass-card !p-4 border-primary/20 bg-primary/5 relative overflow-hidden group">
+                <div className="flex items-center gap-2 mb-2">
+                  <ShieldCheck className="w-3 h-3 text-primary" />
+                  <p className="text-[9px] uppercase font-black tracking-widest text-primary">Security Ops</p>
+                </div>
+                <h4 className="text-xs font-black tracking-tight mb-1">Encrypted Payload</h4>
+                <p className="text-[10px] text-muted-foreground/80 leading-relaxed">Calculation processing is handled locally. Zero-knowledge data sovereignty.</p>
               </div>
             </section>
           </div>

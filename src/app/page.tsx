@@ -12,7 +12,8 @@ import {
   Coins, Milestone, LayoutGrid, Download,
   Calculator as CalcIcon, CalendarDays, Copy,
   ArrowUpRight, Target, BarChart3, Settings,
-  FileType, GraduationCap, Wallet, UserCheck
+  FileType, GraduationCap, Wallet, UserCheck,
+  CheckCircle2, Clock
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -102,6 +103,7 @@ function ChronoFlowContent() {
   const [error, setError] = useState<string | null>(null);
   const tickerRef = useRef<NodeJS.Timeout | null>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+  const receiptRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const savedFrom = localStorage.getItem('chrono_from');
@@ -173,18 +175,16 @@ function ChronoFlowContent() {
   }, [fromDate, toDate]);
 
   const downloadResults = async () => {
-    if (!resultsRef.current) return;
+    if (!receiptRef.current) return;
     setIsDownloading(true);
     try {
-      const dataUrl = await toPng(resultsRef.current, {
+      const dataUrl = await toPng(receiptRef.current, {
         cacheBust: true,
-        backgroundColor: theme === 'dark' ? '#09090b' : '#f9f9f9',
-        style: {
-          transform: 'scale(1)',
-        }
+        backgroundColor: theme === 'dark' ? '#09090b' : '#ffffff',
+        width: 380,
       });
       const link = document.createElement('a');
-      link.download = `Camly_Metrics_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
+      link.download = `Camly_Chronological_Report_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {
@@ -233,6 +233,102 @@ function ChronoFlowContent() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
+      
+      {/* Hidden Receipt for Download */}
+      <div className="fixed -left-[2000px] top-0 pointer-events-none">
+        <div ref={receiptRef} className="w-[380px] bg-white dark:bg-black text-black dark:text-white p-8 font-mono border-2 border-black dark:border-white">
+          <div className="text-center space-y-4 mb-8">
+            <div className="flex justify-center mb-2">
+               <Image src="/camly.png" alt="Camly" width={60} height={60} className="object-contain" />
+            </div>
+            <div>
+              <h2 className="text-xl font-black tracking-widest uppercase">Camly Engine</h2>
+              <p className="text-[10px] uppercase font-bold tracking-widest opacity-60">Chronological Audit Report</p>
+              <p className="text-[9px] font-bold mt-1 text-primary">calculator.camly.org</p>
+            </div>
+          </div>
+
+          <div className="border-t border-b border-dashed border-black/20 dark:border-white/20 py-4 my-6 space-y-2">
+            <div className="flex justify-between text-[10px] font-black">
+              <span>SYNC_ID</span>
+              <span className="uppercase">{Math.random().toString(36).substring(7)}</span>
+            </div>
+            <div className="flex justify-between text-[10px] font-black">
+              <span>TIMESTAMP</span>
+              <span>{format(new Date(), 'dd-MMM-yyyy HH:mm:ss')}</span>
+            </div>
+            <div className="flex justify-between text-[10px] font-black">
+              <span>ALGORITHM</span>
+              <span>GREGORIAN_V3</span>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="space-y-1">
+              <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Birth Coordinate</span>
+              <div className="text-lg font-black">{fromDate.day}-{fromDate.month}-{fromDate.year}</div>
+            </div>
+            <div className="space-y-1">
+              <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Target Coordinate</span>
+              <div className="text-lg font-black">{toDate.day}-{toDate.month}-{toDate.year}</div>
+            </div>
+          </div>
+
+          <div className="my-8 space-y-4">
+             <div className="bg-black/5 dark:bg-white/5 p-4 rounded-lg border border-black/10 dark:border-white/10">
+                <div className="grid grid-cols-3 gap-2 text-center">
+                   <div className="space-y-1">
+                      <span className="text-[7px] font-black uppercase opacity-40">Years</span>
+                      <div className="text-2xl font-black">{results?.years}</div>
+                   </div>
+                   <div className="space-y-1 border-l border-r border-black/10 dark:border-white/10">
+                      <span className="text-[7px] font-black uppercase opacity-40">Months</span>
+                      <div className="text-2xl font-black">{results?.months}</div>
+                   </div>
+                   <div className="space-y-1">
+                      <span className="text-[7px] font-black uppercase opacity-40">Days</span>
+                      <div className="text-2xl font-black">{results?.days}</div>
+                   </div>
+                </div>
+             </div>
+
+             <div className="space-y-2 text-[10px] px-2 font-bold">
+                <div className="flex justify-between">
+                   <span className="opacity-40 uppercase">Total Days</span>
+                   <span>{results?.totalDays.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                   <span className="opacity-40 uppercase">Total Hours</span>
+                   <span>{results?.totalHours.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                   <span className="opacity-40 uppercase">Total Seconds</span>
+                   <span>{results?.totalSeconds.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between pt-2 border-t border-dashed border-black/10 dark:border-white/10">
+                   <span className="opacity-40 uppercase">Celestial Sign</span>
+                   <span className="text-primary">{results?.zodiac}</span>
+                </div>
+                <div className="flex justify-between">
+                   <span className="opacity-40 uppercase">Next Milestone</span>
+                   <span>{results?.nextBirthday} Days</span>
+                </div>
+             </div>
+          </div>
+
+          <div className="mt-12 text-center border-t-2 border-black dark:border-white pt-6">
+             <div className="flex justify-center mb-3">
+                <CheckCircle2 className="w-8 h-8 text-primary" />
+             </div>
+             <p className="text-[9px] font-black uppercase tracking-widest leading-relaxed">
+               Atomic-Sync Precision Guaranteed<br/>
+               Verified by Camly Intelligence Unit
+             </p>
+             <p className="text-[7px] font-bold mt-4 opacity-40">© 2024 Camly Inc. All Metrics Verified.</p>
+          </div>
+        </div>
+      </div>
+
       <nav className="relative z-50 h-14 flex items-center px-4 md:px-6 justify-between transition-colors duration-700 glass border-b border-border">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center transition-all group-hover:scale-110">

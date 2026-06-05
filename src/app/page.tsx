@@ -13,9 +13,11 @@ import {
   Calculator as CalcIcon, CalendarDays, Copy,
   ArrowUpRight, Target, BarChart3, Settings,
   FileType, GraduationCap, Wallet, UserCheck,
-  CheckCircle2, Clock
+  CheckCircle2, Clock, User
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DateInput } from '@/components/chrono/DateInput';
 import { ResultCard } from '@/components/chrono/ResultCard';
@@ -96,6 +98,7 @@ function ChronoFlowContent() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [isDownloading, setIsDownloading] = useState(false);
   
+  const [userName, setUserName] = useState('');
   const [fromDate, setFromDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
   const [toDate, setToDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
   
@@ -104,8 +107,12 @@ function ChronoFlowContent() {
   const tickerRef = useRef<NodeJS.Timeout | null>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
+  const [syncId, setSyncId] = useState<string>('');
 
   useEffect(() => {
+    const savedName = localStorage.getItem('chrono_user_name');
+    if (savedName) setUserName(savedName);
+
     const savedFrom = localStorage.getItem('chrono_from');
     if (savedFrom) setFromDate(JSON.parse(savedFrom));
     
@@ -127,12 +134,15 @@ function ChronoFlowContent() {
     } else {
       setTheme('light');
     }
+    
+    setSyncId(Math.random().toString(36).substring(7).toUpperCase());
   }, []);
 
   useEffect(() => {
+    localStorage.setItem('chrono_user_name', userName);
     localStorage.setItem('chrono_from', JSON.stringify(fromDate));
     localStorage.setItem('chrono_to', JSON.stringify(toDate));
-  }, [fromDate, toDate]);
+  }, [userName, fromDate, toDate]);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -182,15 +192,18 @@ function ChronoFlowContent() {
         cacheBust: true,
         backgroundColor: theme === 'dark' ? '#09090b' : '#ffffff',
         width: 380,
-        pixelRatio: 4, // High-definition quality (4x density)
+        pixelRatio: 4, 
         style: {
           transform: 'scale(1)',
           left: '0',
           top: '0',
         }
       });
+      const fileName = userName 
+        ? `Camly_Report_${userName.replace(/\s+/g, '_')}_${format(new Date(), 'yyyyMMdd_HHmm')}.png`
+        : `Camly_Chronological_Report_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
       const link = document.createElement('a');
-      link.download = `Camly_Chronological_Report_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
+      link.download = fileName;
       link.href = dataUrl;
       link.click();
     } catch (err) {
@@ -207,7 +220,7 @@ function ChronoFlowContent() {
 
   const handleShare = () => {
     if (!results) return;
-    const text = `Age Metrics: ${results.years}y, ${results.months}m, ${results.days}d. Calculated via Camly.`;
+    const text = `${userName ? userName + "'s " : ""}Age Metrics: ${results.years}y, ${results.months}m, ${results.days}d. Calculated via Camly.`;
     navigator.clipboard.writeText(text);
     toast({
       title: "Copied!",
@@ -255,12 +268,18 @@ function ChronoFlowContent() {
           <div className="border-t border-b border-dashed border-black/20 dark:border-white/20 py-4 my-6 space-y-2">
             <div className="flex justify-between text-[10px] font-black">
               <span>SYNC_ID</span>
-              <span className="uppercase">{Math.random().toString(36).substring(7)}</span>
+              <span className="uppercase">{syncId}</span>
             </div>
             <div className="flex justify-between text-[10px] font-black">
               <span>TIMESTAMP</span>
               <span>{format(new Date(), 'dd-MMM-yyyy HH:mm:ss')}</span>
             </div>
+            {userName && (
+              <div className="flex justify-between text-[10px] font-black text-primary">
+                <span>IDENTITY</span>
+                <span className="uppercase">{userName}</span>
+              </div>
+            )}
             <div className="flex justify-between text-[10px] font-black">
               <span>ALGORITHM</span>
               <span>GREGORIAN_V3</span>
@@ -298,6 +317,10 @@ function ChronoFlowContent() {
 
              <div className="space-y-2 text-[10px] px-2 font-bold">
                 <div className="flex justify-between">
+                   <span className="opacity-40 uppercase">Total Weeks</span>
+                   <span>{results?.totalWeeks.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
                    <span className="opacity-40 uppercase">Total Days</span>
                    <span>{results?.totalDays.toLocaleString()}</span>
                 </div>
@@ -306,16 +329,38 @@ function ChronoFlowContent() {
                    <span>{results?.totalHours.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
+                   <span className="opacity-40 uppercase">Total Minutes</span>
+                   <span>{results?.totalMinutes.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
                    <span className="opacity-40 uppercase">Total Seconds</span>
                    <span>{results?.totalSeconds.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between pt-2 border-t border-dashed border-black/10 dark:border-white/10">
-                   <span className="opacity-40 uppercase">Celestial Sign</span>
-                   <span className="text-primary">{results?.zodiac}</span>
+                
+                <div className="pt-2 border-t border-dashed border-black/10 dark:border-white/10 space-y-2">
+                   <div className="flex justify-between">
+                      <span className="opacity-40 uppercase">Celestial Sign</span>
+                      <span className="text-primary">{results?.zodiac}</span>
+                   </div>
+                   <div className="flex justify-between">
+                      <span className="opacity-40 uppercase">Leap Check</span>
+                      <span>{results?.isLeapYear ? 'LEAP_IDENTIFIED' : 'STANDARD_CYCLE'}</span>
+                   </div>
                 </div>
-                <div className="flex justify-between">
-                   <span className="opacity-40 uppercase">Next Milestone</span>
-                   <span>{results?.nextBirthday} Days</span>
+
+                <div className="pt-2 border-t border-dashed border-black/10 dark:border-white/10 space-y-2">
+                  <div className="flex justify-between">
+                    <span className="opacity-40 uppercase text-[8px]">Previous Birthday</span>
+                    <span className="text-[9px]">{results?.previousBirthdayDate}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="opacity-40 uppercase text-[8px]">Next Birthday</span>
+                    <span className="text-[9px]">{results?.nextBirthdayDate}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="opacity-40 uppercase">Days To Goal</span>
+                    <span className="text-primary">{results?.nextBirthday} Days</span>
+                  </div>
                 </div>
              </div>
           </div>
@@ -375,6 +420,18 @@ function ChronoFlowContent() {
                 </TabsList>
 
                 <TabsContent value="age" className="space-y-4 mt-0">
+                  <div className="space-y-1.5">
+                    <Label className="text-[8px] font-bold uppercase tracking-widest text-primary/60 flex items-center gap-1.5">
+                      <User className="w-3 h-3" /> Subject Name
+                    </Label>
+                    <Input 
+                      placeholder="Enter identity..." 
+                      value={userName} 
+                      onChange={(e) => setUserName(e.target.value)}
+                      className="bg-white/5 border border-black dark:border-white rounded-none h-8 text-xs focus:border-primary shadow-none"
+                    />
+                  </div>
+                  <Separator className="opacity-10" />
                   <DateInput label="Date of Birth" values={fromDate} onChange={setFromDate} />
                   <DateInput label="Target Timestamp" values={toDate} onChange={setToDate} error={error || undefined} />
                   <Button 
@@ -418,7 +475,9 @@ function ChronoFlowContent() {
                 <div className="flex items-center justify-between px-2">
                    <div className="flex items-center gap-3">
                       <div className="w-3 h-3 rounded-full bg-accent animate-pulse shadow-[0_0_10px_rgba(var(--accent),0.6)]" />
-                      <span className="text-[10px] uppercase font-black tracking-[0.3em] text-accent">Active Computation Stream</span>
+                      <span className="text-[10px] uppercase font-black tracking-[0.3em] text-accent">
+                        {userName ? `${userName.toUpperCase()}: ` : ''}Active Computation Stream
+                      </span>
                    </div>
                    <Badge variant="outline" className="text-[8px] uppercase tracking-widest border-border bg-muted/30">Latency: 1.2ms</Badge>
                 </div>

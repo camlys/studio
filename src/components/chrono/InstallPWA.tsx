@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Download, Monitor, Smartphone, Zap, ShieldCheck } from 'lucide-react';
+import { Download, Monitor, Smartphone, Zap, ShieldCheck, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 export function InstallPWA() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstallable, setIsInstallable] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -36,12 +37,24 @@ export function InstallPWA() {
     setDeferredPrompt(null);
   };
 
-  if (!isInstallable) return null;
+  const dismissPopup = () => {
+    setIsVisible(false);
+  };
+
+  if (!isInstallable || !isVisible) return null;
 
   return (
     <div className="glass-card !p-5 border-accent/20 bg-accent/5 overflow-hidden relative group animate-in fade-in slide-in-from-bottom-4 duration-1000">
       <div className="absolute -top-6 -right-6 w-24 h-24 bg-accent/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
       
+      <button 
+        onClick={dismissPopup}
+        className="absolute top-2 right-2 p-1 rounded-full hover:bg-black/10 transition-colors z-20 text-foreground/40 hover:text-foreground"
+        aria-label="Dismiss"
+      >
+        <X className="w-3.5 h-3.5" />
+      </button>
+
       <div className="flex items-center gap-2 mb-3">
         <Zap className="w-3.5 h-3.5 text-accent animate-pulse" />
         <span className="text-[9px] font-black uppercase tracking-[0.2em] text-accent">Cross-Platform Sync</span>

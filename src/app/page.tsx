@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
@@ -419,7 +420,7 @@ function ChronoFlowContent() {
                   <TabsTrigger value="due-date" className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Due</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="age" className="space-y-4 mt-0">
+                <TabsContent value="age" className="space-y-2.5 mt-0">
                   <div className="space-y-1.5">
                     <Label className="text-[8px] font-bold uppercase tracking-widest text-primary/60 flex items-center gap-1.5">
                       <User className="w-3 h-3" /> Subject Name
@@ -431,11 +432,10 @@ function ChronoFlowContent() {
                       className="bg-white/5 border border-black dark:border-white rounded-none h-8 text-xs focus:border-primary shadow-none"
                     />
                   </div>
-                  <Separator className="opacity-10" />
                   <DateInput label="Date of Birth" values={fromDate} onChange={setFromDate} />
                   <DateInput label="Target Timestamp" values={toDate} onChange={setToDate} error={error || undefined} />
                   <Button 
-                    className="w-full h-12 mt-6 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow border-black dark:border-white border"
+                    className="w-full h-12 mt-4 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow border-black dark:border-white border"
                     onClick={handleCalculate}
                   >
                     Compute Results

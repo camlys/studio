@@ -211,8 +211,8 @@ function ChronoFlowContent() {
     try {
       const dataUrl = await toPng(receiptRef.current, {
         cacheBust: true,
-        backgroundColor: theme === 'dark' ? '#0c0c0e' : '#ffffff',
-        width: 380,
+        backgroundColor: '#ffffff',
+        width: 480, // Slightly wider for the new design
         pixelRatio: 4, 
         style: {
           transform: 'scale(1)',
@@ -276,42 +276,41 @@ function ChronoFlowContent() {
       
       {/* Hidden Receipt for Download */}
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
-        <div ref={receiptRef} className="w-[380px] bg-white dark:bg-[#0c0c0e] text-black dark:text-white p-8 font-mono border-4 border-black dark:border-primary/40 relative overflow-hidden">
-          {/* Decorative Corner Seals */}
-          <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full border-b border-l border-primary/20" />
-          
-          <div className="flex flex-col items-center mb-8 pb-8 border-b-4 border-black dark:border-primary/20 text-center gap-4">
+        <div ref={receiptRef} className="w-[480px] bg-white text-black p-10 font-mono border-[6px] border-black relative overflow-hidden">
+          {/* Header Branding */}
+          <div className="flex flex-col items-center mb-10 pb-8 border-b-4 border-black text-center gap-5">
             <div className="relative">
-              <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full" />
-              <Image src="/camly.png" alt="Camly" width={82} height={82} className="relative object-contain" />
+              <div className="absolute inset-0 bg-primary/10 blur-2xl rounded-full" />
+              <Image src="/camly.png" alt="Camly" width={100} height={100} className="relative object-contain" />
             </div>
             <div className="space-y-1">
-              <h2 className="text-3xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">
-                Camly <span className="text-black dark:text-white">Calculator</span>
+              <h2 className="text-4xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">
+                Camly <span className="text-black">Calculator</span>
               </h2>
               <p className="text-[10px] uppercase font-black tracking-[0.4em] opacity-40">Tactical Chronological Registry</p>
-              <div className="flex items-center justify-center gap-2 mt-1">
-                <Badge variant="outline" className="text-[7px] font-black uppercase tracking-widest border-primary/20 text-primary px-2 py-0">STRATUM-01 SYNC</Badge>
-                <Badge variant="outline" className="text-[7px] font-black uppercase tracking-widest border-accent/20 text-accent px-2 py-0">VERIFIED UNIT</Badge>
+              <div className="flex items-center justify-center gap-3 mt-2">
+                <Badge variant="outline" className="text-[8px] font-black uppercase tracking-widest border-black text-black px-3">VERIFIED UNIT</Badge>
+                <Badge variant="outline" className="text-[8px] font-black uppercase tracking-widest border-primary text-primary px-3">STRATUM-01 SYNC</Badge>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-[1fr_auto] gap-6 mb-8 items-start">
-            <div className="space-y-4">
-              <div className="space-y-1">
-                <span className="text-[8px] font-black uppercase tracking-widest text-primary/60">Registry Name</span>
-                <div className="text-xl font-black truncate">{userName || 'UNIDENTIFIED_SUBJECT'}</div>
+          {/* Subject Profile Section */}
+          <div className="grid grid-cols-[1fr_auto] gap-8 mb-10 items-center">
+            <div className="space-y-6">
+              <div className="space-y-1.5">
+                <span className="text-[9px] font-black uppercase tracking-widest text-primary">Registry Identity</span>
+                <div className="text-2xl font-black truncate border-l-4 border-primary pl-3 py-1 bg-black/5 uppercase">{userName || 'UNIDENTIFIED_SUBJECT'}</div>
               </div>
-              <div className="space-y-1">
-                <span className="text-[8px] font-black uppercase tracking-widest opacity-40">System Synchronization</span>
-                <div className="flex flex-col gap-0.5 text-[10px] font-bold">
+              <div className="space-y-1.5">
+                <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Audit Metadata</span>
+                <div className="flex flex-col gap-1 text-[11px] font-bold">
                   <div className="flex justify-between">
-                    <span className="opacity-40">ID</span>
+                    <span className="opacity-40">SYNC_ID:</span>
                     <span className="text-primary">{syncId}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="opacity-40">TIMESTAMP</span>
+                    <span className="opacity-40">TIMESTAMP:</span>
                     <span>{format(new Date(), 'dd-MMM-yyyy HH:mm:ss')}</span>
                   </div>
                 </div>
@@ -319,105 +318,145 @@ function ChronoFlowContent() {
             </div>
             {subjectImage ? (
               <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-tr from-primary to-accent rounded-2xl opacity-20" />
-                <div className="w-24 h-24 rounded-xl border-4 border-black dark:border-primary relative overflow-hidden bg-black/5 shadow-2xl">
+                <div className="absolute -inset-1.5 bg-gradient-to-tr from-primary to-accent rounded-3xl opacity-20 blur-sm" />
+                <div className="w-32 h-32 rounded-2xl border-[5px] border-black relative overflow-hidden bg-black/5 shadow-2xl">
                    <img src={subjectImage} alt="Identity" className="w-full h-full object-cover grayscale contrast-125" />
                 </div>
-                <div className="absolute -bottom-2 -right-2 bg-black dark:bg-primary text-white p-1 rounded-md">
-                   <Shield className="w-3 h-3" />
+                <div className="absolute -bottom-3 -right-3 bg-black text-white p-1.5 rounded-lg border-2 border-white shadow-xl">
+                   <ShieldCheck className="w-5 h-5 text-accent" />
                 </div>
               </div>
             ) : (
-              <div className="w-24 h-24 rounded-xl border-2 border-dashed border-black/10 dark:border-white/10 flex items-center justify-center bg-muted/20">
-                <UserCheck className="w-8 h-8 opacity-10" />
+              <div className="w-32 h-32 rounded-2xl border-4 border-dashed border-black/10 flex items-center justify-center bg-black/5">
+                <UserCheck className="w-12 h-12 opacity-10" />
               </div>
             )}
           </div>
 
-          <div className="border-t-2 border-b-2 border-dashed border-black/10 dark:border-white/10 py-6 my-6 space-y-6">
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-1">
-                <span className="text-[8px] font-black uppercase tracking-widest text-primary">Origin Point</span>
-                <div className="text-lg font-black tabular-nums">{fromDate.day}-{fromDate.month}-{fromDate.year}</div>
-              </div>
-              <div className="space-y-1 text-right">
-                <span className="text-[8px] font-black uppercase tracking-widest text-primary">Target Node</span>
-                <div className="text-lg font-black tabular-nums">{toDate.day}-{toDate.month}-{toDate.year}</div>
-              </div>
+          {/* Coordinates Section */}
+          <div className="grid grid-cols-2 gap-8 mb-10 border-y-2 border-dashed border-black/20 py-8">
+            <div className="space-y-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                <Target className="w-3.5 h-3.5" /> Origin Point
+              </span>
+              <div className="text-xl font-black tabular-nums">{fromDate.day}-{fromDate.month}-{fromDate.year}</div>
             </div>
-
-            <div className="bg-black/5 dark:bg-white/5 p-6 rounded-2xl border border-black/10 dark:border-white/10 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-2 opacity-10">
-                   <Activity className="w-12 h-12 text-primary" />
-                </div>
-                <div className="grid grid-cols-3 gap-2 text-center relative z-10">
-                   <div className="space-y-1">
-                      <span className="text-[8px] font-black uppercase opacity-40 tracking-widest">Years</span>
-                      <div className="text-4xl font-black tracking-tighter text-primary">{results?.years}</div>
-                   </div>
-                   <div className="space-y-1 border-l border-r border-black/10 dark:border-white/10">
-                      <span className="text-[8px] font-black uppercase opacity-40 tracking-widest">Months</span>
-                      <div className="text-4xl font-black tracking-tighter">{results?.months}</div>
-                   </div>
-                   <div className="space-y-1">
-                      <span className="text-[8px] font-black uppercase opacity-40 tracking-widest">Days</span>
-                      <div className="text-4xl font-black tracking-tighter">{results?.days}</div>
-                   </div>
-                </div>
-             </div>
+            <div className="space-y-2 text-right border-l-2 border-dashed border-black/10">
+              <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center justify-end gap-2">
+                Target Node <Globe className="w-3.5 h-3.5" />
+              </span>
+              <div className="text-xl font-black tabular-nums">{toDate.day}-{toDate.month}-{toDate.year}</div>
+            </div>
           </div>
 
-          <div className="space-y-3 mb-8">
-             <span className="text-[8px] font-black uppercase tracking-[0.3em] opacity-30 block">Interval Matrix</span>
-             <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-[10px] font-bold">
-                <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1">
-                   <span className="opacity-40">WEEKS</span>
-                   <span>{results?.totalWeeks.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1">
-                   <span className="opacity-40">DAYS</span>
-                   <span>{results?.totalDays.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1">
-                   <span className="opacity-40">HOURS</span>
-                   <span>{results?.totalHours.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1">
-                   <span className="opacity-40">MINUTES</span>
-                   <span>{results?.totalMinutes.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1 col-span-2">
-                   <span className="opacity-40">TOTAL_SECONDS_REACTIVE</span>
-                   <span className="text-primary">{results?.totalSeconds.toLocaleString()}</span>
-                </div>
-             </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            <div className="p-3 bg-black/5 dark:bg-white/5 rounded-xl space-y-1 border border-black/10">
-               <span className="text-[7px] font-black uppercase opacity-40">Celestial Zone</span>
-               <div className="text-xs font-black flex items-center gap-1.5 uppercase">
-                  <Sparkles className="w-3 h-3 text-accent" /> {results?.zodiac}
+          {/* Primary Metrics Section */}
+          <div className="mb-10">
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] opacity-30 block mb-4">Core Chronological Matrix</span>
+            <div className="bg-black text-white p-8 rounded-3xl relative overflow-hidden">
+               <div className="absolute top-0 right-0 p-4 opacity-20">
+                  <Activity className="w-16 h-16 text-primary" />
+               </div>
+               <div className="grid grid-cols-3 gap-4 text-center relative z-10">
+                  <div className="space-y-2">
+                     <span className="text-[9px] font-black uppercase tracking-widest opacity-60">Years</span>
+                     <div className="text-6xl font-black tracking-tighter text-primary">{results?.years}</div>
+                  </div>
+                  <div className="space-y-2 border-l border-r border-white/20">
+                     <span className="text-[9px] font-black uppercase tracking-widest opacity-60">Months</span>
+                     <div className="text-6xl font-black tracking-tighter">{results?.months}</div>
+                  </div>
+                  <div className="space-y-2">
+                     <span className="text-[9px] font-black uppercase tracking-widest opacity-60">Days</span>
+                     <div className="text-6xl font-black tracking-tighter">{results?.days}</div>
+                  </div>
                </div>
             </div>
-            <div className="p-3 bg-black/5 dark:bg-white/5 rounded-xl space-y-1 border border-black/10">
-               <span className="text-[7px] font-black uppercase opacity-40">Leap Logic</span>
-               <div className="text-xs font-black uppercase">{results?.isLeapYear ? 'LEAP_CYCLE' : 'STD_CYCLE'}</div>
+          </div>
+
+          {/* Interval Matrix Section */}
+          <div className="grid grid-cols-2 gap-10 mb-10">
+            <div className="space-y-4">
+               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary block">Total Intervals</span>
+               <div className="space-y-2 text-[11px] font-bold">
+                  <div className="flex justify-between border-b border-black/5 pb-1.5">
+                     <span className="opacity-40">WEEKS:</span>
+                     <span>{results?.totalWeeks.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-black/5 pb-1.5">
+                     <span className="opacity-40">DAYS:</span>
+                     <span>{results?.totalDays.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-black/5 pb-1.5">
+                     <span className="opacity-40">HOURS:</span>
+                     <span>{results?.totalHours.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-black/5 pb-1.5">
+                     <span className="opacity-40">MINUTES:</span>
+                     <span>{results?.totalMinutes.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between pt-1">
+                     <span className="opacity-40">SECONDS:</span>
+                     <span className="text-primary">{results?.totalSeconds.toLocaleString()}</span>
+                  </div>
+               </div>
+            </div>
+
+            <div className="space-y-4">
+               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary block">Milestone Target</span>
+               <div className="space-y-2 text-[11px] font-bold">
+                  <div className="flex justify-between border-b border-black/5 pb-1.5">
+                     <span className="opacity-40">PREV_BDAY:</span>
+                     <span className="text-[10px]">{results?.previousBirthdayDate}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-black/5 pb-1.5">
+                     <span className="opacity-40">DAYS_ELAPSED:</span>
+                     <span>{results?.daysSincePrevious}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-black/5 pb-1.5">
+                     <span className="opacity-40">NEXT_BDAY:</span>
+                     <span className="text-[10px]">{results?.nextBirthdayDate}</span>
+                  </div>
+                  <div className="flex justify-between pt-1">
+                     <span className="opacity-40">DAYS_REMAINING:</span>
+                     <span className="text-accent">{results?.nextBirthday}</span>
+                  </div>
+               </div>
             </div>
           </div>
 
-          <div className="mt-12 text-center border-t-4 border-black dark:border-primary/40 pt-8 relative">
-             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-[#0c0c0e] px-4">
-                <CheckCircle2 className="w-10 h-10 text-primary" />
+          {/* Celestial & System Status Section */}
+          <div className="grid grid-cols-2 gap-6 mb-10 pt-4 border-t-2 border-black/5">
+            <div className="p-4 bg-black/5 rounded-2xl space-y-2 border border-black/10">
+               <span className="text-[8px] font-black uppercase opacity-40 tracking-widest flex items-center gap-2">
+                 <Sparkles className="w-3 h-3" /> Celestial Mapping
+               </span>
+               <div className="text-sm font-black uppercase tracking-tight">
+                  Zone: {results?.zodiac}
+               </div>
+            </div>
+            <div className="p-4 bg-black/5 rounded-2xl space-y-2 border border-black/10">
+               <span className="text-[8px] font-black uppercase opacity-40 tracking-widest flex items-center gap-2">
+                 <Cpu className="w-3 h-3" /> System Integrity
+               </span>
+               <div className="text-sm font-black uppercase tracking-tight">
+                  Status: {results?.isLeapYear ? 'LEAP_CYCLE' : 'STD_CYCLE'}
+               </div>
+            </div>
+          </div>
+
+          {/* Footer Branding & URL */}
+          <div className="mt-10 text-center border-t-4 border-black pt-10 relative">
+             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-6">
+                <CheckCircle2 className="w-12 h-12 text-primary" />
              </div>
-             <p className="text-[10px] font-black uppercase tracking-[0.2em] leading-relaxed">
+             <p className="text-[11px] font-black uppercase tracking-[0.3em] leading-relaxed mb-4">
                Atomic-Sync Precision Guaranteed<br/>
                Verified by Camly Intelligence Unit
              </p>
-             <p className="text-[8px] font-bold mt-6 opacity-30">© 2024 Camly Inc. All results valid at time of synchronization.</p>
-             <div className="mt-4 flex justify-center opacity-10">
-                <div className="w-24 h-1 bg-black dark:bg-white" />
+             <div className="bg-black py-3 px-6 inline-block rounded-xl">
+               <p className="text-white text-[12px] font-black tracking-[0.2em] font-roboto-slab">CALCULATOR.CAMLY.ORG</p>
              </div>
+             <p className="text-[9px] font-bold mt-8 opacity-30 uppercase tracking-widest">© 2024 Camly Inc. All chronological records certified.</p>
           </div>
         </div>
       </div>

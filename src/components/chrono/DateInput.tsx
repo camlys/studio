@@ -87,6 +87,8 @@ export function DateInput({ label, values, onChange, error }: DateInputProps) {
           placeholder="Year"
           value={values.year}
           onChange={(e) => handleInputChange('year', e.target.value)}
+          inputMode="numeric"
+          pattern="[0-9]*"
           className="text-center text-xs h-8 bg-white/5 border border-black dark:border-white rounded-none px-0.5 transition-colors focus:border-primary shadow-none"
           maxLength={4}
         />

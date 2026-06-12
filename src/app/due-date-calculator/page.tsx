@@ -554,6 +554,8 @@ export default function DueDateCalculator() {
                       placeholder="YYYY"
                       value={startValues.year} 
                       onChange={(e) => handleInputChange('year', e.target.value)}
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className="bg-muted/50 border-border h-11 rounded-r-xl rounded-l-none border-l-0 focus:ring-2 focus:ring-primary/20 font-bold text-sm text-center px-1"
                       maxLength={4}
                     />

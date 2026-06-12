@@ -249,7 +249,7 @@ function ChronoFlowContent() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col transition-all duration-700 overflow-x-hidden bg-background font-body">
+    <div className="min-h-screen bg-background text-foreground flex flex-col transition-all duration-700 overflow-x-hidden font-body">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema) }} />
       
       {/* Cropper Dialog */}
@@ -572,7 +572,7 @@ function ChronoFlowContent() {
             </div>
 
             <div className="space-y-3">
-              <InstallPWA />
+              <InstallPWA variant="sidebar" />
               <div className="hidden min-[480px]:block space-y-3">
                 <div className="glass-card !p-4 border-accent/20 bg-accent/5 overflow-hidden relative group">
                   <div className="absolute -top-4 -right-4 w-12 h-12 bg-accent/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-1000" />
@@ -806,7 +806,7 @@ function ChronoFlowContent() {
                   <div className="w-2 h-2 rounded-full animate-pulse bg-accent" />
                   CAMLY-SYNC-01: ONLINE
                 </div>
-                <InstallPWA />
+                <InstallPWA variant="footer" />
               </div>
             </div>
           </div>

@@ -310,7 +310,7 @@ export default function PrecisionCalculator() {
               </div>
             </div>
 
-            <InstallPWA />
+            <InstallPWA variant="sidebar" />
 
             <div className="glass-card !p-5 border-border/40 bg-muted/5">
               <div className="flex items-center justify-between mb-4">
@@ -653,7 +653,7 @@ export default function PrecisionCalculator() {
                   <div className="w-2 h-2 rounded-full animate-pulse bg-accent" />
                   CAMLY-SYNC-01: ONLINE
                 </div>
-                <InstallPWA />
+                <InstallPWA variant="footer" />
               </div>
             </div>
           </div>

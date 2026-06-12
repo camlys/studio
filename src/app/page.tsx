@@ -14,7 +14,7 @@ import {
   ArrowUpRight, Target, BarChart3, Settings,
   FileType, GraduationCap, Wallet, UserCheck,
   CheckCircle2, Clock, User, Camera, Upload, X, Shield,
-  Sparkles
+  Sparkles, Workflow
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

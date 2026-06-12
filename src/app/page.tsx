@@ -14,7 +14,8 @@ import {
   Calculator as CalcIcon, CalendarDays, Copy,
   ArrowUpRight, Target, BarChart3, Settings,
   FileType, GraduationCap, Wallet, UserCheck,
-  CheckCircle2, Clock, User, Camera, Upload, X, Shield
+  CheckCircle2, Clock, User, Camera, Upload, X, Shield,
+  Sparkles
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

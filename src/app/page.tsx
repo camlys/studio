@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
@@ -21,6 +20,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter 
+} from "@/components/ui/dialog";
+import Cropper from 'react-easy-crop';
 import { DateInput } from '@/components/chrono/DateInput';
 import { ResultCard } from '@/components/chrono/ResultCard';
 import { FunFact } from '@/components/chrono/FunFact';
@@ -55,45 +62,6 @@ const homeSchema = {
   ]
 };
 
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "How precise is the Camly age calculation algorithm?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Camly utilizes atomic-sync protocols and Stratum-1 NTP nodes to ensure sub-millisecond precision, accounting for centurial leap years and Gregorian drift."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Is my date of birth data stored on your servers?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "No. Camly operates on a strict Privacy-by-Design architecture. All chronological processing occurs locally in the user's client-side environment."
-      }
-    }
-  ]
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [{
-    "@type": "ListItem",
-    "position": 1,
-    "name": "Home",
-    "item": "https://calculator.camly.org/"
-  }, {
-    "@type": "ListItem",
-    "position": 2,
-    "name": "Age Engine",
-    "item": "https://calculator.camly.org/"
-  }]
-};
-
 function ChronoFlowContent() {
   const { toast } = useToast();
   const router = useRouter();
@@ -110,6 +78,12 @@ function ChronoFlowContent() {
   const tickerRef = useRef<NodeJS.Timeout | null>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
   const [syncId, setSyncId] = useState<string>('');
+
+  // Cropper states
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
   useEffect(() => {
     const savedName = localStorage.getItem('chrono_user_name');
@@ -176,18 +150,32 @@ function ChronoFlowContent() {
     };
   }, [results === null]);
 
+  const onCropComplete = useCallback((_: any, croppedAreaPixels: any) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setSubjectImage(reader.result as string);
-        toast({
-          title: "Identity Photo Linked",
-          description: "Reference image successfully synchronized with local registry.",
-        });
+      reader.onload = () => {
+        setImageToCrop(reader.result as string);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const createCroppedImage = async () => {
+    try {
+      const croppedImage = await getCroppedImg(imageToCrop!, croppedAreaPixels);
+      setSubjectImage(croppedImage);
+      setImageToCrop(null);
+      toast({
+        title: "Photo Framed",
+        description: "Subject identity synchronized with local registry.",
+      });
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -212,7 +200,7 @@ function ChronoFlowContent() {
       const dataUrl = await toPng(receiptRef.current, {
         cacheBust: true,
         backgroundColor: '#ffffff',
-        width: 480, // Slightly wider for the new design
+        width: 480,
         pixelRatio: 4, 
         style: {
           transform: 'scale(1)',
@@ -221,8 +209,8 @@ function ChronoFlowContent() {
         }
       });
       const fileName = userName 
-        ? `Camly_Report_${userName.replace(/\s+/g, '_')}_${format(new Date(), 'yyyyMMdd_HHmm')}.png`
-        : `Camly_Chronological_Report_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
+        ? `Camly_Audit_${userName.replace(/\s+/g, '_')}_${format(new Date(), 'yyyyMMdd_HHmm')}.png`
+        : `Camly_Chronological_Audit_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
       const link = document.createElement('a');
       link.download = fileName;
       link.href = dataUrl;
@@ -232,7 +220,7 @@ function ChronoFlowContent() {
       toast({
         variant: "destructive",
         title: "Download Failed",
-        description: "Could not generate the high-definition report image.",
+        description: "Could not generate the high-definition audit image.",
       });
     } finally {
       setIsDownloading(false);
@@ -260,38 +248,61 @@ function ChronoFlowContent() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col transition-all duration-700 overflow-x-hidden bg-background">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
+    <div className="min-h-screen flex flex-col transition-all duration-700 overflow-x-hidden bg-background font-body">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema) }} />
+      
+      {/* Cropper Dialog */}
+      <Dialog open={!!imageToCrop} onOpenChange={(open) => !open && setImageToCrop(null)}>
+        <DialogContent className="sm:max-w-md bg-background border-border">
+          <DialogHeader>
+            <DialogTitle className="text-sm font-black uppercase tracking-widest text-primary">Frame Subject Photo</DialogTitle>
+          </DialogHeader>
+          <div className="relative h-[300px] w-full bg-black rounded-xl overflow-hidden mt-4">
+            <Cropper
+              image={imageToCrop || ''}
+              crop={crop}
+              zoom={zoom}
+              aspect={1}
+              onCropChange={setCrop}
+              onZoomChange={setZoom}
+              onCropComplete={onCropComplete}
+            />
+          </div>
+          <div className="mt-4 space-y-2">
+            <div className="flex justify-between text-[10px] font-bold uppercase text-muted-foreground">
+              <span>Zoom Precision</span>
+              <span>{zoom.toFixed(1)}x</span>
+            </div>
+            <Slider value={[zoom]} min={1} max={3} step={0.1} onValueChange={([v]) => setZoom(v)} />
+          </div>
+          <DialogFooter className="mt-6 flex flex-row gap-2 justify-end">
+            <Button variant="ghost" size="sm" onClick={() => setImageToCrop(null)} className="text-[10px] font-black uppercase tracking-widest">Cancel</Button>
+            <Button size="sm" onClick={createCroppedImage} className="bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest px-8">Confirm Identity</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       
       {/* Hidden Receipt for Download */}
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[480px] bg-white text-black p-10 font-mono border-[6px] border-black relative overflow-hidden">
-          {/* Header Branding */}
-          <div className="flex flex-col items-center mb-10 pb-8 border-b-4 border-black text-center gap-5">
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary/10 blur-2xl rounded-full" />
-              <Image src="/camly.png" alt="Camly" width={100} height={100} className="relative object-contain" />
-            </div>
+          {/* Header Branding Inverted */}
+          <div className="flex flex-col items-center mb-10 pb-8 border-b-4 border-black text-center gap-6">
             <div className="space-y-1">
-              <h2 className="text-4xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">
+              <h2 className="text-5xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">
                 Camly <span className="text-black">Calculator</span>
               </h2>
-              <p className="text-[10px] uppercase font-black tracking-[0.4em] opacity-40">Tactical Chronological Registry</p>
-              <div className="flex items-center justify-center gap-3 mt-2">
-                <Badge variant="outline" className="text-[8px] font-black uppercase tracking-widest border-black text-black px-3">VERIFIED UNIT</Badge>
-                <Badge variant="outline" className="text-[8px] font-black uppercase tracking-widest border-primary text-primary px-3">STRATUM-01 SYNC</Badge>
+              <div className="flex flex-col items-center gap-1 mt-2">
+                <p className="text-[10px] uppercase font-black tracking-[0.4em] opacity-40">Tactical Chronological Registry</p>
+                <Link href="https://camly.org" className="text-[11px] font-black text-primary hover:underline tracking-[0.1em]">camly.org</Link>
               </div>
+            </div>
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary/10 blur-2xl rounded-full" />
+              <Image src="/camly.png" alt="Camly" width={110} height={110} className="relative object-contain" />
+            </div>
+            <div className="flex items-center justify-center gap-3">
+              <Badge variant="outline" className="text-[8px] font-black uppercase tracking-widest border-black text-black px-3">VERIFIED UNIT</Badge>
+              <Badge variant="outline" className="text-[8px] font-black uppercase tracking-widest border-primary text-primary px-3">STRATUM-01 SYNC</Badge>
             </div>
           </div>
 
@@ -320,7 +331,7 @@ function ChronoFlowContent() {
               <div className="relative group">
                 <div className="absolute -inset-1.5 bg-gradient-to-tr from-primary to-accent rounded-3xl opacity-20 blur-sm" />
                 <div className="w-32 h-32 rounded-2xl border-[5px] border-black relative overflow-hidden bg-black/5 shadow-2xl">
-                   <img src={subjectImage} alt="Identity" className="w-full h-full object-cover grayscale contrast-125" />
+                   <img src={subjectImage} alt="Identity" className="w-full h-full object-cover" />
                 </div>
                 <div className="absolute -bottom-3 -right-3 bg-black text-white p-1.5 rounded-lg border-2 border-white shadow-xl">
                    <ShieldCheck className="w-5 h-5 text-accent" />
@@ -428,7 +439,7 @@ function ChronoFlowContent() {
           <div className="grid grid-cols-2 gap-6 mb-10 pt-4 border-t-2 border-black/5">
             <div className="p-4 bg-black/5 rounded-2xl space-y-2 border border-black/10">
                <span className="text-[8px] font-black uppercase opacity-40 tracking-widest flex items-center gap-2">
-                 <Sparkles className="w-3 h-3" /> Celestial Mapping
+                 <Sparkles className="w-3 h-3 text-accent" /> Celestial Mapping
                </span>
                <div className="text-sm font-black uppercase tracking-tight">
                   Zone: {results?.zodiac}
@@ -456,7 +467,10 @@ function ChronoFlowContent() {
              <div className="bg-black py-3 px-6 inline-block rounded-xl">
                <p className="text-white text-[12px] font-black tracking-[0.2em] font-roboto-slab">CALCULATOR.CAMLY.ORG</p>
              </div>
-             <p className="text-[9px] font-bold mt-8 opacity-30 uppercase tracking-widest">© 2024 Camly Inc. All chronological records certified.</p>
+             <div className="mt-4">
+               <p className="text-[9px] font-black text-primary tracking-widest uppercase">Explore Ecosystem at camly.org</p>
+             </div>
+             <p className="text-[9px] font-bold mt-6 opacity-30 uppercase tracking-widest">© 2024 Camly Inc. All chronological records certified.</p>
           </div>
         </div>
       </div>
@@ -471,7 +485,7 @@ function ChronoFlowContent() {
               CALCULATOR
             </h1>
             <Link href="https://camly.org" target="_blank" className="text-[7px] font-bold tracking-[0.3em] uppercase mt-1 flex items-center gap-1 transition-colors text-primary/60 hover:text-primary">
-              CAMLY.ORG <ExternalLink className="w-2  h-2" />
+              CAMLY.ORG <ExternalLink className="w-2 h-2" />
             </Link>
           </div>
         </div>
@@ -665,146 +679,7 @@ function ChronoFlowContent() {
                 ))}
               </div>
             </section>
-
-            {/* Tactical Status Section - Small Mobiles Only */}
-            <section className="block min-[480px]:hidden mt-6 space-y-3">
-              <div className="glass-card !p-4 border-accent/20 bg-accent/5 overflow-hidden relative group">
-                <div className="absolute -top-4 -right-4 w-12 h-12 bg-accent/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-1000" />
-                <div className="flex items-center gap-2 mb-2">
-                  <Activity className="w-3 h-3 text-accent" />
-                  <p className="text-[9px] uppercase font-black tracking-widest text-accent">Real-Time Sync</p>
-                </div>
-                <h4 className="text-xs font-black tracking-tight mb-1">Atomic Precision Control</h4>
-                <p className="text-[10px] text-muted-foreground/80 leading-relaxed">Engine synchronizing with primary time servers via Stratum-1 NTP nodes.</p>
-              </div>
-              
-              <div className="glass-card !p-4 border-primary/20 bg-primary/5 relative overflow-hidden group">
-                <div className="flex items-center gap-2 mb-2">
-                  <ShieldCheck className="w-3 h-3 text-primary" />
-                  <p className="text-[9px] uppercase font-black tracking-widest text-primary">Security Ops</p>
-                </div>
-                <h4 className="text-xs font-black tracking-tight mb-1">Encrypted Payload</h4>
-                <p className="text-[10px] text-muted-foreground/80 leading-relaxed">Calculation processing is handled locally. Zero-knowledge data sovereignty.</p>
-              </div>
-            </section>
           </div>
-        </div>
-
-        <div className="mt-32 space-y-40">
-          <section className="container max-w-4xl mx-auto py-12">
-             <div className="flex flex-col md:flex-row items-center gap-8">
-                <div className="flex-1 space-y-4">
-                   <Badge variant="outline" className="border-accent/30 text-accent uppercase tracking-[0.3em] text-[10px] px-4 py-1.5 font-black">Professional Utility</Badge>
-                   <h3 className="text-3xl font-black tracking-tight">Computational Planning</h3>
-                   <p className="text-muted-foreground text-sm leading-relaxed max-sm">
-                      Access our specialized high-precision academic, fiscal, and biometric engines for tactical planning.
-                   </p>
-                   <div className="flex flex-wrap gap-4">
-                     <Link href="/due-date-calculator">
-                        <Button variant="link" className="p-0 h-auto text-primary font-black uppercase tracking-widest text-[10px] gap-2">
-                           Due Date <ArrowUpRight className="w-3 h-3" />
-                        </Button>
-                     </Link>
-                     <Link href="/bmi-calculator">
-                        <Button variant="link" className="p-0 h-auto text-accent font-black uppercase tracking-widest text-[10px] gap-2">
-                           BMI Sync <ArrowUpRight className="w-3 h-3" />
-                        </Button>
-                     </Link>
-                     <Link href="/cgpa-calculator">
-                        <Button variant="link" className="p-0 h-auto text-primary font-black uppercase tracking-widest text-[10px] gap-2">
-                           CGPA Sync <ArrowUpRight className="w-3 h-3" />
-                        </Button>
-                     </Link>
-                   </div>
-                </div>
-                <div className="w-full md:w-px h-px md:h-32 bg-border/40" />
-                <div className="flex-grow space-y-4 text-center md:text-left">
-                  <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[9px] px-4 py-1.5 font-black">Global Infrastructure</Badge>
-                  <h3 className="text-3xl md:text-5xl font-black tracking-tighter">Synchronize with <span className="text-primary">Camly.org</span></h3>
-                  <p className="text-muted-foreground text-sm md:text-lg leading-relaxed max-w-2xl mx-auto md:mx-0 font-medium">
-                    Access the complete suite of high-precision digital assets and enterprise utility protocols.
-                  </p>
-                  <Link href="https://camly.org" target="_blank">
-                    <Button className="h-12 px-8 bg-primary text-primary-foreground font-black text-[10px] uppercase tracking-widest rounded-xl shadow-xl hover:scale-105 transition-all group">
-                      Explore Camly Ecosystem <ExternalLink className="ml-2 w-3.5 h-3.5" />
-                    </Button>
-                  </Link>
-                </div>
-             </div>
-          </section>
-
-          <section className="space-y-20">
-            <div className="text-center space-y-4">
-              <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[10px] px-6 py-1.5 font-black">Technical whitepaper</Badge>
-              <h2 className="text-4xl md:text-7xl font-black tracking-tighter leading-none">The Camly <span className="text-primary">Methodology</span></h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-medium">We define the standard for high-definition chronological computation through atomic-sync protocols.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
-                <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-primary/5">
-                   <Milestone className="w-8 h-8 text-primary" />
-                </div>
-                <h3 className="text-2xl font-black mb-4 tracking-tight">Gregorian Alignment</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed opacity-80">Our algorithms account for complex centurial leap year rules and ISO-8601 standards, ensuring astronomical accuracy across multi-decade spans.</p>
-              </div>
-              <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-accent/40">
-                <div className="w-16 h-16 rounded-[2rem] bg-accent/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-accent/5">
-                   <Globe className="w-8 h-8 text-accent" />
-                </div>
-                <h3 className="text-2xl font-black mb-4 tracking-tight">Temporal Drift Control</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed opacity-80">By synchronizing with Stratum-1 UTC nodes, we eliminate local system variance that typically degrades precision in web-based calculation tools.</p>
-              </div>
-              <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
-                <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-primary/5">
-                   <Star className="w-8 h-8 text-primary" />
-                </div>
-                <h3 className="text-2xl font-black mb-4 tracking-tight">Celestial Mapping</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed opacity-80">Utilizing high-precision ecliptic coordinate systems to handle cusp transitions with sub-minute resolution for Western zodiac alignment.</p>
-              </div>
-            </div>
-          </section>
-
-          <section className="space-y-16 py-24 bg-muted/30 rounded-[4rem] px-8 md:px-20 border border-border/40 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-20 opacity-[0.02] -rotate-12 group-hover:rotate-0 transition-transform duration-1000">
-              <Target className="w-96 h-96 text-primary" />
-            </div>
-            <div className="text-center space-y-6 relative z-10">
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter">Precision for <span className="text-primary">Global Verticals</span></h2>
-              <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto font-medium">Camly provides mission-critical data for sectors where time isn't just a number—it's a high-stakes record.</p>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
-              <div className="space-y-5 group/item">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group/item:scale-110 transition-transform">
-                  <Scale className="w-7 h-7 text-primary" />
-                </div>
-                <h4 className="font-black text-sm uppercase tracking-[0.2em]">Legal & Compliance</h4>
-                <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Determining exact age metrics for statutes of limitation, contract eligibility, and high-precision legal maturation milestones.</p>
-              </div>
-              <div className="space-y-5 group/item">
-                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group/item:scale-110 transition-transform">
-                  <HeartPulse className="w-7 h-7 text-accent" />
-                </div>
-                <h4 className="font-black text-sm uppercase tracking-[0.2em]">Academic & Med</h4>
-                <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Tracking pediatric developmental cycles and academic milestones with absolute day-level granular precision.</p>
-              </div>
-              <div className="space-y-5 group/item">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group/item:scale-110 transition-transform">
-                  <Coins className="w-7 h-7 text-primary" />
-                </div>
-                <h4 className="font-black text-sm uppercase tracking-[0.2em]">Financial Planning</h4>
-                <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Computing exact time horizons for compound interest maturation and retirement account eligibility windows with accuracy.</p>
-              </div>
-              <div className="space-y-5 group/item">
-                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group/item:scale-110 transition-transform">
-                  <Milestone className="w-7 h-7 text-accent" />
-                </div>
-                <h4 className="font-black text-sm uppercase tracking-[0.2em]">Asset Lifecycle</h4>
-                <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">A high-definition view of chronological timelines for enterprise assets, turning abstract durations into concrete, living data.</p>
-              </div>
-            </div>
-          </section>
         </div>
       </main>
 
@@ -901,6 +776,42 @@ function ChronoFlowContent() {
       </footer>
     </div>
   );
+}
+
+// Image Utility Functions
+async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> {
+  const image = await createImage(imageSrc);
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  if (!ctx) return '';
+
+  canvas.width = pixelCrop.width;
+  canvas.height = pixelCrop.height;
+
+  ctx.drawImage(
+    image,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height
+  );
+
+  return canvas.toDataURL('image/jpeg', 0.9);
+}
+
+function createImage(url: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const image = new window.Image();
+    image.addEventListener('load', () => resolve(image));
+    image.addEventListener('error', (error) => reject(error));
+    image.setAttribute('crossOrigin', 'anonymous');
+    image.src = url;
+  });
 }
 
 export default function ChronoFlow() {

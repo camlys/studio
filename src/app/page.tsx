@@ -258,7 +258,7 @@ function ChronoFlowContent() {
           <DialogHeader className="sr-only">
             <DialogTitle>Frame Subject Photo</DialogTitle>
           </DialogHeader>
-          <div className="relative h-[450px] w-full bg-black/20 rounded-3xl overflow-hidden border border-white/20">
+          <div className="relative h-[450px] w-full bg-transparent rounded-3xl overflow-hidden border border-white/20">
             <Cropper
               image={imageToCrop || ''}
               crop={crop}
@@ -268,6 +268,9 @@ function ChronoFlowContent() {
               onZoomChange={setZoom}
               onCropComplete={onCropComplete}
               showGrid={true}
+              style={{
+                containerStyle: { background: 'transparent' }
+              }}
             />
           </div>
           <div className="mt-6 flex flex-row gap-3 justify-center items-center pb-6">
@@ -335,7 +338,7 @@ function ChronoFlowContent() {
             </div>
             {subjectImage ? (
               <div className="relative">
-                <div className="w-28 h-28 rounded-xl border-[4px] border-black relative overflow-hidden bg-black/5">
+                <div className="w-28 h-28 rounded-xl border-[4px] border-black relative overflow-hidden bg-transparent">
                    <img src={subjectImage} alt="Identity" className="w-full h-full object-cover" />
                 </div>
                 <div className="absolute -bottom-2.5 -right-2.5 bg-black text-white p-1 rounded-md border-2 border-white">
@@ -848,7 +851,8 @@ async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> 
     pixelCrop.height
   );
 
-  return canvas.toDataURL('image/jpeg', 0.9);
+  // Return as PNG to preserve transparency
+  return canvas.toDataURL('image/png');
 }
 
 function createImage(url: string): Promise<HTMLImageElement> {

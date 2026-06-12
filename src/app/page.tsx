@@ -338,7 +338,7 @@ function ChronoFlowContent() {
             </div>
             {subjectImage ? (
               <div className="relative">
-                <div className="w-28 h-28 rounded-xl border-[4px] border-black relative overflow-hidden bg-transparent">
+                <div className="w-28 h-28 rounded-xl border border-black/10 relative overflow-hidden bg-transparent">
                    <img src={subjectImage} alt="Identity" className="w-full h-full object-cover" />
                 </div>
                 <div className="absolute -bottom-2.5 -right-2.5 bg-black text-white p-1 rounded-md border-2 border-white">

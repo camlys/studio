@@ -14,7 +14,7 @@ import {
   Calculator as CalcIcon, CalendarDays, Copy,
   ArrowUpRight, Target, BarChart3, Settings,
   FileType, GraduationCap, Wallet, UserCheck,
-  CheckCircle2, Clock, User
+  CheckCircle2, Clock, User, Camera, Upload, X
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -100,19 +100,22 @@ function ChronoFlowContent() {
   const [isDownloading, setIsDownloading] = useState(false);
   
   const [userName, setUserName] = useState('');
+  const [subjectImage, setSubjectImage] = useState<string | null>(null);
   const [fromDate, setFromDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
   const [toDate, setToDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
   
   const [results, setResults] = useState<CalculationResults | null>(null);
   const [error, setError] = useState<string | null>(null);
   const tickerRef = useRef<NodeJS.Timeout | null>(null);
-  const resultsRef = useRef<HTMLDivElement>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
   const [syncId, setSyncId] = useState<string>('');
 
   useEffect(() => {
     const savedName = localStorage.getItem('chrono_user_name');
     if (savedName) setUserName(savedName);
+
+    const savedImage = localStorage.getItem('chrono_subject_image');
+    if (savedImage) setSubjectImage(savedImage);
 
     const savedFrom = localStorage.getItem('chrono_from');
     if (savedFrom) setFromDate(JSON.parse(savedFrom));
@@ -141,9 +144,10 @@ function ChronoFlowContent() {
 
   useEffect(() => {
     localStorage.setItem('chrono_user_name', userName);
+    localStorage.setItem('chrono_subject_image', subjectImage || '');
     localStorage.setItem('chrono_from', JSON.stringify(fromDate));
     localStorage.setItem('chrono_to', JSON.stringify(toDate));
-  }, [userName, fromDate, toDate]);
+  }, [userName, subjectImage, fromDate, toDate]);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -170,6 +174,21 @@ function ChronoFlowContent() {
       if (tickerRef.current) clearInterval(tickerRef.current);
     };
   }, [results === null]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSubjectImage(reader.result as string);
+        toast({
+          title: "Identity Photo Linked",
+          description: "Reference image successfully synchronized with local registry.",
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleCalculate = useCallback(() => {
     setError(null);
@@ -257,13 +276,20 @@ function ChronoFlowContent() {
       {/* Hidden Receipt for Download */}
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[380px] bg-white dark:bg-black text-black dark:text-white p-8 font-mono border-2 border-black dark:border-white">
-          <div className="flex items-center gap-4 mb-8 border-b-2 border-black/10 dark:border-white/10 pb-6">
-            <Image src="/camly.png" alt="Camly" width={54} height={54} className="object-contain" />
-            <div className="flex flex-col justify-center">
-              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none">Camly <span className="text-primary">Calculator</span></h2>
-              <p className="text-[9px] uppercase font-bold tracking-[0.2em] opacity-60 mt-1">Chronological Audit Report</p>
-              <p className="text-[10px] font-black mt-0.5 text-primary/80">calculator.camly.org</p>
+          <div className="flex justify-between items-start mb-8 border-b-2 border-black/10 dark:border-white/10 pb-6">
+            <div className="flex items-center gap-4">
+              <Image src="/camly.png" alt="Camly" width={54} height={54} className="object-contain" />
+              <div className="flex flex-col justify-center">
+                <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none">Camly <span className="text-primary">Calculator</span></h2>
+                <p className="text-[9px] uppercase font-bold tracking-[0.2em] opacity-60 mt-1">Chronological Audit Report</p>
+                <p className="text-[10px] font-black mt-0.5 text-primary/80">calculator.camly.org</p>
+              </div>
             </div>
+            {subjectImage && (
+              <div className="w-16 h-16 rounded-xl border-2 border-black dark:border-white overflow-hidden bg-black/5 p-0.5">
+                 <img src={subjectImage} alt="Identity" className="w-full h-full object-cover rounded-lg" />
+              </div>
+            )}
           </div>
 
           <div className="border-t border-b border-dashed border-black/20 dark:border-white/20 py-4 my-6 space-y-2">
@@ -421,17 +447,52 @@ function ChronoFlowContent() {
                 </TabsList>
 
                 <TabsContent value="age" className="space-y-2.5 mt-0">
-                  <div className="space-y-1.5">
-                    <Label className="text-[8px] font-bold uppercase tracking-widest text-primary/60 flex items-center gap-1.5">
-                      <User className="w-3 h-3" /> Subject Name
-                    </Label>
-                    <Input 
-                      placeholder="Enter identity..." 
-                      value={userName} 
-                      onChange={(e) => setUserName(e.target.value)}
-                      className="bg-white/5 border border-black dark:border-white rounded-none h-8 text-xs focus:border-primary shadow-none"
-                    />
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <Label className="text-[8px] font-bold uppercase tracking-widest text-primary/60 flex items-center gap-1.5">
+                        <User className="w-3 h-3" /> Subject Name
+                      </Label>
+                      <Input 
+                        placeholder="Enter identity..." 
+                        value={userName} 
+                        onChange={(e) => setUserName(e.target.value)}
+                        className="bg-white/5 border border-black dark:border-white rounded-none h-8 text-xs focus:border-primary shadow-none"
+                      />
+                    </div>
+                    
+                    <div className="space-y-1.5">
+                      <Label className="text-[8px] font-bold uppercase tracking-widest text-primary/60 flex items-center gap-1.5">
+                        <Camera className="w-3 h-3" /> Subject Photo
+                      </Label>
+                      <div className="flex items-center gap-3">
+                        {subjectImage ? (
+                          <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-black dark:border-white group">
+                            <img src={subjectImage} alt="Subject" className="w-full h-full object-cover" />
+                            <button 
+                              onClick={() => setSubjectImage(null)}
+                              className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <X className="w-4 h-4 text-white" />
+                            </button>
+                          </div>
+                        ) : (
+                          <label className="w-10 h-10 rounded-lg border border-dashed border-black dark:border-white flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-all group">
+                            <Upload className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                            <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+                          </label>
+                        )}
+                        <div className="flex flex-col">
+                          <span className="text-[9px] text-foreground font-black uppercase tracking-tight leading-none">
+                            {subjectImage ? 'Linked' : 'Unlinked'}
+                          </span>
+                          <span className="text-[8px] text-muted-foreground uppercase font-bold tracking-widest mt-0.5">
+                            {subjectImage ? 'Identity Photo' : 'No reference image'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+
                   <DateInput label="Date of Birth" values={fromDate} onChange={setFromDate} />
                   <DateInput label="Target Timestamp" values={toDate} onChange={setToDate} error={error || undefined} />
                   <Button 
@@ -482,7 +543,7 @@ function ChronoFlowContent() {
                    <Badge variant="outline" className="text-[8px] uppercase tracking-widest border-border bg-muted/30">Latency: 1.2ms</Badge>
                 </div>
 
-                <div ref={resultsRef} className="space-y-6 bg-background p-2 rounded-3xl">
+                <div className="space-y-6 bg-background p-2 rounded-3xl">
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <ResultCard label="Years" value={results.years} delay="0s" />
                     <ResultCard label="Months" value={results.months} delay="0.1s" />

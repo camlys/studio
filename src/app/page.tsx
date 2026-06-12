@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Dialog, 
@@ -253,11 +254,11 @@ function ChronoFlowContent() {
       
       {/* Cropper Dialog */}
       <Dialog open={!!imageToCrop} onOpenChange={(open) => !open && setImageToCrop(null)}>
-        <DialogContent className="sm:max-w-md bg-transparent border-none shadow-none text-white overflow-hidden p-0">
+        <DialogContent className="sm:max-w-lg bg-transparent border-none shadow-none text-white overflow-hidden p-0 backdrop-blur-md">
           <DialogHeader className="sr-only">
             <DialogTitle>Frame Subject Photo</DialogTitle>
           </DialogHeader>
-          <div className="relative h-[400px] w-full bg-black/40 backdrop-blur-sm rounded-3xl overflow-hidden border border-white/10">
+          <div className="relative h-[450px] w-full bg-black/20 rounded-3xl overflow-hidden border border-white/20">
             <Cropper
               image={imageToCrop || ''}
               crop={crop}
@@ -269,21 +270,21 @@ function ChronoFlowContent() {
               showGrid={true}
             />
           </div>
-          <div className="mt-4 flex flex-row gap-3 justify-center items-center pb-4">
+          <div className="mt-6 flex flex-row gap-3 justify-center items-center pb-6">
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={() => setImageToCrop(null)} 
-              className="text-[10px] font-black uppercase tracking-widest bg-white/10 text-white border border-white/20 hover:bg-white/20 rounded-full h-10 px-8"
+              className="text-[10px] font-black uppercase tracking-widest bg-black/40 text-white border border-white/20 hover:bg-black/60 rounded-full h-11 px-8"
             >
               Cancel
             </Button>
             <Button 
               size="sm" 
               onClick={createCroppedImage} 
-              className="bg-white text-black hover:bg-white/90 text-[10px] font-black uppercase tracking-widest px-10 rounded-full h-10"
+              className="bg-primary text-white hover:bg-primary/90 text-[10px] font-black uppercase tracking-widest px-12 rounded-full h-11 border-2 border-white/20 shadow-xl"
             >
-              Confirm
+              Confirm Frame
             </Button>
           </div>
         </DialogContent>
@@ -293,22 +294,22 @@ function ChronoFlowContent() {
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[480px] bg-white text-black p-10 font-mono border-[6px] border-black relative overflow-hidden">
           {/* Header Branding Compact Horizontal */}
-          <div className="flex items-center gap-6 mb-8 pb-6 border-b-2 border-black">
-            <div className="relative">
-              <Image src="/camly.png" alt="Camly" width={54} height={54} className="relative object-contain" />
-            </div>
-            <div className="flex flex-col justify-center">
-              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">
-                Camly <span className="text-black">Calculator</span>
-              </h2>
-              <div className="flex flex-col gap-0.5 mt-1">
-                <p className="text-[10px] font-black text-primary/80">calculator.camly.org</p>
-                <p className="text-[8px] uppercase font-black tracking-[0.4em] opacity-40">Chronological Registry</p>
+          <div className="flex items-center justify-between mb-8 pb-6 border-b-2 border-black">
+            <div className="flex items-center gap-3">
+              <Image src="/camly.png" alt="Camly" width={36} height={36} className="object-contain" />
+              <div className="flex flex-col">
+                <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none flex items-center gap-1.5">
+                  <span className="text-primary">CAMLY</span>
+                  <span className="text-black">CALCULATOR</span>
+                </h2>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <p className="text-[9px] font-black text-primary/80">calculator.camly.org</p>
+                  <Separator orientation="vertical" className="h-2 bg-black/20" />
+                  <p className="text-[7px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
+                </div>
               </div>
             </div>
-            <div className="ml-auto flex items-center gap-2">
-              <Badge variant="outline" className="text-[7px] font-black uppercase tracking-widest border-black text-black px-2">VERIFIED</Badge>
-            </div>
+            <Badge variant="outline" className="text-[7px] font-black uppercase tracking-widest border-black text-black px-2 h-5">VERIFIED UNIT</Badge>
           </div>
 
           {/* Subject Profile Section */}
@@ -316,7 +317,7 @@ function ChronoFlowContent() {
             <div className="space-y-6">
               <div className="space-y-1.5">
                 <span className="text-[9px] font-black uppercase tracking-widest text-primary">Registry Identity</span>
-                <div className="text-2xl font-black truncate border-l-4 border-primary pl-3 py-1 bg-black/5 uppercase">{userName || 'UNIDENTIFIED_SUBJECT'}</div>
+                <div className="text-2xl font-black truncate border-l-4 border-primary pl-3 py-1 bg-black/5 uppercase leading-tight">{userName || 'UNIDENTIFIED_SUBJECT'}</div>
               </div>
               <div className="space-y-1.5">
                 <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Audit Metadata</span>
@@ -686,6 +687,47 @@ function ChronoFlowContent() {
             </section>
           </div>
         </div>
+
+        {/* Science of Deadlines Section */}
+        <section className="mt-32 space-y-20">
+          <div className="text-center space-y-4">
+            <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[10px] px-6 py-1.5 font-black">Architecture Whitepaper</Badge>
+            <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-none">The Science of <span className="text-primary">Chronology</span></h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-medium">
+              We define the global standard for high-fidelity chronological milestones through military-grade synchronization and clinical protocols.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
+              <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                 <Workflow className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-2xl font-black mb-4 tracking-tight">Clinical Fidelity</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed opacity-80">
+                Implementing standard obstetric and IVF dating models with absolute parity, turning biological data into precise milestones.
+              </p>
+            </div>
+            <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-accent/40">
+              <div className="w-16 h-16 rounded-[2rem] bg-accent/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                 <ShieldCheck className="w-8 h-8 text-accent" />
+              </div>
+              <h3 className="text-2xl font-black mb-4 tracking-tight">Risk Mitigation</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed opacity-80">
+                Real-time validation of mathematical and biological inputs prevents overflows and handles edge-cases with sub-millisecond precision.
+              </p>
+            </div>
+            <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">
+              <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                 <Globe className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-2xl font-black mb-4 tracking-tight">Global Sync</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed opacity-80">
+                Synchronizing with primary time servers ensuring your deadlines are perfectly aligned with IST and the rotational velocity of the Earth.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
 
       <footer className="relative mt-auto pt-24 pb-12 px-6 transition-colors duration-700 border-t glass border-border/40">

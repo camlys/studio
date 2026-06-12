@@ -14,7 +14,7 @@ import {
   Calculator as CalcIcon, CalendarDays, Copy,
   ArrowUpRight, Target, BarChart3, Settings,
   FileType, GraduationCap, Wallet, UserCheck,
-  CheckCircle2, Clock, User, Camera, Upload, X
+  CheckCircle2, Clock, User, Camera, Upload, X, Shield
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -210,7 +210,7 @@ function ChronoFlowContent() {
     try {
       const dataUrl = await toPng(receiptRef.current, {
         cacheBust: true,
-        backgroundColor: theme === 'dark' ? '#09090b' : '#ffffff',
+        backgroundColor: theme === 'dark' ? '#0c0c0e' : '#ffffff',
         width: 380,
         pixelRatio: 4, 
         style: {
@@ -275,132 +275,148 @@ function ChronoFlowContent() {
       
       {/* Hidden Receipt for Download */}
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
-        <div ref={receiptRef} className="w-[380px] bg-white dark:bg-black text-black dark:text-white p-8 font-mono border-2 border-black dark:border-white">
-          <div className="flex justify-between items-start mb-8 border-b-2 border-black/10 dark:border-white/10 pb-6">
-            <div className="flex items-center gap-4">
-              <Image src="/camly.png" alt="Camly" width={54} height={54} className="object-contain" />
-              <div className="flex flex-col justify-center">
-                <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none">Camly <span className="text-primary">Calculator</span></h2>
-                <p className="text-[9px] uppercase font-bold tracking-[0.2em] opacity-60 mt-1">Chronological Audit Report</p>
-                <p className="text-[10px] font-black mt-0.5 text-primary/80">calculator.camly.org</p>
+        <div ref={receiptRef} className="w-[380px] bg-white dark:bg-[#0c0c0e] text-black dark:text-white p-8 font-mono border-4 border-black dark:border-primary/40 relative overflow-hidden">
+          {/* Decorative Corner Seals */}
+          <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full border-b border-l border-primary/20" />
+          
+          <div className="flex flex-col items-center mb-8 pb-8 border-b-4 border-black dark:border-primary/20 text-center gap-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full" />
+              <Image src="/camly.png" alt="Camly" width={82} height={82} className="relative object-contain" />
+            </div>
+            <div className="space-y-1">
+              <h2 className="text-3xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">
+                Camly <span className="text-black dark:text-white">Calculator</span>
+              </h2>
+              <p className="text-[10px] uppercase font-black tracking-[0.4em] opacity-40">Tactical Chronological Registry</p>
+              <div className="flex items-center justify-center gap-2 mt-1">
+                <Badge variant="outline" className="text-[7px] font-black uppercase tracking-widest border-primary/20 text-primary px-2 py-0">STRATUM-01 SYNC</Badge>
+                <Badge variant="outline" className="text-[7px] font-black uppercase tracking-widest border-accent/20 text-accent px-2 py-0">VERIFIED UNIT</Badge>
               </div>
             </div>
-            {subjectImage && (
-              <div className="w-16 h-16 rounded-xl border-2 border-black dark:border-white overflow-hidden bg-black/5 p-0.5">
-                 <img src={subjectImage} alt="Identity" className="w-full h-full object-cover rounded-lg" />
+          </div>
+
+          <div className="grid grid-cols-[1fr_auto] gap-6 mb-8 items-start">
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <span className="text-[8px] font-black uppercase tracking-widest text-primary/60">Registry Name</span>
+                <div className="text-xl font-black truncate">{userName || 'UNIDENTIFIED_SUBJECT'}</div>
+              </div>
+              <div className="space-y-1">
+                <span className="text-[8px] font-black uppercase tracking-widest opacity-40">System Synchronization</span>
+                <div className="flex flex-col gap-0.5 text-[10px] font-bold">
+                  <div className="flex justify-between">
+                    <span className="opacity-40">ID</span>
+                    <span className="text-primary">{syncId}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="opacity-40">TIMESTAMP</span>
+                    <span>{format(new Date(), 'dd-MMM-yyyy HH:mm:ss')}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {subjectImage ? (
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-tr from-primary to-accent rounded-2xl opacity-20" />
+                <div className="w-24 h-24 rounded-xl border-4 border-black dark:border-primary relative overflow-hidden bg-black/5 shadow-2xl">
+                   <img src={subjectImage} alt="Identity" className="w-full h-full object-cover grayscale contrast-125" />
+                </div>
+                <div className="absolute -bottom-2 -right-2 bg-black dark:bg-primary text-white p-1 rounded-md">
+                   <Shield className="w-3 h-3" />
+                </div>
+              </div>
+            ) : (
+              <div className="w-24 h-24 rounded-xl border-2 border-dashed border-black/10 dark:border-white/10 flex items-center justify-center bg-muted/20">
+                <UserCheck className="w-8 h-8 opacity-10" />
               </div>
             )}
           </div>
 
-          <div className="border-t border-b border-dashed border-black/20 dark:border-white/20 py-4 my-6 space-y-2">
-            <div className="flex justify-between text-[10px] font-black">
-              <span>SYNC_ID</span>
-              <span className="uppercase">{syncId}</span>
-            </div>
-            <div className="flex justify-between text-[10px] font-black">
-              <span>TIMESTAMP</span>
-              <span>{format(new Date(), 'dd-MMM-yyyy HH:mm:ss')}</span>
-            </div>
-            {userName && (
-              <div className="flex justify-between text-[10px] font-black text-primary">
-                <span>IDENTITY</span>
-                <span className="uppercase">{userName}</span>
+          <div className="border-t-2 border-b-2 border-dashed border-black/10 dark:border-white/10 py-6 my-6 space-y-6">
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-1">
+                <span className="text-[8px] font-black uppercase tracking-widest text-primary">Origin Point</span>
+                <div className="text-lg font-black tabular-nums">{fromDate.day}-{fromDate.month}-{fromDate.year}</div>
               </div>
-            )}
-            <div className="flex justify-between text-[10px] font-black">
-              <span>ALGORITHM</span>
-              <span>GREGORIAN_V3</span>
+              <div className="space-y-1 text-right">
+                <span className="text-[8px] font-black uppercase tracking-widest text-primary">Target Node</span>
+                <div className="text-lg font-black tabular-nums">{toDate.day}-{toDate.month}-{toDate.year}</div>
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-6">
-            <div className="space-y-1">
-              <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Birth Coordinate</span>
-              <div className="text-lg font-black">{fromDate.day}-{fromDate.month}-{fromDate.year}</div>
-            </div>
-            <div className="space-y-1">
-              <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Target Coordinate</span>
-              <div className="text-lg font-black">{toDate.day}-{toDate.month}-{toDate.year}</div>
-            </div>
-          </div>
-
-          <div className="my-8 space-y-4">
-             <div className="bg-black/5 dark:bg-white/5 p-4 rounded-lg border border-black/10 dark:border-white/10">
-                <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="bg-black/5 dark:bg-white/5 p-6 rounded-2xl border border-black/10 dark:border-white/10 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-2 opacity-10">
+                   <Activity className="w-12 h-12 text-primary" />
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-center relative z-10">
                    <div className="space-y-1">
-                      <span className="text-[7px] font-black uppercase opacity-40">Years</span>
-                      <div className="text-2xl font-black">{results?.years}</div>
+                      <span className="text-[8px] font-black uppercase opacity-40 tracking-widest">Years</span>
+                      <div className="text-4xl font-black tracking-tighter text-primary">{results?.years}</div>
                    </div>
                    <div className="space-y-1 border-l border-r border-black/10 dark:border-white/10">
-                      <span className="text-[7px] font-black uppercase opacity-40">Months</span>
-                      <div className="text-2xl font-black">{results?.months}</div>
+                      <span className="text-[8px] font-black uppercase opacity-40 tracking-widest">Months</span>
+                      <div className="text-4xl font-black tracking-tighter">{results?.months}</div>
                    </div>
                    <div className="space-y-1">
-                      <span className="text-[7px] font-black uppercase opacity-40">Days</span>
-                      <div className="text-2xl font-black">{results?.days}</div>
+                      <span className="text-[8px] font-black uppercase opacity-40 tracking-widest">Days</span>
+                      <div className="text-4xl font-black tracking-tighter">{results?.days}</div>
                    </div>
-                </div>
-             </div>
-
-             <div className="space-y-2 text-[10px] px-2 font-bold">
-                <div className="flex justify-between">
-                   <span className="opacity-40 uppercase">Total Weeks</span>
-                   <span>{results?.totalWeeks.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                   <span className="opacity-40 uppercase">Total Days</span>
-                   <span>{results?.totalDays.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                   <span className="opacity-40 uppercase">Total Hours</span>
-                   <span>{results?.totalHours.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                   <span className="opacity-40 uppercase">Total Minutes</span>
-                   <span>{results?.totalMinutes.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                   <span className="opacity-40 uppercase">Total Seconds</span>
-                   <span>{results?.totalSeconds.toLocaleString()}</span>
-                </div>
-                
-                <div className="pt-2 border-t border-dashed border-black/10 dark:border-white/10 space-y-2">
-                   <div className="flex justify-between">
-                      <span className="opacity-40 uppercase">Celestial Sign</span>
-                      <span className="text-primary">{results?.zodiac}</span>
-                   </div>
-                   <div className="flex justify-between">
-                      <span className="opacity-40 uppercase">Leap Check</span>
-                      <span>{results?.isLeapYear ? 'LEAP_IDENTIFIED' : 'STANDARD_CYCLE'}</span>
-                   </div>
-                </div>
-
-                <div className="pt-2 border-t border-dashed border-black/10 dark:border-white/10 space-y-2">
-                  <div className="flex justify-between">
-                    <span className="opacity-40 uppercase text-[8px]">Previous Birthday</span>
-                    <span className="text-[9px]">{results?.previousBirthdayDate}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="opacity-40 uppercase text-[8px]">Next Birthday</span>
-                    <span className="text-[9px]">{results?.nextBirthdayDate}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="opacity-40 uppercase">Days To Goal</span>
-                    <span className="text-primary">{results?.nextBirthday} Days</span>
-                  </div>
                 </div>
              </div>
           </div>
 
-          <div className="mt-12 text-center border-t-2 border-black dark:border-white pt-6">
-             <div className="flex justify-center mb-3">
-                <CheckCircle2 className="w-8 h-8 text-primary" />
+          <div className="space-y-3 mb-8">
+             <span className="text-[8px] font-black uppercase tracking-[0.3em] opacity-30 block">Interval Matrix</span>
+             <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-[10px] font-bold">
+                <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1">
+                   <span className="opacity-40">WEEKS</span>
+                   <span>{results?.totalWeeks.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1">
+                   <span className="opacity-40">DAYS</span>
+                   <span>{results?.totalDays.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1">
+                   <span className="opacity-40">HOURS</span>
+                   <span>{results?.totalHours.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1">
+                   <span className="opacity-40">MINUTES</span>
+                   <span>{results?.totalMinutes.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1 col-span-2">
+                   <span className="opacity-40">TOTAL_SECONDS_REACTIVE</span>
+                   <span className="text-primary">{results?.totalSeconds.toLocaleString()}</span>
+                </div>
              </div>
-             <p className="text-[9px] font-black uppercase tracking-widest leading-relaxed">
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="p-3 bg-black/5 dark:bg-white/5 rounded-xl space-y-1 border border-black/10">
+               <span className="text-[7px] font-black uppercase opacity-40">Celestial Zone</span>
+               <div className="text-xs font-black flex items-center gap-1.5 uppercase">
+                  <Sparkles className="w-3 h-3 text-accent" /> {results?.zodiac}
+               </div>
+            </div>
+            <div className="p-3 bg-black/5 dark:bg-white/5 rounded-xl space-y-1 border border-black/10">
+               <span className="text-[7px] font-black uppercase opacity-40">Leap Logic</span>
+               <div className="text-xs font-black uppercase">{results?.isLeapYear ? 'LEAP_CYCLE' : 'STD_CYCLE'}</div>
+            </div>
+          </div>
+
+          <div className="mt-12 text-center border-t-4 border-black dark:border-primary/40 pt-8 relative">
+             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-[#0c0c0e] px-4">
+                <CheckCircle2 className="w-10 h-10 text-primary" />
+             </div>
+             <p className="text-[10px] font-black uppercase tracking-[0.2em] leading-relaxed">
                Atomic-Sync Precision Guaranteed<br/>
                Verified by Camly Intelligence Unit
              </p>
-             <p className="text-[7px] font-bold mt-4 opacity-40">© 2024 Camly Inc. All Metrics Verified.</p>
+             <p className="text-[8px] font-bold mt-6 opacity-30">© 2024 Camly Inc. All results valid at time of synchronization.</p>
+             <div className="mt-4 flex justify-center opacity-10">
+                <div className="w-24 h-1 bg-black dark:bg-white" />
+             </div>
           </div>
         </div>
       </div>
@@ -446,9 +462,9 @@ function ChronoFlowContent() {
                   <TabsTrigger value="due-date" className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Due</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="age" className="space-y-2.5 mt-0">
-                  <div className="space-y-3">
-                    <div className="space-y-1.5">
+                <TabsContent value="age" className="space-y-3.5 mt-0">
+                  <div className="flex items-end gap-2.5">
+                    <div className="flex-grow space-y-1.5">
                       <Label className="text-[8px] font-bold uppercase tracking-widest text-primary/60 flex items-center gap-1.5">
                         <User className="w-3 h-3" /> Subject Name
                       </Label>
@@ -456,40 +472,27 @@ function ChronoFlowContent() {
                         placeholder="Enter identity..." 
                         value={userName} 
                         onChange={(e) => setUserName(e.target.value)}
-                        className="bg-white/5 border border-black dark:border-white rounded-none h-8 text-xs focus:border-primary shadow-none"
+                        className="bg-white/5 border border-black dark:border-white rounded-none h-9 text-xs focus:border-primary shadow-none"
                       />
                     </div>
                     
-                    <div className="space-y-1.5">
-                      <Label className="text-[8px] font-bold uppercase tracking-widest text-primary/60 flex items-center gap-1.5">
-                        <Camera className="w-3 h-3" /> Subject Photo
-                      </Label>
-                      <div className="flex items-center gap-3">
-                        {subjectImage ? (
-                          <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-black dark:border-white group">
-                            <img src={subjectImage} alt="Subject" className="w-full h-full object-cover" />
-                            <button 
-                              onClick={() => setSubjectImage(null)}
-                              className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <X className="w-4 h-4 text-white" />
-                            </button>
-                          </div>
-                        ) : (
-                          <label className="w-10 h-10 rounded-lg border border-dashed border-black dark:border-white flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-all group">
-                            <Upload className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                            <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
-                          </label>
-                        )}
-                        <div className="flex flex-col">
-                          <span className="text-[9px] text-foreground font-black uppercase tracking-tight leading-none">
-                            {subjectImage ? 'Linked' : 'Unlinked'}
-                          </span>
-                          <span className="text-[8px] text-muted-foreground uppercase font-bold tracking-widest mt-0.5">
-                            {subjectImage ? 'Identity Photo' : 'No reference image'}
-                          </span>
+                    <div className="shrink-0">
+                      {subjectImage ? (
+                        <div className="relative w-9 h-9 rounded-lg overflow-hidden border border-black dark:border-white group">
+                          <img src={subjectImage} alt="Subject" className="w-full h-full object-cover" />
+                          <button 
+                            onClick={() => setSubjectImage(null)}
+                            className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="w-3 h-3 text-white" />
+                          </button>
                         </div>
-                      </div>
+                      ) : (
+                        <label className="w-9 h-9 rounded-lg border border-dashed border-black dark:border-white flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-all group shadow-inner">
+                          <Camera className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+                          <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+                        </label>
+                      )}
                     </div>
                   </div>
 

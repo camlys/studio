@@ -19,7 +19,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Dialog, 
@@ -254,11 +253,11 @@ function ChronoFlowContent() {
       
       {/* Cropper Dialog */}
       <Dialog open={!!imageToCrop} onOpenChange={(open) => !open && setImageToCrop(null)}>
-        <DialogContent className="sm:max-w-md bg-background border-border">
-          <DialogHeader>
-            <DialogTitle className="text-sm font-black uppercase tracking-widest text-primary">Frame Subject Photo</DialogTitle>
+        <DialogContent className="sm:max-w-md bg-transparent border-none shadow-none text-white overflow-hidden p-0">
+          <DialogHeader className="sr-only">
+            <DialogTitle>Frame Subject Photo</DialogTitle>
           </DialogHeader>
-          <div className="relative h-[300px] w-full bg-black rounded-xl overflow-hidden mt-4">
+          <div className="relative h-[400px] w-full bg-black/40 backdrop-blur-sm rounded-3xl overflow-hidden border border-white/10">
             <Cropper
               image={imageToCrop || ''}
               crop={crop}
@@ -267,43 +266,48 @@ function ChronoFlowContent() {
               onCropChange={setCrop}
               onZoomChange={setZoom}
               onCropComplete={onCropComplete}
+              showGrid={true}
             />
           </div>
-          <div className="mt-4 space-y-2">
-            <div className="flex justify-between text-[10px] font-bold uppercase text-muted-foreground">
-              <span>Zoom Precision</span>
-              <span>{zoom.toFixed(1)}x</span>
-            </div>
-            <Slider value={[zoom]} min={1} max={3} step={0.1} onValueChange={([v]) => setZoom(v)} />
+          <div className="mt-4 flex flex-row gap-3 justify-center items-center pb-4">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setImageToCrop(null)} 
+              className="text-[10px] font-black uppercase tracking-widest bg-white/10 text-white border border-white/20 hover:bg-white/20 rounded-full h-10 px-8"
+            >
+              Cancel
+            </Button>
+            <Button 
+              size="sm" 
+              onClick={createCroppedImage} 
+              className="bg-white text-black hover:bg-white/90 text-[10px] font-black uppercase tracking-widest px-10 rounded-full h-10"
+            >
+              Confirm
+            </Button>
           </div>
-          <DialogFooter className="mt-6 flex flex-row gap-2 justify-end">
-            <Button variant="ghost" size="sm" onClick={() => setImageToCrop(null)} className="text-[10px] font-black uppercase tracking-widest">Cancel</Button>
-            <Button size="sm" onClick={createCroppedImage} className="bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest px-8">Confirm Identity</Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
       
       {/* Hidden Receipt for Download */}
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[480px] bg-white text-black p-10 font-mono border-[6px] border-black relative overflow-hidden">
-          {/* Header Branding Inverted */}
-          <div className="flex flex-col items-center mb-10 pb-8 border-b-4 border-black text-center gap-6">
-            <div className="space-y-1">
-              <h2 className="text-5xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">
+          {/* Header Branding Compact Horizontal */}
+          <div className="flex items-center gap-6 mb-8 pb-6 border-b-2 border-black">
+            <div className="relative">
+              <Image src="/camly.png" alt="Camly" width={54} height={54} className="relative object-contain" />
+            </div>
+            <div className="flex flex-col justify-center">
+              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">
                 Camly <span className="text-black">Calculator</span>
               </h2>
-              <div className="flex flex-col items-center gap-1 mt-2">
-                <p className="text-[10px] uppercase font-black tracking-[0.4em] opacity-40">Tactical Chronological Registry</p>
-                <Link href="https://camly.org" className="text-[11px] font-black text-primary hover:underline tracking-[0.1em]">camly.org</Link>
+              <div className="flex flex-col gap-0.5 mt-1">
+                <p className="text-[10px] font-black text-primary/80">calculator.camly.org</p>
+                <p className="text-[8px] uppercase font-black tracking-[0.4em] opacity-40">Chronological Registry</p>
               </div>
             </div>
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary/10 blur-2xl rounded-full" />
-              <Image src="/camly.png" alt="Camly" width={110} height={110} className="relative object-contain" />
-            </div>
-            <div className="flex items-center justify-center gap-3">
-              <Badge variant="outline" className="text-[8px] font-black uppercase tracking-widest border-black text-black px-3">VERIFIED UNIT</Badge>
-              <Badge variant="outline" className="text-[8px] font-black uppercase tracking-widest border-primary text-primary px-3">STRATUM-01 SYNC</Badge>
+            <div className="ml-auto flex items-center gap-2">
+              <Badge variant="outline" className="text-[7px] font-black uppercase tracking-widest border-black text-black px-2">VERIFIED</Badge>
             </div>
           </div>
 
@@ -329,17 +333,16 @@ function ChronoFlowContent() {
               </div>
             </div>
             {subjectImage ? (
-              <div className="relative group">
-                <div className="absolute -inset-1.5 bg-gradient-to-tr from-primary to-accent rounded-3xl opacity-20 blur-sm" />
-                <div className="w-32 h-32 rounded-2xl border-[5px] border-black relative overflow-hidden bg-black/5 shadow-2xl">
+              <div className="relative">
+                <div className="w-28 h-28 rounded-xl border-[4px] border-black relative overflow-hidden bg-black/5">
                    <img src={subjectImage} alt="Identity" className="w-full h-full object-cover" />
                 </div>
-                <div className="absolute -bottom-3 -right-3 bg-black text-white p-1.5 rounded-lg border-2 border-white shadow-xl">
-                   <ShieldCheck className="w-5 h-5 text-accent" />
+                <div className="absolute -bottom-2.5 -right-2.5 bg-black text-white p-1 rounded-md border-2 border-white">
+                   <ShieldCheck className="w-4 h-4 text-accent" />
                 </div>
               </div>
             ) : (
-              <div className="w-32 h-32 rounded-2xl border-4 border-dashed border-black/10 flex items-center justify-center bg-black/5">
+              <div className="w-28 h-28 rounded-xl border-4 border-dashed border-black/10 flex items-center justify-center bg-black/5">
                 <UserCheck className="w-12 h-12 opacity-10" />
               </div>
             )}
@@ -468,8 +471,9 @@ function ChronoFlowContent() {
              <div className="bg-black py-3 px-6 inline-block rounded-xl">
                <p className="text-white text-[12px] font-black tracking-[0.2em] font-roboto-slab">CALCULATOR.CAMLY.ORG</p>
              </div>
-             <div className="mt-4">
-               <p className="text-[9px] font-black text-primary tracking-widest uppercase">Explore Ecosystem at camly.org</p>
+             <div className="mt-4 flex flex-col items-center gap-0.5">
+               <p className="text-[9px] font-black text-primary tracking-widest uppercase">camly.org</p>
+               <p className="text-[7px] font-bold text-muted-foreground uppercase tracking-widest italic">Defining high-precision velocity</p>
              </div>
              <p className="text-[9px] font-bold mt-6 opacity-30 uppercase tracking-widest">© 2024 Camly Inc. All chronological records certified.</p>
           </div>

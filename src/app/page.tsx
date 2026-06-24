@@ -532,12 +532,14 @@ function ChronoFlowContent() {
 
                 <TabsContent value="age" className="space-y-4 mt-0">
                   <Collapsible open={isIdentityOpen} onOpenChange={setIsIdentityOpen} className="space-y-3">
-                    <CollapsibleTrigger asChild>
-                      <button className="flex items-center gap-1.5 text-[8px] font-bold uppercase tracking-[0.2em] text-primary/60 hover:text-primary transition-colors group">
-                        <User className="w-3 h-3" /> Subject Identity 
-                        <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", isIdentityOpen && "rotate-180")} />
-                      </button>
-                    </CollapsibleTrigger>
+                    <div className="flex items-center justify-end px-1">
+                      <CollapsibleTrigger asChild>
+                        <button className="flex items-center gap-1.5 text-primary/60 hover:text-primary transition-colors group">
+                          <User className="w-3.5 h-3.5" /> 
+                          <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", isIdentityOpen && "rotate-180")} />
+                        </button>
+                      </CollapsibleTrigger>
+                    </div>
                     <CollapsibleContent className="space-y-3 pt-1">
                       <div className="flex items-end gap-2.5">
                         <div className="flex-grow space-y-1.5">
@@ -572,12 +574,14 @@ function ChronoFlowContent() {
                   </Collapsible>
 
                   <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen} className="space-y-3">
-                    <CollapsibleTrigger asChild>
-                      <button className="flex items-center gap-1.5 text-[8px] font-bold uppercase tracking-[0.2em] text-primary/60 hover:text-primary transition-colors group">
-                        <Pencil className="w-3 h-3" /> Audit Details 
-                        <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", isDetailsOpen && "rotate-180")} />
-                      </button>
-                    </CollapsibleTrigger>
+                    <div className="flex items-center justify-end px-1">
+                      <CollapsibleTrigger asChild>
+                        <button className="flex items-center gap-1.5 text-primary/60 hover:text-primary transition-colors group">
+                          <Pencil className="w-3.5 h-3.5" /> 
+                          <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", isDetailsOpen && "rotate-180")} />
+                        </button>
+                      </CollapsibleTrigger>
+                    </div>
                     <CollapsibleContent className="space-y-2 pt-1">
                       <Textarea 
                         placeholder="Enter tactical details..." 

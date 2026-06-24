@@ -320,7 +320,7 @@ function ChronoFlowContent() {
                   <span className="text-black">CALCULATOR</span>
                 </h2>
                 <div className="flex items-center gap-2 mt-1">
-                  <Image src="/camly.png" alt="Camly" width={24} height={24} className="object-contain" />
+                  <Image src="/camly.png" alt="Camly" width={20} height={20} className="object-contain" />
                   <p className="text-[10px] font-black text-primary/80">calculator.camly.org</p>
                   <Separator orientation="vertical" className="h-2 bg-black/20" />
                   <p className="text-[8px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
@@ -531,16 +531,30 @@ function ChronoFlowContent() {
                 </TabsList>
 
                 <TabsContent value="age" className="space-y-4 mt-0">
-                  <Collapsible open={isIdentityOpen} onOpenChange={setIsIdentityOpen} className="space-y-3">
-                    <div className="flex items-center justify-end px-1">
+                  
+                  {/* Toolbelt: Identity Left, Details Right */}
+                  <div className="flex items-center justify-between px-1 mb-2">
+                    <Collapsible open={isIdentityOpen} onOpenChange={setIsIdentityOpen}>
                       <CollapsibleTrigger asChild>
                         <button className="flex items-center gap-1.5 text-primary/60 hover:text-primary transition-colors group">
-                          <User className="w-3.5 h-3.5" /> 
+                          <User className="w-4 h-4" /> 
                           <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", isIdentityOpen && "rotate-180")} />
                         </button>
                       </CollapsibleTrigger>
-                    </div>
-                    <CollapsibleContent className="space-y-3 pt-1">
+                    </Collapsible>
+
+                    <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+                      <CollapsibleTrigger asChild>
+                        <button className="flex items-center gap-1.5 text-primary/60 hover:text-primary transition-colors group">
+                          <Pencil className="w-4 h-4" /> 
+                          <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", isDetailsOpen && "rotate-180")} />
+                        </button>
+                      </CollapsibleTrigger>
+                    </Collapsible>
+                  </div>
+
+                  <Collapsible open={isIdentityOpen} onOpenChange={setIsIdentityOpen} className="space-y-3">
+                    <CollapsibleContent className="space-y-3 pt-1 border-t border-border/10">
                       <div className="flex items-end gap-2.5">
                         <div className="flex-grow space-y-1.5">
                           <Input 
@@ -574,15 +588,7 @@ function ChronoFlowContent() {
                   </Collapsible>
 
                   <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen} className="space-y-3">
-                    <div className="flex items-center justify-end px-1">
-                      <CollapsibleTrigger asChild>
-                        <button className="flex items-center gap-1.5 text-primary/60 hover:text-primary transition-colors group">
-                          <Pencil className="w-3.5 h-3.5" /> 
-                          <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", isDetailsOpen && "rotate-180")} />
-                        </button>
-                      </CollapsibleTrigger>
-                    </div>
-                    <CollapsibleContent className="space-y-2 pt-1">
+                    <CollapsibleContent className="space-y-2 pt-1 border-t border-border/10">
                       <Textarea 
                         placeholder="Enter tactical details..." 
                         value={details} 

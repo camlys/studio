@@ -19,7 +19,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
@@ -303,38 +302,22 @@ function ChronoFlowContent() {
             />
           </div>
 
-          <div className="mt-6 space-y-6">
-            <div className="space-y-3">
-              <div className="flex justify-between items-center px-1">
-                <Label className="text-[9px] font-black uppercase tracking-widest text-primary/60">Tactical Zoom</Label>
-                <span className="text-[10px] font-black text-foreground">{zoom.toFixed(1)}x</span>
-              </div>
-              <Slider 
-                value={[zoom]} 
-                min={1} 
-                max={3} 
-                step={0.1} 
-                onValueChange={([v]) => setZoom(v)}
-              />
-            </div>
-
-            <div className="flex flex-row gap-3 justify-center items-center pb-2">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setImageToCrop(null)} 
-                className="text-[10px] font-black uppercase tracking-widest border border-border rounded-xl h-11 px-8"
-              >
-                Cancel
-              </Button>
-              <Button 
-                size="sm" 
-                onClick={createCroppedImage} 
-                className="bg-primary text-white hover:bg-primary/90 text-[10px] font-black uppercase tracking-widest px-12 rounded-xl h-11 border-2 border-black/10 shadow-xl"
-              >
-                Confirm Identity
-              </Button>
-            </div>
+          <div className="mt-6 flex flex-row gap-3 justify-center items-center pb-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setImageToCrop(null)} 
+              className="text-[10px] font-black uppercase tracking-widest border border-border rounded-xl h-11 px-8"
+            >
+              Cancel
+            </Button>
+            <Button 
+              size="sm" 
+              onClick={createCroppedImage} 
+              className="bg-primary text-white hover:bg-primary/90 text-[10px] font-black uppercase tracking-widest px-12 rounded-xl h-11 border-2 border-black/10 shadow-xl"
+            >
+              Confirm Identity
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

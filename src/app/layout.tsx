@@ -26,6 +26,11 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
+  verification: {
+    other: {
+      "msvalidate.01": "512bb588d29e47ad943102e9e9f2c13d",
+    },
+  },
   icons: {
     icon: [
       { url: '/camly.png' },

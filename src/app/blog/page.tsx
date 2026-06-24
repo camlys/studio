@@ -12,6 +12,15 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const BLOG_POSTS = [
   {
+    title: "The Physics of Digital Precision: Mastering IEEE 754 in High-Velocity Web Environments",
+    description: "An exhaustive technical whitepaper exploring the physics of binary precision, floating-point entropy, and high-fidelity mathematical modeling in web-based engines.",
+    date: "June 10, 2025",
+    author: "ALU Intelligence Division",
+    readTime: "420 min read",
+    slug: "/blog/physics-of-digital-precision-masterclass",
+    category: "Computational Science"
+  },
+  {
     title: "The Masterclass on High-Definition Resource Allocation: The Science of Computational Fluidity",
     description: "An exhaustive technical whitepaper exploring cloud-native resource scheduling, container orchestration, and the mathematics of high-velocity computational fluidity.",
     date: "May 25, 2025",
@@ -300,7 +309,7 @@ export default function BlogHub() {
               <div className="flex gap-5">
                 <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-accent/10 shadow-sm border border-border/50"><Github className="w-4 h-4" /></Button>
                 <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-accent/10 shadow-sm border border-border/50"><Twitter className="w-4 h-4" /></Button>
-                <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-accent/10 shadow-sm border border-border/50"><Globe className="w-4 h-4" /></Button>
+                <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl hover:bg-accent/10 shadow-sm border border-border/50"><Users className="w-4 h-4" /></Button>
               </div>
             </div>
 
@@ -317,11 +326,11 @@ export default function BlogHub() {
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
                    <ChevronRight className="w-3 h-3 opacity-30" />
-                   <Link href="/cgpa-calculator">CGPA Calculator</Link>
+                   <Link href="/cgpa-calculator">Academic Sync</Link>
                 </li>
                 <li className="hover:text-primary transition-colors flex items-center gap-2">
-                   <ChevronRight className="w-3 h-3 opacity-30" />
-                   <Link href="/">Age Calculator</Link>
+                  <ChevronRight className="w-3 h-3 opacity-30" />
+                  <Link href="/">Age Calculator</Link>
                 </li>
               </ul>
             </div>
@@ -334,7 +343,7 @@ export default function BlogHub() {
                   <Link href="/blog">Knowledge Hub</Link>
                 </li>
                 <li className="hover:text-primary cursor-pointer transition-colors flex items-center gap-2">
-                   <ChevronRight className="w-3 h-3 opacity-30" /> Fun Facts API
+                   <ChevronRight className="w-3 h-3 opacity-30" /> Insights API
                 </li>
               </ul>
             </div>

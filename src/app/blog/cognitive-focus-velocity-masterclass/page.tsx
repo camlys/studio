@@ -97,7 +97,7 @@ export default function FocusVelocityMasterclass() {
 
         <section className="prose prose-invert prose-primary max-w-none space-y-24 text-muted-foreground text-lg md:text-2xl leading-relaxed">
           <div className="space-y-8">
-            <h2 className="text-4xl md:text-7xl font-black text-foreground tracking-tight leading-none">1. The Axiom of Cognitive Load</h2>
+            <h2 className="text-4xl md:text-7xl font-black text-foreground tracking-tight leading-none">1. Neural Load Management</h2>
             <p>At the center of human performance lies the principle of cognitive load management. In a digital environment saturated with low-entropy notifications, the ability to maintain a high-fidelity focus state is the ultimate competitive advantage. This section explores how the brain filters noise through the Reticular Activating System (RAS) and how precision timing can optimize this neurological filter.</p>
             <div className="glass p-12 rounded-[64px] border-primary/20 bg-primary/5 my-12 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-12 opacity-10">
@@ -109,7 +109,7 @@ export default function FocusVelocityMasterclass() {
           </div>
 
           <div className="space-y-12">
-             <h2 className="text-4xl md:text-7xl font-black text-foreground tracking-tight leading-none">2. The Neural Mechanics of Flow</h2>
+             <h2 className="text-4xl md:text-7xl font-black text-foreground tracking-tight leading-none">2. Decoding Transient Hypofrontality</h2>
              <p>Flow states represent the pinnacle of focus velocity. During these episodes, the prefrontal cortex experiences "transient hypofrontality"—a temporary deactivation of the self-monitoring region, allowing for uninhibited creative output. Our Focus Engine is calibrated to bridge the transition into this state by utilizing the Pomodoro Technique as a temporal scaffolding.</p>
              <p>To achieve this without algorithmic drift, one must respect the biological rest intervals. For every 25-minute "Deep Work" sprint, a 5-minute "Neural Reset" is mandatory to prevent cognitive fatigue and maintain high-fidelity output throughout the workday.</p>
           </div>
@@ -132,7 +132,7 @@ export default function FocusVelocityMasterclass() {
           </div>
 
           <div className="space-y-12">
-            <h2 className="text-3xl md:text-6xl font-black text-foreground tracking-tight">3. The Architecture of High-Definition Work</h2>
+            <h2 className="text-3xl md:text-6xl font-black text-foreground tracking-tight">3. Environmental Ergonomics and Neural Sync</h2>
             <p>The environment is the hardware on which your cognitive software runs. To optimize focus velocity, one must eliminate "friction variables." This involves everything from lighting synchronization to the elimination of digital auditory noise. Our masterclass details the exact specifications for a professional-grade deep-work station.</p>
             <p>By leveraging the **Camly Focus Engine**, users can track their progress through varying task protocols, ensuring that their total daily output is always maximized relative to their biological energetic state.</p>
           </div>

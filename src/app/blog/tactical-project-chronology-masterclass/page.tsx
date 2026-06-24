@@ -98,7 +98,7 @@ export default function ProjectChronologyMasterclass() {
 
         <section className="prose prose-invert prose-primary max-w-none space-y-24 text-muted-foreground text-lg md:text-2xl leading-relaxed">
           <div className="space-y-8">
-            <h2 className="text-4xl md:text-7xl font-black text-foreground tracking-tight leading-none">1. The Axiom of Temporal Planning</h2>
+            <h2 className="text-4xl md:text-7xl font-black text-foreground tracking-tight leading-none">1. Temporal Synchronization Protocols</h2>
             <p>At the center of high-performance project management lies the principle of temporal synchronization. In a global economy defined by millisecond-level advantage, the ability to maintain a high-fidelity project timeline is the ultimate competitive differentiator. This section explores how the brain processes deadlines and how precision milestones can optimize human focus.</p>
             <div className="glass p-12 rounded-[64px] border-primary/20 bg-primary/5 my-12 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-12 opacity-10">
@@ -111,7 +111,7 @@ export default function ProjectChronologyMasterclass() {
           </div>
 
           <div className="space-y-12">
-             <h2 className="text-4xl md:text-7xl font-black text-foreground tracking-tight leading-none">2. The Mechanics of Critical Path Inference</h2>
+             <h2 className="text-4xl md:text-7xl font-black text-foreground tracking-tight leading-none">2. CPI Analytics: Critical Path Inference</h2>
              <p>Critical Path Inference (CPI) represents the pinnacle of planning velocity. During the definition phase, project architects must identify the sequence of stages that determines the minimum duration of the project. Our Due Date Engine is calibrated to bridge the transition into this state by utilizing advanced Gregorian algorithms as a temporal scaffolding.</p>
              <p>To achieve absolute parity without algorithmic drift, one must respect the biological and organizational rest intervals. For every tactical sprint, a "Neural Reset" for the team is mandatory to prevent cognitive fatigue and maintain high-fidelity output throughout the development lifecycle. This involves understanding that a "business day" is a variable, not a constant.</p>
              <div className="p-12 bg-muted/20 border-l-8 border-primary rounded-r-[48px] my-20">
@@ -142,7 +142,7 @@ export default function ProjectChronologyMasterclass() {
           </div>
 
           <div className="space-y-12">
-            <h2 className="text-3xl md:text-6xl font-black text-foreground tracking-tight">3. The Architecture of High-Definition Planning</h2>
+            <h2 className="text-3xl md:text-6xl font-black text-foreground tracking-tight">3. Synthesizing High-Fidelity Project Timelines</h2>
             <p>The environment is the hardware on which your organizational software runs. To optimize project velocity, one must eliminate "friction variables." This involves everything from lighting synchronization to the elimination of digital auditory noise. Our masterclass details the exact specifications for a professional-grade planning station.</p>
             <p>By leveraging the **Camly Milestone Engine**, users can track their progress through varying task protocols, ensuring that their total daily output is always maximized relative to their biological energetic state. This is critical for legal and medical documentation where exact dates and times are of the essence.</p>
             <p>Furthermore, the integration of <strong>AI-driven forecasting</strong> allows project leads to simulate thousands of potential outcomes in milliseconds. This "Monte Carlo" approach to project chronology ensures that your "Estimated Date of Delivery" (EDD) is not a guess, but a mathematical certainty.</p>

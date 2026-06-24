@@ -12,8 +12,8 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const BLOG_POSTS = [
   {
-    title: "The 8000-Word Masterclass on EMI Calculator SEO: The Science of Fiscal Search Intent",
-    description: "The definitive technical whitepaper on optimizing EMI calculators for maximum organic authority, featuring fiscal keyword clustering, financial schema synchronization, and capital performance velocity.",
+    title: "Monetizing Financial Search: The Equated Monthly Installment SEO Audit",
+    description: "The definitive technical whitepaper on optimizing EMI calculators for maximum organic authority, featuring fiscal keyword clustering and financial schema synchronization.",
     date: "March 05, 2025",
     author: "Search Intelligence Unit",
     readTime: "8 hour read",
@@ -21,8 +21,8 @@ const BLOG_POSTS = [
     category: "SEO Whitepaper"
   },
   {
-    title: "The 8000-Word Masterclass on Due Date Calculator SEO: The Science of Maternity Search Intent",
-    description: "The definitive technical whitepaper on optimizing due date calculators for maximum organic authority, featuring maternity keyword clustering, healthcare schema synchronization, and performance velocity.",
+    title: "Clinical Search Dominance: Optimizing Gestational Due Date Engines",
+    description: "The definitive technical whitepaper on optimizing due date calculators for maximum organic authority, featuring maternity keyword clustering and healthcare schema synchronization.",
     date: "March 02, 2025",
     author: "Search Intelligence Unit",
     readTime: "8 hour read",
@@ -30,8 +30,8 @@ const BLOG_POSTS = [
     category: "SEO Whitepaper"
   },
   {
-    title: "The 8000-Word Masterclass on BMI Calculator SEO: The Science of Biometric Search Intent",
-    description: "The definitive technical whitepaper on optimizing BMI calculators for maximum organic reach, featuring biometric keyword clustering, clinical schema synchronization, and performance velocity.",
+    title: "Biometric Authority: The Enterprise Guide to BMI Calculator SEO",
+    description: "The definitive technical whitepaper on optimizing BMI calculators for maximum organic reach, featuring biometric keyword clustering and clinical schema synchronization.",
     date: "February 28, 2025",
     author: "Search Intelligence Unit",
     readTime: "8 hour read",
@@ -39,8 +39,8 @@ const BLOG_POSTS = [
     category: "SEO Whitepaper"
   },
   {
-    title: "The 8000-Word Masterclass on Age Calculator SEO: The Science of Chronological Search Intent",
-    description: "The definitive technical whitepaper on optimizing age calculators for maximum search authority, featuring keyword clustering, structured data synchronization, and performance velocity.",
+    title: "Chronological Keyword Strategy: A Masterclass in Age Utility SEO",
+    description: "The definitive technical whitepaper on optimizing age calculators for maximum search authority, featuring keyword clustering and structured data synchronization.",
     date: "February 25, 2025",
     author: "Search Intelligence Unit",
     readTime: "8 hour read",
@@ -48,7 +48,7 @@ const BLOG_POSTS = [
     category: "SEO Whitepaper"
   },
   {
-    title: "The 8000-Word Masterclass on SEO Precision and Performance Velocity",
+    title: "Technical SEO Velocity: Achieving Absolute Index Parity and Precision",
     description: "The definitive technical whitepaper on search index synchronization, Core Web Vitals optimization, and the science of organic performance velocity.",
     date: "February 20, 2025",
     author: "Search Intelligence Unit",
@@ -57,7 +57,7 @@ const BLOG_POSTS = [
     category: "SEO Whitepaper"
   },
   {
-    title: "The Definitive Masterclass on Tactical Project Chronology",
+    title: "Strategic Temporal Alignment: The Science of Tactical Milestone Sync",
     description: "An exhaustive 10,000-word whitepaper on the science of milestone synchronization, critical path inference, and high-fidelity project management.",
     date: "February 10, 2025",
     author: "Project Intelligence Unit",
@@ -66,7 +66,7 @@ const BLOG_POSTS = [
     category: "Project Science"
   },
   {
-    title: "The Masterclass on Academic Attendance Logic",
+    title: "The Bunk-Meter Logic: Academic Attendance Threshold Analysis",
     description: "An exhaustive technical whitepaper on attendance thresholds, bunk-meter synchronization, and percentage inference models.",
     date: "January 15, 2025",
     author: "Academic Intelligence Unit",
@@ -75,7 +75,7 @@ const BLOG_POSTS = [
     category: "Academic Whitepaper"
   },
   {
-    title: "The Exhaustive Masterclass on Cognitive Focus Velocity",
+    title: "Neural Load Management: High-Precision Cognitive Focus Protocols",
     description: "An exhaustive technical whitepaper on neural flow state synchronization, deep work architectures, and high-fidelity temporal productivity protocols.",
     date: "December 05, 2024",
     author: "Productivity Intelligence Unit",
@@ -84,7 +84,7 @@ const BLOG_POSTS = [
     category: "Cognitive Whitepaper"
   },
   {
-    title: "The Masterclass on Fiscal EMI Inference",
+    title: "Amortized Debt Inference: The Mathematics of compound Fiscal Logic",
     description: "An exhaustive technical whitepaper on loan amortization algorithms, principal-interest distribution, and capital velocity synchronization.",
     date: "November 15, 2024",
     author: "Fiscal Ops Team",
@@ -93,85 +93,13 @@ const BLOG_POSTS = [
     category: "Fiscal Whitepaper"
   },
   {
-    title: "The Masterclass on Metabolic Calorie Inference",
+    title: "Thermodynamic Nutritional Sync: Metabolic Calorie Inference Models",
     description: "An exhaustive technical whitepaper on thermodynamic synchronization, BMR algorithms, and the precision of macro-nutrient mapping.",
     date: "October 05, 2024",
     author: "Metabolic Ops Team",
     readTime: "280 min read",
     slug: "/blog/ultimate-metabolic-calorie-masterclass",
     category: "Metabolic Whitepaper"
-  },
-  {
-    title: "The Definitive Masterclass on Scholastic CGPA Synchronization",
-    description: "An exhaustive technical whitepaper on credit-weighted distribution, grading algorithms, and the future of global academic parity.",
-    date: "September 10, 2024",
-    author: "Academic Ops Team",
-    readTime: "240 min read",
-    slug: "/blog/definitive-cgpa-masterclass",
-    category: "Academic Whitepaper"
-  },
-  {
-    title: "The Science of Biometric Precision: An Exhaustive Masterclass",
-    description: "An unabridged enterprise-grade guide to body mass analysis, surface area computation, and the physics of physiological scaling.",
-    date: "September 01, 2024",
-    author: "Biometric Intelligence Unit",
-    readTime: "300 min read",
-    slug: "/blog/biometric-precision-masterclass",
-    category: "Exhaustive Masterclass"
-  },
-  {
-    title: "The 9000-Word Masterclass on Pregnancy Due Date Calculation",
-    description: "The definitive clinical guide to high-precision maternity chronology, ultrasound dating, and IVF milestone synchronization.",
-    date: "August 15, 2024",
-    author: "Clinical Ops Team",
-    readTime: "180 min read",
-    slug: "/blog/ultimate-pregnancy-due-date-masterclass",
-    category: "Clinical Masterclass"
-  },
-  {
-    title: "The 9000-Word Masterclass on Age Calculation",
-    description: "The definitive enterprise-grade guide to high-precision chronology, algorithmic aging, and the future of temporal tracking.",
-    date: "August 01, 2024",
-    author: "Chronos Engineering",
-    readTime: "180 min read",
-    slug: "/blog/ultimate-age-calculator-masterclass",
-    category: "Masterclass"
-  },
-  {
-    title: "The Enterprise Blueprint for Digital Asset Velocity",
-    description: "The definitive 9000-word enterprise guide to maximizing digital asset velocity through high-precision optimization and edge-compute architectures.",
-    date: "July 15, 2024",
-    author: "Camly Ops Team",
-    readTime: "120 min read",
-    slug: "/blog/digital-asset-velocity-enterprise-guide",
-    category: "Enterprise Whitepaper"
-  },
-  {
-    title: "The Master Guide to Global Time Synchronization",
-    description: "An exhaustive technical guide to the science of time synchronization, NTP protocols, and high-precision chronological engineering.",
-    date: "July 10, 2024",
-    author: "Camly Engineering",
-    readTime: "60 min read",
-    slug: "/blog/global-time-synchronization-standards",
-    category: "Chronology"
-  },
-  {
-    title: "The Ultimate 8000-Word Guide to Image and PDF Resizing",
-    description: "Master the art of digital asset management. Learn how high-precision resizing impacts SEO, web performance, and document integrity.",
-    date: "June 05, 2024",
-    author: "Camly Tech Ops",
-    readTime: "90 min read",
-    slug: "/blog/image-and-pdf-resizing-optimization",
-    category: "Asset Management"
-  },
-  {
-    title: "How AI is Revolutionizing Personal Utilities",
-    description: "Discover how Genkit and LLMs are transforming simple calculators into intelligent lifestyle companions.",
-    date: "May 22, 2024",
-    author: "AI Insights Team",
-    readTime: "30 min read",
-    slug: "/blog/ai-revolution-personal-utilities",
-    category: "Technology"
   }
 ];
 
@@ -239,9 +167,11 @@ export default function BlogHub() {
           <div className="flex items-center justify-center transition-all group-hover:scale-110">
             <Image src="/camly.png" alt="Camly" width={40} height={40} priority className="object-contain" />
           </div>
-          <h1 className="text-sm md:text-base font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-            CAMLY <span className="text-foreground/50 font-normal ml-2">INSIGHTS</span>
-          </h1>
+          <div className="flex flex-col">
+            <h1 className="text-sm md:text-base font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+              CAMLY <span className="text-foreground/50 font-normal ml-2">INSIGHTS</span>
+            </h1>
+          </div>
         </Link>
         <Link href="/">
           <Button variant="ghost" size="sm" className="rounded-full text-xs gap-2">
@@ -389,7 +319,7 @@ export default function BlogHub() {
                   <div className="w-2 h-2 rounded-full animate-pulse bg-accent" />
                   CAMLY-SYNC-01: ONLINE
                 </div>
-                <InstallPWA />
+                <InstallPWA variant="footer" />
               </div>
             </div>
           </div>

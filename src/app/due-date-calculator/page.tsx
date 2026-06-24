@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -343,6 +342,10 @@ export default function DueDateCalculator() {
       link.download = `Camly_Tactical_Report_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
       link.href = dataUrl;
       link.click();
+      toast({
+        title: "Download Status",
+        description: "High-definition tactical audit generated successfully.",
+      });
     } catch (err) {
       console.error('Download failed', err);
       toast({
@@ -356,7 +359,6 @@ export default function DueDateCalculator() {
   };
 
   useEffect(() => {
-    // Only auto-compute when the year is completely entered (4 digits)
     if (startValues.year.length === 4) {
       calculateDueDate();
     } else {
@@ -376,22 +378,22 @@ export default function DueDateCalculator() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       
-      {/* Hidden Receipt for Download */}
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[380px] bg-white text-black p-8 font-mono border-2 border-black">
-          <div className="flex items-center gap-6 mb-8 pb-6 border-b-2 border-black">
-            <Image src="/camly.png" alt="Camly" width={48} height={48} priority className="object-contain" />
+          <div className="flex items-center justify-between mb-8 border-b-2 border-black pb-6">
             <div className="flex flex-col">
-              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none">
+              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none flex items-center gap-2">
                 <span className="text-primary">CAMLY</span>
-                <span className="text-black ml-2">CALCULATOR</span>
+                <span className="text-black">CALCULATOR</span>
               </h2>
               <div className="flex items-center gap-2 mt-1">
-                <p className="text-[10px] font-black text-primary/80">calculator.camly.org</p>
+                <Image src="/camly.png" alt="Camly" width={18} height={18} className="object-contain" />
+                <p className="text-[8px] font-black text-primary/80">calculator.camly.org</p>
                 <Separator orientation="vertical" className="h-2 bg-black/20" />
-                <p className="text-[8px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
+                <p className="text-[7px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
               </div>
             </div>
+            <Badge variant="outline" className="text-[7px] font-black uppercase tracking-widest border-black text-black px-2 h-5">VERIFIED UNIT</Badge>
           </div>
 
           <div className="border-t border-b border-dashed border-black/20 py-4 my-6 space-y-2">
@@ -689,7 +691,6 @@ export default function DueDateCalculator() {
             {result && isValid(result) && stats ? (
               <div className="space-y-5 animate-in fade-in slide-in-from-bottom-6 duration-700">
                 <div ref={reportRef} className="space-y-5 bg-background p-2 rounded-3xl">
-                  {/* Primary Target Coordinate */}
                   <div className="glass-card !p-6 md:!p-10 border-accent/20 bg-accent/5 text-center relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-4 opacity-10">
                       {['medical', 'ivf', 'crl', 'conception'].includes(method) ? (
@@ -719,7 +720,6 @@ export default function DueDateCalculator() {
                     </div>
                   </div>
 
-                  {/* Biological Deep Dive (Only for Clinical methods) */}
                   {['medical', 'ivf', 'crl', 'conception'].includes(method) && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="glass-card !p-5 border-primary/20 bg-primary/5 flex items-center gap-4">
@@ -743,7 +743,6 @@ export default function DueDateCalculator() {
                     </div>
                   )}
 
-                  {/* Detailed Countdown Metrics */}
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                     <div className="glass-card !p-4 border-border/40 text-center">
                       <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Days</span>
@@ -763,7 +762,6 @@ export default function DueDateCalculator() {
                     </div>
                   </div>
 
-                  {/* High-Authority Milestone Matrix */}
                   {stats.milestones.length > 0 && (
                     <div className="glass-card !p-5 border-border/40 space-y-5">
                       <div className="flex items-center justify-between">
@@ -788,7 +786,6 @@ export default function DueDateCalculator() {
                     </div>
                   )}
 
-                  {/* Celestial & Phase Synchronization */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div className="glass-card !p-4 border-border/40 text-center col-span-1">
                       <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Zodiac Mapping</span>
@@ -804,7 +801,6 @@ export default function DueDateCalculator() {
                     </div>
                   </div>
 
-                  {/* Precision Logic Feed */}
                   <div className="glass-card !p-5 border-primary/20 bg-primary/5 flex flex-col md:flex-row items-center gap-6">
                     <div className="w-16 h-16 rounded-full border-4 border-primary/20 border-t-primary flex items-center justify-center shrink-0 animate-spin-slow">
                        <Zap className="w-6 h-6 text-primary" />
@@ -830,7 +826,6 @@ export default function DueDateCalculator() {
                     {isDownloading ? 'Capturing Report...' : 'Download Detailed PNG'}
                   </Button>
 
-                  {/* IST Registry History - Small Mobiles ONLY (Below Download Button) */}
                   <div className="glass-card !p-4 border-border/40 block min-[480px]:hidden">
                     <h4 className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
                       <Database className="w-3.5 h-3.5" /> IST Registry History
@@ -847,7 +842,6 @@ export default function DueDateCalculator() {
                     </div>
                   </div>
 
-                  {/* Quick Navigation Section - Small Mobiles ONLY */}
                   <section className="pt-4 space-y-4 block min-[480px]:hidden">
                     <div className="flex items-center gap-2 px-2">
                       <LayoutGrid className="w-4 h-4 text-primary" />
@@ -874,7 +868,6 @@ export default function DueDateCalculator() {
                   </section>
                 </div>
 
-                {/* Quick Navigation Section - Phablet & Desktop */}
                 <section className="pt-4 space-y-4 hidden min-[480px]:block">
                   <div className="flex items-center gap-2 px-2">
                     <LayoutGrid className="w-4 h-4 text-primary" />
@@ -915,7 +908,6 @@ export default function DueDateCalculator() {
           </div>
         </div>
 
-        {/* Science of Deadlines Section */}
         <section className="mt-32 space-y-20">
           <div className="text-center space-y-4">
             <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[10px] px-6 py-1.5 font-black">Architecture Whitepaper</Badge>

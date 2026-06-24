@@ -16,7 +16,6 @@ export function InstallPWA({ variant = 'sidebar' }: InstallPWAProps) {
 
   useEffect(() => {
     setMounted(true);
-    // Load dismissal state from localStorage
     const dismissed = localStorage.getItem('camly_pwa_dismissed') === 'true';
     setIsDismissed(dismissed);
 
@@ -52,10 +51,8 @@ export function InstallPWA({ variant = 'sidebar' }: InstallPWAProps) {
     localStorage.setItem('camly_pwa_dismissed', 'true');
   };
 
-  // Prevent hydration mismatch
   if (!mounted || !isInstallable) return null;
 
-  // Sidebar variant logic: only show if NOT dismissed
   if (variant === 'sidebar') {
     if (isDismissed) return null;
 
@@ -100,7 +97,6 @@ export function InstallPWA({ variant = 'sidebar' }: InstallPWAProps) {
     );
   }
 
-  // Footer variant logic: only show IF dismissed
   if (variant === 'footer') {
     if (!isDismissed) return null;
 

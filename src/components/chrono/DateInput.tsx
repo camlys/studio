@@ -24,7 +24,6 @@ const MONTHS = [
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ];
 
-// Generate days 1-31
 const DAYS = Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0'));
 
 export function DateInput({ label, values, onChange, error }: DateInputProps) {
@@ -33,7 +32,6 @@ export function DateInput({ label, values, onChange, error }: DateInputProps) {
   const handleInputChange = (field: keyof DateInputValues, value: string) => {
     let finalValue = value;
 
-    // Filter numeric input for year field (month/day handled by Select)
     if (field === 'year') {
       finalValue = value.replace(/\D/g, '');
       if (finalValue.length > 4) finalValue = finalValue.slice(0, 4);
@@ -47,7 +45,6 @@ export function DateInput({ label, values, onChange, error }: DateInputProps) {
     <div className="space-y-1.5">
       <Label className="text-[8px] font-bold uppercase tracking-widest text-primary/60">{label}</Label>
       <div className="grid grid-cols-[1.2fr_1fr_1.5fr] gap-1">
-        {/* Month Select Component */}
         <Select 
           value={values.month} 
           onValueChange={(v) => handleInputChange('month', v)}
@@ -64,7 +61,6 @@ export function DateInput({ label, values, onChange, error }: DateInputProps) {
           </SelectContent>
         </Select>
 
-        {/* Day Select Component (1, 2, 3...) */}
         <Select 
           value={values.day} 
           onValueChange={(v) => handleInputChange('day', v)}
@@ -81,7 +77,6 @@ export function DateInput({ label, values, onChange, error }: DateInputProps) {
           </SelectContent>
         </Select>
 
-        {/* Year Input Field */}
         <Input
           ref={yearRef}
           placeholder="Year"

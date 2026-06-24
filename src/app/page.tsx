@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
@@ -209,7 +208,6 @@ function ChronoFlowContent() {
     setResults(calculateAll(start, end));
   }, [fromDate, toDate]);
 
-  // Auto-calculation on entering 4 digits for the year
   useEffect(() => {
     if (fromDate.year.length === 4 && toDate.year.length === 4) {
       if (isValidDate(fromDate.day, fromDate.month, fromDate.year) && 
@@ -277,7 +275,6 @@ function ChronoFlowContent() {
     <div className="min-h-screen bg-background text-foreground flex flex-col transition-all duration-700 overflow-x-hidden font-body">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema) }} />
       
-      {/* Cropper Dialog */}
       <Dialog open={!!imageToCrop} onOpenChange={(open) => !open && setImageToCrop(null)}>
         <DialogContent className="sm:max-w-lg bg-transparent border-none shadow-none text-white overflow-hidden p-0 backdrop-blur-md">
           <DialogHeader className="sr-only">
@@ -318,10 +315,8 @@ function ChronoFlowContent() {
         </DialogContent>
       </Dialog>
       
-      {/* Hidden Receipt for Download */}
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[480px] bg-white text-black p-10 font-mono border-[6px] border-black relative overflow-hidden">
-          {/* Header Branding - Horizontal Alignment */}
           <div className="flex items-center gap-6 mb-8 pb-6 border-b-2 border-black">
             <Image src="/camly.png" alt="Camly" width={48} height={48} priority className="object-contain" />
             <div className="flex flex-col">
@@ -338,7 +333,6 @@ function ChronoFlowContent() {
             <Badge variant="outline" className="ml-auto text-[7px] font-black uppercase tracking-widest border-black text-black px-2 h-5">VERIFIED UNIT</Badge>
           </div>
 
-          {/* Subject Profile Section */}
           <div className="grid grid-cols-[1fr_auto] gap-8 mb-10 items-center">
             <div className="space-y-6">
               <div className="space-y-1.5">
@@ -375,7 +369,6 @@ function ChronoFlowContent() {
             )}
           </div>
 
-          {/* Coordinates Section */}
           <div className="grid grid-cols-2 gap-8 mb-10 border-y-2 border-dashed border-black/20 py-8">
             <div className="space-y-2">
               <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
@@ -391,7 +384,6 @@ function ChronoFlowContent() {
             </div>
           </div>
 
-          {/* Primary Metrics Section */}
           <div className="mb-10">
             <span className="text-[10px] font-black uppercase tracking-[0.4em] opacity-30 block mb-4">Core Chronological Matrix</span>
             <div className="bg-black text-white p-8 rounded-3xl relative overflow-hidden">
@@ -415,7 +407,6 @@ function ChronoFlowContent() {
             </div>
           </div>
 
-          {/* Interval Matrix Section */}
           <div className="grid grid-cols-2 gap-10 mb-10">
             <div className="space-y-4">
                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary block">Total Intervals</span>
@@ -466,7 +457,6 @@ function ChronoFlowContent() {
             </div>
           </div>
 
-          {/* Audit Details Section */}
           {details && (
             <div className="mb-10 p-6 bg-black/5 rounded-3xl border border-black/10">
               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary block mb-3 flex items-center gap-2">
@@ -476,7 +466,6 @@ function ChronoFlowContent() {
             </div>
           )}
 
-          {/* Footer Branding & URL */}
           <div className="mt-10 text-center border-t-4 border-black pt-10 relative">
              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-6">
                 <CheckCircle2 className="w-12 h-12 text-primary" />
@@ -540,7 +529,6 @@ function ChronoFlowContent() {
 
                 <TabsContent value="age" className="space-y-4 mt-0">
                   
-                  {/* Toolbelt Triggers: User left, Pencil right */}
                   <div className="flex items-center justify-between px-1 mb-2">
                     <Collapsible open={isIdentityOpen} onOpenChange={setIsIdentityOpen}>
                       <CollapsibleTrigger asChild>
@@ -720,7 +708,6 @@ function ChronoFlowContent() {
               </div>
             )}
 
-            {/* Quick Navigation Section */}
             <section className="mt-8 space-y-4">
               <div className="flex items-center gap-2 px-2">
                 <LayoutGrid className="w-4 h-4 text-primary" />
@@ -739,7 +726,6 @@ function ChronoFlowContent() {
           </div>
         </div>
 
-        {/* Science of Deadlines Section */}
         <section className="mt-32 space-y-20">
           <div className="text-center space-y-4">
             <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[10px] px-6 py-1.5 font-black">Architecture Whitepaper</Badge>
@@ -876,7 +862,6 @@ function ChronoFlowContent() {
   );
 }
 
-// Image Utility Functions
 async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> {
   const image = await createImage(imageSrc);
   const canvas = document.createElement('canvas');
@@ -899,7 +884,6 @@ async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> 
     pixelCrop.height
   );
 
-  // Return as PNG to preserve transparency
   return canvas.toDataURL('image/png');
 }
 

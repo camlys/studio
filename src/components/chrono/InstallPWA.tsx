@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Download, Monitor, Smartphone, ShieldCheck, X, Zap } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
@@ -68,9 +69,12 @@ export function InstallPWA({ variant = 'sidebar' }: InstallPWAProps) {
           <X className="w-3.5 h-3.5" />
         </button>
 
-        <div className="flex items-center gap-2 mb-3">
-          <Zap className="w-3.5 h-3.5 text-accent animate-pulse" />
-          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-accent">Cross-Platform Sync</span>
+        <div className="flex items-center gap-3 mb-4">
+           <Image src="/camly.png" alt="Camly" width={32} height={32} className="object-contain" />
+           <div className="flex flex-col">
+              <span className="text-[10px] font-black uppercase tracking-widest text-primary">Camly Engine</span>
+              <span className="text-[7px] font-bold text-muted-foreground uppercase">Precision Sync</span>
+           </div>
         </div>
         
         <div className="space-y-3 relative z-10">

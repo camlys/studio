@@ -12,6 +12,15 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const BLOG_POSTS = [
   {
+    title: "The Axiom of Precision: An Exhaustive Masterclass on Arithmetic Logic Unit Optimization",
+    description: "An exhaustive technical whitepaper on floating-point parity, IEEE 754 standards, and the future of high-velocity computational engine architecture.",
+    date: "March 15, 2025",
+    author: "ALU Engineering Division",
+    readTime: "500 min read",
+    slug: "/blog/arithmetic-logic-unit-optimization",
+    category: "Computational Science"
+  },
+  {
     title: "The Chronological Drift Protocol: Mastering Atomic Time Synchronization",
     description: "An exhaustive technical whitepaper on clock drift mitigation, NTP Stratum-1 synchronization, and the future of high-precision temporal engineering.",
     date: "March 10, 2025",

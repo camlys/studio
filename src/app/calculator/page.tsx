@@ -21,6 +21,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Slider } from "@/components/ui/slider";
 import { 
   Dialog, 
   DialogContent, 
@@ -365,8 +366,14 @@ export default function PrecisionCalculator() {
       />
 
       <Dialog open={!!imageToCrop} onOpenChange={(open) => !open && setImageToCrop(null)}>
-        <DialogContent className="sm:max-w-lg bg-transparent border-none shadow-none text-white overflow-hidden p-0 backdrop-blur-md">
-          <div className="relative h-[450px] w-full bg-transparent rounded-3xl overflow-hidden border border-white/20">
+        <DialogContent className="sm:max-w-lg bg-background border border-border shadow-2xl p-6 rounded-[2rem]">
+          <DialogHeader>
+            <DialogTitle className="text-center text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground pb-4 border-b">
+              Identity Frame Selection
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="relative h-[320px] w-full bg-muted/20 rounded-2xl overflow-hidden border mt-4">
             <Cropper
               image={imageToCrop || ''}
               crop={crop}
@@ -376,47 +383,63 @@ export default function PrecisionCalculator() {
               onZoomChange={setZoom}
               onCropComplete={onCropComplete}
               showGrid={true}
-              style={{
-                containerStyle: { background: 'transparent' }
-              }}
             />
           </div>
-          <div className="mt-6 flex flex-row gap-3 justify-center items-center pb-6">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => setImageToCrop(null)} 
-              className="text-[10px] font-black uppercase tracking-widest bg-black/40 text-white border border-white/20 hover:bg-black/60 rounded-full h-11 px-8"
-            >
-              Cancel
-            </Button>
-            <Button 
-              size="sm" 
-              onClick={createCroppedImage} 
-              className="bg-primary text-white hover:bg-primary/90 text-[10px] font-black uppercase tracking-widest px-12 rounded-full h-11 border-2 border-white/20 shadow-xl"
-            >
-              Confirm Frame
-            </Button>
+
+          <div className="mt-6 space-y-6">
+            <div className="space-y-3">
+              <div className="flex justify-between items-center px-1">
+                <Label className="text-[9px] font-black uppercase tracking-widest text-primary/60">Tactical Zoom</Label>
+                <span className="text-[10px] font-black text-foreground">{zoom.toFixed(1)}x</span>
+              </div>
+              <Slider 
+                value={[zoom]} 
+                min={1} 
+                max={3} 
+                step={0.1} 
+                onValueChange={([v]) => setZoom(v)}
+              />
+            </div>
+
+            <div className="flex flex-row gap-3 justify-center items-center pb-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setImageToCrop(null)} 
+                className="text-[10px] font-black uppercase tracking-widest border border-border rounded-xl h-11 px-8"
+              >
+                Cancel
+              </Button>
+              <Button 
+                size="sm" 
+                onClick={createCroppedImage} 
+                className="bg-primary text-white hover:bg-primary/90 text-[10px] font-black uppercase tracking-widest px-12 rounded-xl h-11 border-2 border-black/10 shadow-xl"
+              >
+                Confirm Identity
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
 
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[480px] bg-white text-black p-10 font-mono border-[6px] border-black relative overflow-hidden">
-          <div className="flex items-center gap-6 mb-8 pb-6 border-b-2 border-black">
-            <Image src="/camly.png" alt="Camly" width={128} height={128} priority className="w-12 h-12 object-contain shrink-0" />
-            <div className="flex flex-col flex-grow">
-              <h2 className="text-3xl font-black tracking-tighter uppercase font-roboto-slab leading-none whitespace-nowrap">
-                <span className="text-primary">CAMLY</span>
-                <span className="text-black ml-2">CALCULATOR</span>
-              </h2>
-              <div className="flex items-center gap-2 mt-1">
-                <p className="text-[10px] font-black text-primary/80">calculator.camly.org</p>
-                <Separator orientation="vertical" className="h-2 bg-black/20" />
-                <p className="text-[8px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
+          <div className="flex items-center justify-between mb-10 pb-8 border-b-4 border-black pr-10">
+            <div className="flex items-center gap-4">
+              <Image src="/camly.png" alt="Camly" width={128} height={128} priority className="w-14 h-14 object-contain shrink-0" />
+              <div className="flex flex-col">
+                <h2 className="text-3xl font-black tracking-tighter uppercase font-roboto-slab leading-none whitespace-nowrap">
+                  <span className="text-primary">CAMLY</span>
+                  <span className="text-black ml-2">CALCULATOR</span>
+                </h2>
+                <div className="flex items-center gap-2 mt-1.5">
+                  <p className="text-[11px] font-black text-primary/80">calculator.camly.org</p>
+                  <Separator orientation="vertical" className="h-2.5 bg-black/20" />
+                  <p className="text-[9px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
+                </div>
               </div>
             </div>
-            <Badge variant="outline" className="shrink-0 ml-auto text-[7px] font-black uppercase tracking-widest border-black text-black px-2 py-0.5 whitespace-nowrap">VERIFIED UNIT</Badge>
+            <Badge variant="outline" className="shrink-0 text-[8px] font-black uppercase tracking-widest border-black text-black px-2.5 py-1 whitespace-nowrap">VERIFIED UNIT</Badge>
           </div>
 
           <div className="grid grid-cols-[1fr_auto] gap-8 mb-10 items-center">

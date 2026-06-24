@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Timer, ArrowLeft, User, Clock, ChevronRight, Search, BookOpen, ExternalLink, Github, Twitter, Globe, GraduationCap, Brain, Briefcase, Zap } from 'lucide-react';
+import { Timer, ArrowLeft, User, Clock, ChevronRight, Search, BookOpen, ExternalLink, Github, Twitter, Globe, GraduationCap, Brain, Briefcase, Zap, Users } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +11,15 @@ import { Separator } from "@/components/ui/separator";
 import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const BLOG_POSTS = [
+  {
+    title: "The Geometry of User Intent: High-Fidelity Pathfinding in Advanced Utility Suites",
+    description: "An exhaustive technical whitepaper exploring the mathematics of user journey mapping, intent-based UI synchronization, and high-fidelity navigational architecture.",
+    date: "June 25, 2025",
+    author: "Intelligence Division",
+    readTime: "10 hour read",
+    slug: "/blog/geometry-of-user-intent-masterclass",
+    category: "Productivity Science"
+  },
   {
     title: "The Physics of Digital Precision: Mastering IEEE 754 in High-Velocity Web Environments",
     description: "An exhaustive technical whitepaper exploring the physics of binary precision, floating-point entropy, and high-fidelity mathematical modeling in web-based engines.",

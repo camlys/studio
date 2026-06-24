@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
@@ -14,12 +15,13 @@ import {
   ArrowUpRight, Target, BarChart3, Settings,
   FileType, GraduationCap, Wallet, UserCheck,
   CheckCircle2, Clock, User, Camera, Upload, X, Shield,
-  Sparkles, Workflow
+  Sparkles, Workflow, Pencil, ChevronDown
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Dialog, 
@@ -28,6 +30,11 @@ import {
   DialogTitle, 
   DialogFooter 
 } from "@/components/ui/dialog";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import Cropper from 'react-easy-crop';
 import { DateInput } from '@/components/chrono/DateInput';
 import { ResultCard } from '@/components/chrono/ResultCard';
@@ -71,9 +78,13 @@ function ChronoFlowContent() {
   
   const [userName, setUserName] = useState('');
   const [subjectImage, setSubjectImage] = useState<string | null>(null);
+  const [details, setDetails] = useState('');
   const [fromDate, setFromDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
   const [toDate, setToDate] = useState<DateInputValues>({ day: '', month: '', year: '' });
   
+  const [isIdentityOpen, setIsIdentityOpen] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
   const [results, setResults] = useState<CalculationResults | null>(null);
   const [error, setError] = useState<string | null>(null);
   const tickerRef = useRef<NodeJS.Timeout | null>(null);
@@ -92,6 +103,9 @@ function ChronoFlowContent() {
 
     const savedImage = localStorage.getItem('chrono_subject_image');
     if (savedImage) setSubjectImage(savedImage);
+
+    const savedDetails = localStorage.getItem('chrono_audit_details');
+    if (savedDetails) setDetails(savedDetails);
 
     const savedFrom = localStorage.getItem('chrono_from');
     if (savedFrom) setFromDate(JSON.parse(savedFrom));
@@ -121,9 +135,10 @@ function ChronoFlowContent() {
   useEffect(() => {
     localStorage.setItem('chrono_user_name', userName);
     localStorage.setItem('chrono_subject_image', subjectImage || '');
+    localStorage.setItem('chrono_audit_details', details);
     localStorage.setItem('chrono_from', JSON.stringify(fromDate));
     localStorage.setItem('chrono_to', JSON.stringify(toDate));
-  }, [userName, subjectImage, fromDate, toDate]);
+  }, [userName, subjectImage, details, fromDate, toDate]);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -296,19 +311,19 @@ function ChronoFlowContent() {
       {/* Hidden Receipt for Download */}
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[480px] bg-white text-black p-10 font-mono border-[6px] border-black relative overflow-hidden">
-          {/* Header Branding Compact Horizontal */}
+          {/* Header Branding - Horizontal Alignment */}
           <div className="flex items-center justify-between mb-8 pb-6 border-b-2 border-black">
-            <div className="flex items-center gap-3">
-              <Image src="/camly.png" alt="Camly" width={36} height={36} className="object-contain" />
+            <div className="flex items-center gap-4">
               <div className="flex flex-col">
-                <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none flex items-center gap-1.5">
+                <h2 className="text-3xl font-black tracking-tighter uppercase font-roboto-slab leading-none flex items-center gap-2">
                   <span className="text-primary">CAMLY</span>
                   <span className="text-black">CALCULATOR</span>
                 </h2>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <p className="text-[9px] font-black text-primary/80">calculator.camly.org</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <Image src="/camly.png" alt="Camly" width={24} height={24} className="object-contain" />
+                  <p className="text-[10px] font-black text-primary/80">calculator.camly.org</p>
                   <Separator orientation="vertical" className="h-2 bg-black/20" />
-                  <p className="text-[7px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
+                  <p className="text-[8px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
                 </div>
               </div>
             </div>
@@ -443,25 +458,15 @@ function ChronoFlowContent() {
             </div>
           </div>
 
-          {/* Celestial & System Status Section */}
-          <div className="grid grid-cols-2 gap-6 mb-10 pt-4 border-t-2 border-black/5">
-            <div className="p-4 bg-black/5 rounded-2xl space-y-2 border border-black/10">
-               <span className="text-[8px] font-black uppercase opacity-40 tracking-widest flex items-center gap-2">
-                 <Sparkles className="w-3 h-3 text-accent" /> Celestial Mapping
-               </span>
-               <div className="text-sm font-black uppercase tracking-tight">
-                  Zone: {results?.zodiac}
-               </div>
+          {/* Audit Details Section */}
+          {details && (
+            <div className="mb-10 p-6 bg-black/5 rounded-3xl border border-black/10">
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary block mb-3 flex items-center gap-2">
+                <Pencil className="w-3 h-3" /> Audit Specifications
+              </span>
+              <p className="text-[11px] font-medium leading-relaxed whitespace-pre-wrap">{details}</p>
             </div>
-            <div className="p-4 bg-black/5 rounded-2xl space-y-2 border border-black/10">
-               <span className="text-[8px] font-black uppercase opacity-40 tracking-widest flex items-center gap-2">
-                 <Cpu className="w-3 h-3" /> System Integrity
-               </span>
-               <div className="text-sm font-black uppercase tracking-tight">
-                  Status: {results?.isLeapYear ? 'LEAP_CYCLE' : 'STD_CYCLE'}
-               </div>
-            </div>
-          </div>
+          )}
 
           {/* Footer Branding & URL */}
           <div className="mt-10 text-center border-t-4 border-black pt-10 relative">
@@ -525,42 +530,67 @@ function ChronoFlowContent() {
                   <TabsTrigger value="due-date" className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Due</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="age" className="space-y-3.5 mt-0">
-                  <div className="flex items-end gap-2.5">
-                    <div className="flex-grow space-y-1.5">
-                      <Label className="text-[8px] font-bold uppercase tracking-widest text-primary/60 flex items-center gap-1.5">
-                        <User className="w-3 h-3" /> Subject Name
-                      </Label>
-                      <Input 
-                        placeholder="Enter identity..." 
-                        value={userName} 
-                        onChange={(e) => setUserName(e.target.value)}
-                        className="bg-white/5 border border-black dark:border-white rounded-none h-9 text-xs focus:border-primary shadow-none"
-                      />
-                    </div>
-                    
-                    <div className="shrink-0">
-                      {subjectImage ? (
-                        <div className="relative w-9 h-9 rounded-lg overflow-hidden border border-black dark:border-white group">
-                          <img src={subjectImage} alt="Subject" className="w-full h-full object-cover" />
-                          <button 
-                            onClick={() => setSubjectImage(null)}
-                            className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <X className="w-3 h-3 text-white" />
-                          </button>
+                <TabsContent value="age" className="space-y-4 mt-0">
+                  <Collapsible open={isIdentityOpen} onOpenChange={setIsIdentityOpen} className="space-y-3">
+                    <CollapsibleTrigger asChild>
+                      <button className="flex items-center gap-1.5 text-[8px] font-bold uppercase tracking-[0.2em] text-primary/60 hover:text-primary transition-colors group">
+                        <User className="w-3 h-3" /> Subject Identity 
+                        <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", isIdentityOpen && "rotate-180")} />
+                      </button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="space-y-3 pt-1">
+                      <div className="flex items-end gap-2.5">
+                        <div className="flex-grow space-y-1.5">
+                          <Input 
+                            placeholder="Enter identity..." 
+                            value={userName} 
+                            onChange={(e) => setUserName(e.target.value)}
+                            className="bg-white/5 border border-black dark:border-white rounded-none h-9 text-xs focus:border-primary shadow-none"
+                          />
                         </div>
-                      ) : (
-                        <label className="w-9 h-9 rounded-lg border border-dashed border-black dark:border-white flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-all group shadow-inner">
-                          <Camera className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
-                          <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
-                        </label>
-                      )}
-                    </div>
-                  </div>
+                        
+                        <div className="shrink-0">
+                          {subjectImage ? (
+                            <div className="relative w-9 h-9 rounded-lg overflow-hidden border border-black dark:border-white group">
+                              <img src={subjectImage} alt="Subject" className="w-full h-full object-cover" />
+                              <button 
+                                onClick={() => setSubjectImage(null)}
+                                className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <X className="w-3 h-3 text-white" />
+                              </button>
+                            </div>
+                          ) : (
+                            <label className="w-9 h-9 rounded-lg border border-dashed border-black dark:border-white flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-all group shadow-inner">
+                              <Camera className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+                              <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+                            </label>
+                          )}
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen} className="space-y-3">
+                    <CollapsibleTrigger asChild>
+                      <button className="flex items-center gap-1.5 text-[8px] font-bold uppercase tracking-[0.2em] text-primary/60 hover:text-primary transition-colors group">
+                        <Pencil className="w-3 h-3" /> Audit Details 
+                        <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", isDetailsOpen && "rotate-180")} />
+                      </button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="space-y-2 pt-1">
+                      <Textarea 
+                        placeholder="Enter tactical details..." 
+                        value={details} 
+                        onChange={(e) => setDetails(e.target.value)}
+                        className="bg-white/5 border border-black dark:border-white rounded-none min-h-[60px] text-[10px] focus:border-primary shadow-none resize-none"
+                      />
+                    </CollapsibleContent>
+                  </Collapsible>
 
                   <DateInput label="Date of Birth" values={fromDate} onChange={setFromDate} />
                   <DateInput label="Target Timestamp" values={toDate} onChange={setToDate} error={error || undefined} />
+                  
                   <Button 
                     className="w-full h-12 mt-4 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 neon-glow border-black dark:border-white border"
                     onClick={handleCalculate}
@@ -581,7 +611,7 @@ function ChronoFlowContent() {
                     <p className="text-[9px] uppercase font-black tracking-widest text-accent">Real-Time Sync</p>
                   </div>
                   <h4 className="text-xs font-black tracking-tight mb-1">Atomic Precision Control</h4>
-                  <p className="text-[10px] text-muted-foreground/80 leading-relaxed">Engine synchronizing with primary time servers via Stratum-1 NTP nodes.</p>
+                  <p className="text-[10px] text-muted-foreground/80 leading-relaxed font-medium">Engine synchronizing with primary time servers via Stratum-1 NTP nodes.</p>
                 </div>
                 
                 <div className="glass-card !p-4 border-primary/20 bg-primary/5 relative overflow-hidden group">
@@ -590,7 +620,7 @@ function ChronoFlowContent() {
                     <p className="text-[9px] uppercase font-black tracking-widest text-primary">Security Ops</p>
                   </div>
                   <h4 className="text-xs font-black tracking-tight mb-1">Encrypted Payload</h4>
-                  <p className="text-[10px] text-muted-foreground/80 leading-relaxed">Calculation processing is handled locally. Zero-knowledge data sovereignty.</p>
+                  <p className="text-[10px] text-muted-foreground/80 leading-relaxed font-medium">Calculation processing is handled locally. Zero-knowledge data sovereignty.</p>
                 </div>
               </div>
             </div>

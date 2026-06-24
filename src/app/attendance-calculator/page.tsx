@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -10,7 +11,7 @@ import {
   Plus, Trash2, BookOpen, AlertTriangle, 
   CheckCircle2, AlertCircle, Info, BarChart3,
   Github, Twitter, ChevronRight, Target, GraduationCap,
-  Users, Globe, Copy
+  Users, Globe, Copy, Pencil, ChevronDown
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,14 +19,13 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { InstallPWA } from '@/components/chrono/InstallPWA';
 import { cn } from '@/lib/utils';
 import { toPng } from 'html-to-image';
@@ -78,6 +78,8 @@ export default function AttendanceCalculator() {
   const [courses, setCourses] = useState<Course[]>([
     { id: '1', name: 'Advanced Engineering Math', total: 40, attended: 32 },
   ]);
+  const [details, setDetails] = useState('');
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [targetPercentage, setTargetPercentage] = useState(75);
   const [isDownloading, setIsDownloading] = useState(false);
   const reportRef = useRef<HTMLDivElement>(null);
@@ -88,9 +90,10 @@ export default function AttendanceCalculator() {
     const saved = localStorage.getItem('camly_attendance_data');
     if (saved) {
       try {
-        const { courses: sCourses, target } = JSON.parse(saved);
+        const { courses: sCourses, target, details: sDetails } = JSON.parse(saved);
         if (sCourses) setCourses(sCourses);
         if (target) setTargetPercentage(target);
+        if (sDetails) setDetails(sDetails);
       } catch (e) {
         console.error("Failed to load attendance", e);
       }
@@ -99,8 +102,8 @@ export default function AttendanceCalculator() {
 
   // Save to LocalStorage
   useEffect(() => {
-    localStorage.setItem('camly_attendance_data', JSON.stringify({ courses, target: targetPercentage }));
-  }, [courses, targetPercentage]);
+    localStorage.setItem('camly_attendance_data', JSON.stringify({ courses, target: targetPercentage, details }));
+  }, [courses, targetPercentage, details]);
 
   const addCourse = () => {
     setCourses([...courses, { id: Date.now().toString(), name: `New Subject ${courses.length + 1}`, total: 0, attended: 0 }]);
@@ -202,13 +205,20 @@ export default function AttendanceCalculator() {
       {/* Hidden Receipt for HD Download */}
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[380px] bg-white text-black p-8 font-mono border-2 border-black">
-          <div className="flex items-center gap-4 mb-8 border-b-2 border-black/10 pb-6">
-            <Image src="/camly.png" alt="Camly" width={54} height={54} className="object-contain" />
-            <div className="flex flex-col justify-center">
-              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">Camly <span className="text-black">Calculator</span></h2>
-              <p className="text-[9px] uppercase font-bold tracking-[0.2em] opacity-60 mt-1">Academic Attendance Report</p>
-              <p className="text-[10px] font-black mt-0.5 text-primary/80">calculator.camly.org</p>
+          <div className="flex items-center justify-between mb-8 border-b-2 border-black pb-6">
+            <div className="flex flex-col">
+              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none flex items-center gap-2">
+                <span className="text-primary">CAMLY</span>
+                <span className="text-black">CALCULATOR</span>
+              </h2>
+              <div className="flex items-center gap-2 mt-1">
+                <Image src="/camly.png" alt="Camly" width={18} height={18} className="object-contain" />
+                <p className="text-[8px] font-black text-primary/80">calculator.camly.org</p>
+                <Separator orientation="vertical" className="h-2 bg-black/20" />
+                <p className="text-[7px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
+              </div>
             </div>
+            <Badge variant="outline" className="text-[7px] font-black uppercase tracking-widest border-black text-black px-2 h-5">VERIFIED UNIT</Badge>
           </div>
 
           <div className="border-t border-b border-dashed border-black/20 py-4 my-6 space-y-2">
@@ -219,10 +229,6 @@ export default function AttendanceCalculator() {
             <div className="flex justify-between text-[10px] font-black">
               <span>TIMESTAMP</span>
               <span>{format(new Date(), 'dd-MMM-yyyy HH:mm:ss')}</span>
-            </div>
-            <div className="flex justify-between text-[10px] font-black">
-              <span>PROTOCOL</span>
-              <span>ACADEMIC_ATTENDANCE_V1</span>
             </div>
           </div>
 
@@ -257,6 +263,13 @@ export default function AttendanceCalculator() {
                    })}
                 </div>
              </div>
+
+             {details && (
+                <div className="p-4 bg-black/5 rounded-lg border border-black/10">
+                  <span className="text-[8px] font-black uppercase tracking-widest text-primary block mb-2">Audit Specifications</span>
+                  <p className="text-[9px] font-medium leading-relaxed whitespace-pre-wrap">{details}</p>
+                </div>
+             )}
 
              <div className="space-y-2 text-[10px] px-2 font-bold pt-4">
                 <div className="flex justify-between">
@@ -453,8 +466,8 @@ export default function AttendanceCalculator() {
           <aside className="w-full lg:w-[320px] space-y-6 lg:sticky lg:top-24">
             <div ref={reportRef} className="space-y-6">
               <div className={cn(
-                "glass-card !p-8 text-center border-2 transition-all relative overflow-hidden",
-                globalPercentage >= targetPercentage ? "border-accent shadow-[0_20px_50px_rgba(16,185,129,0.1)]" : "border-destructive shadow-[0_20px_50px_rgba(239,68,68,0.1)]"
+                "glass-card !p-8 text-center border-2 transition-all relative overflow-hidden shadow-2xl",
+                globalPercentage >= targetPercentage ? "border-accent bg-accent/5" : "border-destructive bg-destructive/5"
               )}>
                 <div className="absolute top-0 right-0 p-4 opacity-5">
                    <GraduationCap className="w-20 h-24" />
@@ -482,27 +495,49 @@ export default function AttendanceCalculator() {
               </div>
 
               <div className="glass-card !p-6 border-black dark:border-white border shadow-xl space-y-5">
-                 <h4 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4" /> Mission Logistics
-                 </h4>
-                 <div className="space-y-4">
-                   <div className="flex justify-between items-center py-2 border-b border-border/10">
-                     <span className="text-[10px] font-bold text-muted-foreground uppercase">Subjects</span>
-                     <Badge className="bg-primary text-primary-foreground font-black text-[10px]">{courses.length}</Badge>
-                   </div>
-                   <div className="flex justify-between items-center py-2 border-b border-border/10">
-                     <span className="text-[10px] font-bold text-muted-foreground uppercase">Critical Risk</span>
-                     <Badge variant="destructive" className="font-black text-[10px]">
-                       {courses.filter(c => getInference(c).current < targetPercentage).length}
-                     </Badge>
-                   </div>
-                   <div className="flex justify-between items-center py-2 border-b border-border/10">
-                     <span className="text-[10px] font-bold text-muted-foreground uppercase">Safe Protocol</span>
-                     <Badge className="bg-accent text-accent-foreground font-black text-[10px]">
-                        {courses.filter(c => getInference(c).current >= targetPercentage).length}
-                     </Badge>
-                   </div>
+                 <div className="flex items-center justify-between">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                        <BarChart3 className="w-4 h-4" /> Mission Logistics
+                    </h4>
+                    <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+                      <CollapsibleTrigger asChild>
+                         <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full text-muted-foreground/60 hover:text-primary transition-colors">
+                           <Pencil className="w-3.5 h-3.5" />
+                         </Button>
+                      </CollapsibleTrigger>
+                    </Collapsible>
                  </div>
+
+                 <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen} className="space-y-4">
+                    <CollapsibleContent className="space-y-3 pt-1">
+                      <Label className="text-[8px] font-black uppercase tracking-widest text-primary/60">Audit Details</Label>
+                      <Textarea 
+                        placeholder="Enter strategic specifications..." 
+                        value={details} 
+                        onChange={(e) => setDetails(e.target.value)}
+                        className="bg-muted/30 border-border h-24 text-[10px] font-medium leading-relaxed resize-none focus:border-primary shadow-none"
+                      />
+                    </CollapsibleContent>
+
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center py-2 border-b border-border/10">
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase">Subjects</span>
+                        <Badge className="bg-primary text-primary-foreground font-black text-[10px]">{courses.length}</Badge>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-border/10">
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase">Critical Risk</span>
+                        <Badge variant="destructive" className="font-black text-[10px]">
+                          {courses.filter(c => getInference(c).current < targetPercentage).length}
+                        </Badge>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-border/10">
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase">Safe Protocol</span>
+                        <Badge className="bg-accent text-accent-foreground font-black text-[10px]">
+                            {courses.filter(c => getInference(c).current >= targetPercentage).length}
+                        </Badge>
+                      </div>
+                    </div>
+                 </Collapsible>
               </div>
             </div>
 
@@ -606,7 +641,7 @@ export default function AttendanceCalculator() {
                   <div className="w-2 h-2 rounded-full animate-pulse bg-accent" />
                   CAMLY-SYNC-01: ONLINE
                 </div>
-                <InstallPWA />
+                <InstallPWA variant="footer" />
               </div>
             </div>
           </div>

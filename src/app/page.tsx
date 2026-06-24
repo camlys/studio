@@ -71,7 +71,7 @@ const homeSchema = {
 function ChronoFlowContent() {
   const { toast } = useToast();
   const router = useRouter();
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [isDownloading, setIsDownloading] = useState(false);
   
   const [userName, setUserName] = useState('');
@@ -124,7 +124,7 @@ function ChronoFlowContent() {
     if (savedTheme) {
       setTheme(savedTheme);
     } else {
-      setTheme('light');
+      setTheme('dark');
     }
     
     setSyncId(Math.random().toString(36).substring(7).toUpperCase());
@@ -513,7 +513,7 @@ function ChronoFlowContent() {
       </nav>
 
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-6 md:py-12">
-        <div className="flex flex-col min-[480px]:row items-start gap-6 md:gap-10">
+        <div className="flex flex-col min-[480px]:flex-row items-start gap-6 md:gap-10">
           
           <aside className="w-full shrink-0 space-y-4 min-[480px]:w-[260px] md:w-[300px] lg:w-[340px] min-[480px]:sticky min-[480px]:top-24">
             <div className="glass-card !p-6 shadow-2xl transition-all duration-700 border-black dark:border-white border">

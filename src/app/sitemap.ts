@@ -4,12 +4,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://calculator.camly.org';
   
   const blogPosts = [
+    'ultimate-emi-seo-masterclass',
     'geometry-of-user-intent-masterclass',
     'physics-of-digital-precision-masterclass',
     'computational-resource-allocation-masterclass',
     'arithmetic-logic-unit-optimization',
     'science-of-temporal-drift',
-    'ultimate-emi-seo-masterclass',
     'seo-due-date-calculator-masterclass',
     'ultimate-bmi-seo-masterclass',
     'seo-age-calculator-masterclass',

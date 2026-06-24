@@ -40,14 +40,18 @@ const focusSchema = {
 
 function FocusPageContent() {
   const router = useRouter();
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [pomodoroSettings, setPomodoroSettings] = useState<PomodoroSettings | null>(null);
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('chrono_theme') as 'light' | 'dark' | null;
-    if (savedTheme) setTheme(savedTheme);
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else {
+      setTheme('dark');
+    }
   }, []);
 
   const getAtmosphereStyles = () => {
@@ -57,8 +61,6 @@ function FocusPageContent() {
     const baseColor = pomodoroSettings?.themeColor || '#ba4949';
     return { backgroundColor: baseColor };
   };
-
-  const isFocusModeDark = (isTimerActive && pomodoroSettings?.darkModeWhenRunning) || theme === 'dark';
 
   return (
     <div 

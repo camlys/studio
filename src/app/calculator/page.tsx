@@ -404,9 +404,9 @@ export default function PrecisionCalculator() {
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[480px] bg-white text-black p-10 font-mono border-[6px] border-black relative overflow-hidden">
           <div className="flex items-center gap-6 mb-8 pb-6 border-b-2 border-black">
-            <Image src="/camly.png" alt="Camly" width={128} height={128} priority className="w-12 h-12 object-contain" />
-            <div className="flex flex-col">
-              <h2 className="text-3xl font-black tracking-tighter uppercase font-roboto-slab leading-none">
+            <Image src="/camly.png" alt="Camly" width={128} height={128} priority className="w-12 h-12 object-contain shrink-0" />
+            <div className="flex flex-col flex-grow">
+              <h2 className="text-3xl font-black tracking-tighter uppercase font-roboto-slab leading-none whitespace-nowrap">
                 <span className="text-primary">CAMLY</span>
                 <span className="text-black ml-2">CALCULATOR</span>
               </h2>
@@ -416,7 +416,7 @@ export default function PrecisionCalculator() {
                 <p className="text-[8px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
               </div>
             </div>
-            <Badge variant="outline" className="ml-auto text-[7px] font-black uppercase tracking-widest border-black text-black px-2 h-5">VERIFIED UNIT</Badge>
+            <Badge variant="outline" className="shrink-0 ml-auto text-[7px] font-black uppercase tracking-widest border-black text-black px-2 py-0.5 whitespace-nowrap">VERIFIED UNIT</Badge>
           </div>
 
           <div className="grid grid-cols-[1fr_auto] gap-8 mb-10 items-center">

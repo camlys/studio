@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { 
@@ -11,16 +11,31 @@ import {
   Settings, Target, Network, Server,
   Compass, FlaskConical, BarChart3, ChevronRight, ExternalLink,
   LayoutGrid, Calculator as CalcIcon, CalendarDays, FileType, Github, Twitter,
-  GraduationCap, Copy, Download
+  GraduationCap, Copy, Download, Pencil, User, ChevronDown, Camera, X, Shield, UserCheck, CheckCircle2
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle 
+} from "@/components/ui/dialog";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import Cropper from 'react-easy-crop';
 import { InstallPWA } from '@/components/chrono/InstallPWA';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
+import { toPng } from 'html-to-image';
 
 const calculatorSchema = {
   "@context": "https://schema.org",
@@ -67,6 +82,22 @@ export default function PrecisionCalculator() {
   const [isDecimalMode, setIsDecimalMode] = useState(true);
   const [memory, setMemory] = useState<number>(0);
   const [entropy, setEntropy] = useState(0.000);
+  
+  // Identity & Audit States
+  const [userName, setUserName] = useState('');
+  const [subjectImage, setSubjectImage] = useState<string | null>(null);
+  const [details, setDetails] = useState('');
+  const [isIdentityOpen, setIsIdentityOpen] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [syncId, setSyncId] = useState<string>('');
+  const receiptRef = useRef<HTMLDivElement>(null);
+
+  // Cropper states
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
   // Persistence: Load
   useEffect(() => {
@@ -83,12 +114,26 @@ export default function PrecisionCalculator() {
         console.error("Failed to load calculator registry", e);
       }
     }
+    
+    const savedName = localStorage.getItem('chrono_user_name');
+    if (savedName) setUserName(savedName);
+
+    const savedImage = localStorage.getItem('chrono_subject_image');
+    if (savedImage) setSubjectImage(savedImage);
+
+    const savedDetails = localStorage.getItem('chrono_audit_details');
+    if (savedDetails) setDetails(savedDetails);
+
+    setSyncId(Math.random().toString(36).substring(7).toUpperCase());
   }, []);
 
   // Persistence: Save
   useEffect(() => {
     localStorage.setItem('camly_calc_data', JSON.stringify({ history, memory, isScientific, isRadians, isDecimalMode }));
-  }, [history, memory, isScientific, isRadians, isDecimalMode]);
+    localStorage.setItem('chrono_user_name', userName);
+    localStorage.setItem('chrono_subject_image', subjectImage || '');
+    localStorage.setItem('chrono_audit_details', details);
+  }, [history, memory, isScientific, isRadians, isDecimalMode, userName, subjectImage, details]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -96,6 +141,35 @@ export default function PrecisionCalculator() {
     }, 2000);
     return () => clearInterval(interval);
   }, []);
+
+  const onCropComplete = useCallback((_: any, croppedAreaPixels: any) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImageToCrop(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const createCroppedImage = async () => {
+    try {
+      const croppedImage = await getCroppedImg(imageToCrop!, croppedAreaPixels);
+      setSubjectImage(croppedImage);
+      setImageToCrop(null);
+      toast({
+        title: "Photo Framed",
+        description: "Subject identity synchronized with local registry.",
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const handleNumber = (num: string) => {
     setDisplay(prev => {
@@ -234,6 +308,44 @@ export default function PrecisionCalculator() {
     });
   };
 
+  const downloadPNGReport = async () => {
+    if (!receiptRef.current) return;
+    setIsDownloading(true);
+    try {
+      const dataUrl = await toPng(receiptRef.current, {
+        cacheBust: true,
+        backgroundColor: '#ffffff',
+        width: 480,
+        pixelRatio: 4, 
+        style: {
+          transform: 'scale(1)',
+          left: '0',
+          top: '0',
+        }
+      });
+      const fileName = userName 
+        ? `Camly_Scientific_Audit_${userName.replace(/\s+/g, '_')}_${format(new Date(), 'yyyyMMdd_HHmm')}.png`
+        : `Camly_Scientific_Audit_${format(new Date(), 'yyyyMMdd_HHmm')}.png`;
+      const link = document.createElement('a');
+      link.download = fileName;
+      link.href = dataUrl;
+      link.click();
+      toast({
+        title: "Audit Exported",
+        description: "Full HD scientific report generated successfully.",
+      });
+    } catch (err) {
+      console.error('Download failed', err);
+      toast({
+        variant: "destructive",
+        title: "Download Failed",
+        description: "Could not generate the high-definition audit image.",
+      });
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   const clear = () => {
     setDisplay('0');
     setExpression('');
@@ -249,6 +361,147 @@ export default function PrecisionCalculator() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
+
+      <Dialog open={!!imageToCrop} onOpenChange={(open) => !open && setImageToCrop(null)}>
+        <DialogContent className="sm:max-w-lg bg-transparent border-none shadow-none text-white overflow-hidden p-0 backdrop-blur-md">
+          <div className="relative h-[450px] w-full bg-transparent rounded-3xl overflow-hidden border border-white/20">
+            <Cropper
+              image={imageToCrop || ''}
+              crop={crop}
+              zoom={zoom}
+              aspect={1}
+              onCropChange={setCrop}
+              onZoomChange={setZoom}
+              onCropComplete={onCropComplete}
+              showGrid={true}
+              style={{
+                containerStyle: { background: 'transparent' }
+              }}
+            />
+          </div>
+          <div className="mt-6 flex flex-row gap-3 justify-center items-center pb-6">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setImageToCrop(null)} 
+              className="text-[10px] font-black uppercase tracking-widest bg-black/40 text-white border border-white/20 hover:bg-black/60 rounded-full h-11 px-8"
+            >
+              Cancel
+            </Button>
+            <Button 
+              size="sm" 
+              onClick={createCroppedImage} 
+              className="bg-primary text-white hover:bg-primary/90 text-[10px] font-black uppercase tracking-widest px-12 rounded-full h-11 border-2 border-white/20 shadow-xl"
+            >
+              Confirm Frame
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <div className="fixed -left-[2000px] top-0 pointer-events-none">
+        <div ref={receiptRef} className="w-[480px] bg-white text-black p-10 font-mono border-[6px] border-black relative overflow-hidden">
+          <div className="flex items-center gap-6 mb-8 pb-6 border-b-2 border-black">
+            <Image src="/camly.png" alt="Camly" width={128} height={128} priority className="w-12 h-12 object-contain" />
+            <div className="flex flex-col">
+              <h2 className="text-3xl font-black tracking-tighter uppercase font-roboto-slab leading-none">
+                <span className="text-primary">CAMLY</span>
+                <span className="text-black ml-2">CALCULATOR</span>
+              </h2>
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-[10px] font-black text-primary/80">calculator.camly.org</p>
+                <Separator orientation="vertical" className="h-2 bg-black/20" />
+                <p className="text-[8px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
+              </div>
+            </div>
+            <Badge variant="outline" className="ml-auto text-[7px] font-black uppercase tracking-widest border-black text-black px-2 h-5">VERIFIED UNIT</Badge>
+          </div>
+
+          <div className="grid grid-cols-[1fr_auto] gap-8 mb-10 items-center">
+            <div className="space-y-6">
+              <div className="space-y-1.5">
+                <span className="text-[9px] font-black uppercase tracking-widest text-primary">Registry Identity</span>
+                <div className="text-2xl font-black truncate border-l-4 border-primary pl-3 py-1 bg-black/5 uppercase leading-tight">{userName || 'UNIDENTIFIED_SUBJECT'}</div>
+              </div>
+              <div className="space-y-1.5">
+                <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Audit Metadata</span>
+                <div className="flex flex-col gap-1 text-[11px] font-bold">
+                  <div className="flex justify-between">
+                    <span className="opacity-40">SYNC_ID:</span>
+                    <span className="text-primary">{syncId}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="opacity-40">TIMESTAMP:</span>
+                    <span>{format(new Date(), 'dd-MMM-yyyy HH:mm:ss')}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {subjectImage ? (
+              <div className="relative">
+                <div className="w-28 h-28 rounded-xl border border-black/10 relative overflow-hidden bg-transparent">
+                   <img src={subjectImage} alt="Identity" className="w-full h-full object-cover" />
+                </div>
+                <div className="absolute -bottom-2.5 -right-2.5 bg-black text-white p-1 rounded-md border-2 border-white">
+                   <ShieldCheck className="w-4 h-4 text-accent" />
+                </div>
+              </div>
+            ) : (
+              <div className="w-28 h-28 rounded-xl border-4 border-dashed border-black/10 flex items-center justify-center bg-black/5">
+                <UserCheck className="w-12 h-12 opacity-10" />
+              </div>
+            )}
+          </div>
+
+          <div className="mb-10">
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] opacity-30 block mb-4">Scientific Compute Matrix</span>
+            <div className="bg-black text-white p-8 rounded-3xl relative overflow-hidden">
+               <div className="absolute top-0 right-0 p-4 opacity-20">
+                  <Cpu className="w-16 h-16 text-primary" />
+               </div>
+               <div className="text-center relative z-10">
+                  <div className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-2">Primary Result</div>
+                  <div className="text-5xl font-black tracking-tighter text-primary break-all">{display}</div>
+               </div>
+            </div>
+          </div>
+
+          {history.length > 0 && (
+            <div className="mb-10">
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary block mb-3">Recent Instruction Chain</span>
+              <div className="space-y-2">
+                {history.slice(0, 5).map((h, i) => (
+                  <div key={i} className="text-[10px] font-bold border-l-2 border-primary/20 pl-3 py-1 opacity-60">{h}</div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {details && (
+            <div className="mb-10 p-6 bg-black/5 rounded-3xl border border-black/10">
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary block mb-3 flex items-center gap-2">
+                <Pencil className="w-3 h-3" /> Audit Specifications
+              </span>
+              <p className="text-[11px] font-medium leading-relaxed whitespace-pre-wrap">{details}</p>
+            </div>
+          )}
+
+          <div className="mt-10 text-center border-t-4 border-black pt-10 relative">
+             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-6">
+                <CheckCircle2 className="w-12 h-12 text-primary" />
+             </div>
+             <p className="text-[11px] font-black uppercase tracking-[0.3em] leading-relaxed mb-4">
+               Atomic-Sync Precision Guaranteed<br/>
+               Verified by Camly Scientific Unit
+             </p>
+             <div className="bg-black py-3 px-6 inline-block rounded-xl">
+               <p className="text-white text-[12px] font-black tracking-[0.2em] font-roboto-slab">CALCULATOR.CAMLY.ORG</p>
+             </div>
+             <p className="text-[9px] font-bold mt-6 opacity-30 uppercase tracking-widest">© 2024 Camly Inc. All results certified.</p>
+          </div>
+        </div>
+      </div>
+
       <nav className="relative glass border-b border-border h-14 flex items-center px-4 md:px-6 justify-between">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 group">
@@ -287,6 +540,75 @@ export default function PrecisionCalculator() {
               <p className="text-muted-foreground text-xs md:text-base leading-relaxed font-medium">
                 Advanced mathematical compute layer with support for hyperbolic functions, precision logarithms, and high-fidelity physics constants.
               </p>
+            </div>
+
+            <div className="glass-card !p-6 border-black dark:border-white border-2 space-y-4">
+              <div className="flex items-center justify-between px-1">
+                <Collapsible open={isIdentityOpen} onOpenChange={setIsIdentityOpen}>
+                  <CollapsibleTrigger asChild>
+                    <button className="flex items-center gap-1 text-primary/60 hover:text-primary transition-colors group">
+                      <User className="w-4 h-4" /> 
+                      <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", isIdentityOpen && "rotate-180")} />
+                    </button>
+                  </CollapsibleTrigger>
+                </Collapsible>
+
+                <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+                  <CollapsibleTrigger asChild>
+                    <button className="flex items-center gap-1 text-primary/60 hover:text-primary transition-colors group">
+                      <Pencil className="w-4 h-4" /> 
+                      <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", isDetailsOpen && "rotate-180")} />
+                    </button>
+                  </CollapsibleTrigger>
+                </Collapsible>
+              </div>
+
+              <Collapsible open={isIdentityOpen} onOpenChange={setIsIdentityOpen} className="space-y-3">
+                <CollapsibleContent className="space-y-3 pt-1 border-t border-border/10">
+                  <div className="flex items-end gap-2.5">
+                    <div className="flex-grow space-y-1.5 text-left">
+                      <Label className="text-[9px] font-black uppercase text-primary/60">Subject Identity</Label>
+                      <Input 
+                        placeholder="Enter identity..." 
+                        value={userName} 
+                        onChange={(e) => setUserName(e.target.value)}
+                        className="bg-muted/30 border-border rounded-lg h-9 text-xs focus:border-primary shadow-none"
+                      />
+                    </div>
+                    
+                    <div className="shrink-0 pb-0.5">
+                      {subjectImage ? (
+                        <div className="relative w-9 h-9 rounded-lg overflow-hidden border border-border group">
+                          <img src={subjectImage} alt="Subject" className="w-full h-full object-cover" />
+                          <button 
+                            onClick={() => setSubjectImage(null)}
+                            className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="w-3 h-3 text-white" />
+                          </button>
+                        </div>
+                      ) : (
+                        <label className="w-9 h-9 rounded-lg border border-dashed border-border flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-all group">
+                          <Camera className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+                          <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+                        </label>
+                      )}
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+
+              <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen} className="space-y-3">
+                <CollapsibleContent className="space-y-2 pt-1 border-t border-border/10 text-left">
+                  <Label className="text-[9px] font-black uppercase text-primary/60">Audit Specifications</Label>
+                  <Textarea 
+                    placeholder="Enter strategic specifications..." 
+                    value={details} 
+                    onChange={(e) => setDetails(e.target.value)}
+                    className="bg-muted/30 border-border rounded-lg min-h-[60px] text-[10px] focus:border-primary shadow-none resize-none"
+                  />
+                </CollapsibleContent>
+              </Collapsible>
             </div>
 
             <div className="grid grid-cols-2 gap-4 pt-6 border-t border-border">
@@ -426,9 +748,14 @@ export default function PrecisionCalculator() {
                   <span className="text-[7px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-1">
                     <History className="w-2.5 h-2.5" /> Instruction Registry (Last 50)
                   </span>
-                  <button onClick={downloadHistory} className="text-primary hover:text-primary/70 transition-colors">
-                    <Download className="w-3 h-3" />
-                  </button>
+                  <div className="flex gap-2">
+                    <button onClick={downloadHistory} className="text-primary hover:text-primary/70 transition-colors">
+                      <Download className="w-3 h-3" />
+                    </button>
+                    <button onClick={downloadPNGReport} disabled={isDownloading} className="text-accent hover:text-accent/70 transition-colors">
+                      <FileType className="w-3 h-3" />
+                    </button>
+                  </div>
                 </div>
                 <ScrollArea className="flex-grow w-full">
                   <div className="space-y-1 pr-3">
@@ -687,4 +1014,39 @@ function CalcButton({ children, onClick, className }: { children: React.ReactNod
       {children}
     </button>
   );
+}
+
+async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> {
+  const image = await createImage(imageSrc);
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  if (!ctx) return '';
+
+  canvas.width = pixelCrop.width;
+  canvas.height = pixelCrop.height;
+
+  ctx.drawImage(
+    image,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height
+  );
+
+  return canvas.toDataURL('image/png');
+}
+
+function createImage(url: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const image = new window.Image();
+    image.addEventListener('load', () => resolve(image));
+    image.addEventListener('error', (error) => reject(error));
+    image.setAttribute('crossOrigin', 'anonymous');
+    image.src = url;
+  });
 }

@@ -344,7 +344,7 @@ export default function DueDateCalculator() {
       link.click();
       toast({
         title: "Download Status",
-        description: "High-definition tactical audit generated successfully.",
+        description: "Full HD tactical report generated successfully.",
       });
     } catch (err) {
       console.error('Download failed', err);
@@ -387,7 +387,7 @@ export default function DueDateCalculator() {
                 <span className="text-black">CALCULATOR</span>
               </h2>
               <div className="flex items-center gap-2 mt-1">
-                <Image src="/camly.png" alt="Camly" width={18} height={18} className="object-contain" />
+                <Image src="/camly.png" alt="Camly" width={128} height={128} className="w-[18px] h-[18px] object-contain" />
                 <p className="text-[8px] font-black text-primary/80">calculator.camly.org</p>
                 <Separator orientation="vertical" className="h-2 bg-black/20" />
                 <p className="text-[7px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>

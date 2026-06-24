@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -168,7 +167,7 @@ export default function AttendanceCalculator() {
       link.click();
       toast({
         title: "Audit Exported",
-        description: "High-definition attendance report generated successfully.",
+        description: "Full HD attendance report generated successfully.",
       });
     } catch (err) {
       console.error('Download failed', err);
@@ -212,7 +211,7 @@ export default function AttendanceCalculator() {
                 <span className="text-black">CALCULATOR</span>
               </h2>
               <div className="flex items-center gap-2 mt-1">
-                <Image src="/camly.png" alt="Camly" width={18} height={18} className="object-contain" />
+                <Image src="/camly.png" alt="Camly" width={96} height={96} className="w-[18px] h-[18px] object-contain" />
                 <p className="text-[8px] font-black text-primary/80">calculator.camly.org</p>
                 <Separator orientation="vertical" className="h-2 bg-black/20" />
                 <p className="text-[7px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>

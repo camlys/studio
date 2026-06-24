@@ -239,6 +239,10 @@ function ChronoFlowContent() {
       link.download = fileName;
       link.href = dataUrl;
       link.click();
+      toast({
+        title: "Audit Exported",
+        description: "Full HD chronological report generated successfully.",
+      });
     } catch (err) {
       console.error('Download failed', err);
       toast({
@@ -318,7 +322,7 @@ function ChronoFlowContent() {
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[480px] bg-white text-black p-10 font-mono border-[6px] border-black relative overflow-hidden">
           <div className="flex items-center gap-6 mb-8 pb-6 border-b-2 border-black">
-            <Image src="/camly.png" alt="Camly" width={48} height={48} priority className="object-contain" />
+            <Image src="/camly.png" alt="Camly" width={128} height={128} priority className="w-12 h-12 object-contain" />
             <div className="flex flex-col">
               <h2 className="text-3xl font-black tracking-tighter uppercase font-roboto-slab leading-none">
                 <span className="text-primary">CAMLY</span>
@@ -728,7 +732,7 @@ function ChronoFlowContent() {
 
         <section className="mt-32 space-y-20">
           <div className="text-center space-y-4">
-            <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[10px] px-6 py-1.5 font-black">Architecture Whitepaper</Badge>
+            <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.3em] text-[10px] px-6 py-1.5 font-black">Architecture Whitepaper</Badge>
             <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-none">The Science of <span className="text-primary">Chronology</span></h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-medium">
               We define the global standard for high-fidelity chronological milestones through military-grade synchronization and clinical protocols.

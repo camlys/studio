@@ -11,9 +11,9 @@ import {
   Star, ArrowRight, Scale, HeartPulse, 
   Coins, Milestone, LayoutGrid, Download,
   Calculator as CalcIcon, CalendarDays, Copy,
-  ArrowUpRight, Target, BarChart3, Settings,
+  Target, BarChart3, Settings,
   FileType, GraduationCap, Wallet, UserCheck,
-  CheckCircle2, Clock, User, Camera, Upload, X, Shield,
+  CheckCircle2, Clock, User, Camera, X, Shield,
   Sparkles, Workflow, Pencil, ChevronDown
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -26,8 +26,7 @@ import {
   Dialog, 
   DialogContent, 
   DialogHeader, 
-  DialogTitle, 
-  DialogFooter 
+  DialogTitle 
 } from "@/components/ui/dialog";
 import {
   Collapsible,
@@ -275,15 +274,16 @@ function ChronoFlowContent() {
     { name: "Scientific Calculator", href: "/calculator" }
   ];
 
+  const isHumanAge = results && results.years <= 100;
+  const originLabel = isHumanAge ? "DATE OF BIRTH" : "ORIGIN POINT";
+  const targetLabel = isHumanAge ? "TODAY'S DATE" : "TARGET NODE";
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col transition-all duration-700 overflow-x-hidden font-body">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema) }} />
       
       <Dialog open={!!imageToCrop} onOpenChange={(open) => !open && setImageToCrop(null)}>
         <DialogContent className="sm:max-w-lg bg-transparent border-none shadow-none text-white overflow-hidden p-0 backdrop-blur-md">
-          <DialogHeader className="sr-only">
-            <DialogTitle>Frame Subject Photo</DialogTitle>
-          </DialogHeader>
           <div className="relative h-[450px] w-full bg-transparent rounded-3xl overflow-hidden border border-white/20">
             <Cropper
               image={imageToCrop || ''}
@@ -321,20 +321,20 @@ function ChronoFlowContent() {
       
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[480px] bg-white text-black p-10 font-mono border-[6px] border-black relative overflow-hidden">
-          <div className="flex items-center gap-6 mb-8 pb-6 border-b-2 border-black">
-            <Image src="/camly.png" alt="Camly" width={128} height={128} priority className="w-12 h-12 object-contain" />
-            <div className="flex flex-col">
-              <h2 className="text-3xl font-black tracking-tighter uppercase font-roboto-slab leading-none">
+          <div className="flex items-center gap-6 mb-10 pb-8 border-b-4 border-black">
+            <Image src="/camly.png" alt="Camly" width={128} height={128} priority className="w-14 h-14 object-contain shrink-0" />
+            <div className="flex flex-col flex-grow">
+              <h2 className="text-3xl font-black tracking-tighter uppercase font-roboto-slab leading-none whitespace-nowrap">
                 <span className="text-primary">CAMLY</span>
                 <span className="text-black ml-2">CALCULATOR</span>
               </h2>
-              <div className="flex items-center gap-2 mt-1">
-                <p className="text-[10px] font-black text-primary/80">calculator.camly.org</p>
-                <Separator orientation="vertical" className="h-2 bg-black/20" />
-                <p className="text-[8px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
+              <div className="flex items-center gap-2 mt-1.5">
+                <p className="text-[11px] font-black text-primary/80">calculator.camly.org</p>
+                <Separator orientation="vertical" className="h-2.5 bg-black/20" />
+                <p className="text-[9px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
               </div>
             </div>
-            <Badge variant="outline" className="ml-auto text-[7px] font-black uppercase tracking-widest border-black text-black px-2 h-5">VERIFIED UNIT</Badge>
+            <Badge variant="outline" className="shrink-0 ml-auto text-[8px] font-black uppercase tracking-widest border-black text-black px-2.5 py-1 whitespace-nowrap">VERIFIED UNIT</Badge>
           </div>
 
           <div className="grid grid-cols-[1fr_auto] gap-8 mb-10 items-center">
@@ -376,13 +376,13 @@ function ChronoFlowContent() {
           <div className="grid grid-cols-2 gap-8 mb-10 border-y-2 border-dashed border-black/20 py-8">
             <div className="space-y-2">
               <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                <Target className="w-3.5 h-3.5" /> Origin Point
+                <Target className="w-3.5 h-3.5" /> {originLabel}
               </span>
               <div className="text-xl font-black tabular-nums">{fromDate.day}-{fromDate.month}-{fromDate.year}</div>
             </div>
             <div className="space-y-2 text-right border-l-2 border-dashed border-black/10">
               <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center justify-end gap-2">
-                Target Node <Globe className="w-3.5 h-3.5" />
+                {targetLabel} <Globe className="w-3.5 h-3.5" />
               </span>
               <div className="text-xl font-black tabular-nums">{toDate.day}-{toDate.month}-{toDate.year}</div>
             </div>
@@ -513,7 +513,7 @@ function ChronoFlowContent() {
       </nav>
 
       <main className="flex-grow container max-w-6xl mx-auto px-4 py-6 md:py-12">
-        <div className="flex flex-col min-[480px]:flex-row items-start gap-6 md:gap-10">
+        <div className="flex flex-col min-[480px]:row items-start gap-6 md:gap-10">
           
           <aside className="w-full shrink-0 space-y-4 min-[480px]:w-[260px] md:w-[300px] lg:w-[340px] min-[480px]:sticky min-[480px]:top-24">
             <div className="glass-card !p-6 shadow-2xl transition-all duration-700 border-black dark:border-white border">
@@ -732,7 +732,7 @@ function ChronoFlowContent() {
 
         <section className="mt-32 space-y-20">
           <div className="text-center space-y-4">
-            <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.3em] text-[10px] px-6 py-1.5 font-black">Architecture Whitepaper</Badge>
+            <Badge variant="outline" className="border-primary/30 text-primary uppercase tracking-[0.4em] text-[10px] px-6 py-1.5 font-black">Architecture Whitepaper</Badge>
             <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-none">The Science of <span className="text-primary">Chronology</span></h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-medium">
               We define the global standard for high-fidelity chronological milestones through military-grade synchronization and clinical protocols.

@@ -372,7 +372,7 @@ export default function PrecisionCalculator() {
             </DialogTitle>
           </DialogHeader>
           
-          <div className="relative h-[320px] w-full bg-muted/20 rounded-2xl overflow-hidden border mt-4">
+          <div className="relative h-[320px] w-full bg-transparent rounded-2xl overflow-hidden border mt-4">
             <Cropper
               image={imageToCrop || ''}
               crop={crop}

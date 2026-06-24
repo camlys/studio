@@ -206,9 +206,9 @@ export default function EMICalculator() {
       {/* Hidden Receipt for HD Download */}
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[380px] bg-white text-black p-8 font-mono border-2 border-black">
-          <div className="flex items-center gap-4 mb-8 border-b-2 border-black/10 pb-6">
-            <Image src="/camly.png" alt="Camly" width={128} height={128} className="w-12 h-12 object-contain" />
-            <div className="flex flex-col justify-center">
+          <div className="flex items-center gap-6 mb-8 border-b-2 border-black/10 pb-6">
+            <Image src="/camly.png" alt="Camly" width={128} height={128} priority className="w-12 h-12 object-contain" />
+            <div className="flex flex-col">
               <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">Camly <span className="text-black">Calculator</span></h2>
               <p className="text-[9px] uppercase font-bold tracking-[0.2em] opacity-60 mt-1">Fiscal Audit Report</p>
               <p className="text-[10px] font-black mt-0.5 text-primary/80">calculator.camly.org</p>
@@ -287,24 +287,6 @@ export default function EMICalculator() {
                 <div className="flex justify-between py-1 border-b border-dashed border-black/10">
                    <span className="opacity-40 uppercase">Total Repayment</span>
                    <span className="text-primary">₹{Math.round(totalAmount).toLocaleString()}</span>
-                </div>
-             </div>
-
-             <div className="space-y-3">
-                <span className="text-[8px] font-black uppercase tracking-widest opacity-40 block mb-2">Exhaustive Amortization Schedule</span>
-                <div className="space-y-1 border border-black/5 rounded-lg overflow-hidden">
-                   <div className="grid grid-cols-3 gap-1 bg-black/5 p-2 text-[8px] font-black uppercase">
-                      <span>Month</span>
-                      <span className="text-right">Principal</span>
-                      <span className="text-right">Interest</span>
-                   </div>
-                   {getAmortizationSchedule().map((row) => (
-                      <div key={row.month} className="grid grid-cols-3 gap-1 p-2 text-[9px] font-bold border-b border-black/[0.02] last:border-0">
-                         <span className="opacity-60">{row.month}</span>
-                         <span className="text-right">₹{Math.round(parseFloat(row.principal)).toLocaleString()}</span>
-                         <span className="text-right text-accent">₹{Math.round(parseFloat(row.interest)).toLocaleString()}</span>
-                      </div>
-                   ))}
                 </div>
              </div>
           </div>

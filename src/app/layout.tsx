@@ -88,7 +88,7 @@ const organizationSchema = {
   "@type": "Organization",
   "name": "Camly Inc",
   "url": "https://camly.org",
-  "logo": "https://calculator.camly.org/logo.png",
+  "logo": "https://calculator.camly.org/camly.png",
   "sameAs": [
     "https://twitter.com/camly",
     "https://github.com/camly"

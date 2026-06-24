@@ -204,20 +204,20 @@ export default function AttendanceCalculator() {
       {/* Hidden Receipt for HD Download */}
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[380px] bg-white text-black p-8 font-mono border-2 border-black">
-          <div className="flex items-center justify-between mb-8 border-b-2 border-black pb-6">
+          <div className="flex items-center gap-6 mb-8 border-b-2 border-black pb-6">
+            <Image src="/camly.png" alt="Camly" width={128} height={128} priority className="w-12 h-12 object-contain" />
             <div className="flex flex-col">
-              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none flex items-center gap-2">
+              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none">
                 <span className="text-primary">CAMLY</span>
-                <span className="text-black">CALCULATOR</span>
+                <span className="text-black ml-2">CALCULATOR</span>
               </h2>
               <div className="flex items-center gap-2 mt-1">
-                <Image src="/camly.png" alt="Camly" width={96} height={96} className="w-[18px] h-[18px] object-contain" />
-                <p className="text-[8px] font-black text-primary/80">calculator.camly.org</p>
+                <p className="text-[10px] font-black text-primary/80">calculator.camly.org</p>
                 <Separator orientation="vertical" className="h-2 bg-black/20" />
-                <p className="text-[7px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
+                <p className="text-[8px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
               </div>
             </div>
-            <Badge variant="outline" className="text-[7px] font-black uppercase tracking-widest border-black text-black px-2 h-5">VERIFIED UNIT</Badge>
+            <Badge variant="outline" className="ml-auto text-[7px] font-black uppercase tracking-widest border-black text-black px-2 h-5">VERIFIED UNIT</Badge>
           </div>
 
           <div className="border-t border-b border-dashed border-black/20 py-4 my-6 space-y-2">

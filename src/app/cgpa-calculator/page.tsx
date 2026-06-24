@@ -249,13 +249,20 @@ export default function CGPACalculator() {
       {/* Hidden Receipt for HD Download */}
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[380px] bg-white text-black p-8 font-mono border-2 border-black">
-          <div className="flex items-center gap-4 mb-8 border-b-2 border-black/10 pb-6">
-            <Image src="/camly.png" alt="Camly" width={128} height={128} className="w-12 h-12 object-contain" />
+          <div className="flex items-center gap-6 mb-8 border-b-2 border-black/10 pb-6">
+            <Image src="/camly.png" alt="Camly" width={128} height={128} priority className="w-12 h-12 object-contain" />
             <div className="flex flex-col justify-center">
-              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">Camly <span className="text-black">Calculator</span></h2>
-              <p className="text-[9px] uppercase font-bold tracking-[0.2em] opacity-60 mt-1">Academic Audit Report</p>
-              <p className="text-[10px] font-black mt-0.5 text-primary/80">calculator.camly.org</p>
+              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none">
+                <span className="text-primary">CAMLY</span>
+                <span className="text-black ml-2">CALCULATOR</span>
+              </h2>
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-[10px] font-black text-primary/80">calculator.camly.org</p>
+                <Separator orientation="vertical" className="h-2 bg-black/20" />
+                <p className="text-[8px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
+              </div>
             </div>
+            <Badge variant="outline" className="ml-auto text-[7px] font-black uppercase tracking-widest border-black text-black px-2 h-5">VERIFIED UNIT</Badge>
           </div>
 
           <div className="border-t border-b border-dashed border-black/20 py-4 my-6 space-y-2">

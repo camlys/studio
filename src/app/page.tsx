@@ -71,7 +71,7 @@ const homeSchema = {
 function ChronoFlowContent() {
   const { toast } = useToast();
   const router = useRouter();
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [isDownloading, setIsDownloading] = useState(false);
   
   const [userName, setUserName] = useState('');
@@ -124,7 +124,7 @@ function ChronoFlowContent() {
     if (savedTheme) {
       setTheme(savedTheme);
     } else {
-      setTheme('dark');
+      setTheme('light');
     }
     
     setSyncId(Math.random().toString(36).substring(7).toUpperCase());
@@ -321,7 +321,7 @@ function ChronoFlowContent() {
       
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[480px] bg-white text-black p-10 font-mono border-[6px] border-black relative overflow-hidden">
-          <div className="flex items-center gap-6 mb-10 pb-8 border-b-4 border-black">
+          <div className="flex items-center gap-6 mb-10 pb-8 border-b-4 border-black pr-4">
             <Image src="/camly.png" alt="Camly" width={128} height={128} priority className="w-14 h-14 object-contain shrink-0" />
             <div className="flex flex-col flex-grow">
               <h2 className="text-3xl font-black tracking-tighter uppercase font-roboto-slab leading-none whitespace-nowrap">

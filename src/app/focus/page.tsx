@@ -40,7 +40,7 @@ const focusSchema = {
 
 function FocusPageContent() {
   const router = useRouter();
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [pomodoroSettings, setPomodoroSettings] = useState<PomodoroSettings | null>(null);
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -50,7 +50,7 @@ function FocusPageContent() {
     if (savedTheme) {
       setTheme(savedTheme);
     } else {
-      setTheme('dark');
+      setTheme('light');
     }
   }, []);
 

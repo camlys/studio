@@ -11,13 +11,15 @@ import {
   Settings, Target, Network, Server,
   Compass, FlaskConical, BarChart3, ChevronRight, ExternalLink,
   LayoutGrid, Calculator as CalcIcon, CalendarDays, FileType, Github, Twitter,
-  GraduationCap, Copy, Download, Pencil, User, ChevronDown, Camera, X, Shield, UserCheck, CheckCircle2
+  GraduationCap, Copy, Download, Pencil, User, ChevronDown, Camera, X, Shield, UserCheck, CheckCircle2,
+  Workflow
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { 
   Dialog, 
@@ -840,7 +842,7 @@ export default function PrecisionCalculator() {
                 </div>
                 <h3 className="text-2xl font-black mb-4 tracking-tight">Error Mitigation</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed opacity-80">
-                  Real-time validation of mathematical inputs prevents overflows and handles edge-case transcendental discontinuities.
+                  Real-time validation of mathematical and biological inputs prevents overflows and handles edge-case transcendental discontinuities.
                 </p>
               </div>
               <div className="glass-card !p-10 hover:translate-y-[-8px] transition-all group hover:border-primary/40">

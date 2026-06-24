@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -355,7 +356,13 @@ export default function DueDateCalculator() {
   };
 
   useEffect(() => {
-    calculateDueDate();
+    // Only auto-compute when the year is completely entered (4 digits)
+    if (startValues.year.length === 4) {
+      calculateDueDate();
+    } else {
+      setResult(null);
+      setStats(null);
+    }
   }, [startValues, duration, unit, method, cycleCount, ivfType, crlValue]);
 
   return (
@@ -372,12 +379,18 @@ export default function DueDateCalculator() {
       {/* Hidden Receipt for Download */}
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[380px] bg-white text-black p-8 font-mono border-2 border-black">
-          <div className="flex items-center gap-4 mb-8 border-b-2 border-black/10 pb-6">
-            <Image src="/camly.png" alt="Camly" width={54} height={54} className="object-contain" />
-            <div className="flex flex-col justify-center">
-              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none text-primary">Camly <span className="text-black">Calculator</span></h2>
-              <p className="text-[9px] uppercase font-bold tracking-[0.2em] opacity-60 mt-1">Tactical Audit Report</p>
-              <p className="text-[10px] font-black mt-0.5 text-primary/80">calculator.camly.org</p>
+          <div className="flex items-center gap-6 mb-8 pb-6 border-b-2 border-black">
+            <Image src="/camly.png" alt="Camly" width={48} height={48} priority className="object-contain" />
+            <div className="flex flex-col">
+              <h2 className="text-2xl font-black tracking-tighter uppercase font-roboto-slab leading-none">
+                <span className="text-primary">CAMLY</span>
+                <span className="text-black ml-2">CALCULATOR</span>
+              </h2>
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-[10px] font-black text-primary/80">calculator.camly.org</p>
+                <Separator orientation="vertical" className="h-2 bg-black/20" />
+                <p className="text-[8px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
+              </div>
             </div>
           </div>
 
@@ -808,9 +821,10 @@ export default function DueDateCalculator() {
 
                 <div className="flex flex-col gap-5">
                   <Button 
+                    variant="outline" 
+                    className="rounded-xl h-12 bg-foreground text-background font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-xl hover:scale-[1.02] transition-all group gap-3 border-black border-2" 
                     onClick={downloadReport} 
                     disabled={isDownloading}
-                    className="w-full h-12 bg-foreground text-background font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-xl hover:scale-[1.02] transition-all group gap-3 border-black border-2"
                   >
                     <Download className={cn("w-4 h-4", isDownloading && "animate-bounce")} />
                     {isDownloading ? 'Capturing Report...' : 'Download Detailed PNG'}
@@ -1016,7 +1030,7 @@ export default function DueDateCalculator() {
                   <div className="w-2 h-2 rounded-full animate-pulse bg-accent" />
                   CAMLY-SYNC-01: ONLINE
                 </div>
-                <InstallPWA />
+                <InstallPWA variant="footer" />
               </div>
             </div>
           </div>

@@ -209,6 +209,16 @@ function ChronoFlowContent() {
     setResults(calculateAll(start, end));
   }, [fromDate, toDate]);
 
+  // Auto-calculation on entering 4 digits for the year
+  useEffect(() => {
+    if (fromDate.year.length === 4 && toDate.year.length === 4) {
+      if (isValidDate(fromDate.day, fromDate.month, fromDate.year) && 
+          isValidDate(toDate.day, toDate.month, toDate.year)) {
+        handleCalculate();
+      }
+    }
+  }, [fromDate.year, fromDate.month, fromDate.day, toDate.year, toDate.month, toDate.day, handleCalculate]);
+
   const downloadResults = async () => {
     if (!receiptRef.current) return;
     setIsDownloading(true);
@@ -312,22 +322,20 @@ function ChronoFlowContent() {
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[480px] bg-white text-black p-10 font-mono border-[6px] border-black relative overflow-hidden">
           {/* Header Branding - Horizontal Alignment */}
-          <div className="flex items-center justify-between mb-8 pb-6 border-b-2 border-black">
-            <div className="flex items-center gap-4">
-              <div className="flex flex-col">
-                <h2 className="text-3xl font-black tracking-tighter uppercase font-roboto-slab leading-none flex items-center gap-2">
-                  <span className="text-primary">CAMLY</span>
-                  <span className="text-black">CALCULATOR</span>
-                </h2>
-                <div className="flex items-center gap-2 mt-1">
-                  <Image src="/camly.png" alt="Camly" width={20} height={20} className="object-contain" />
-                  <p className="text-[10px] font-black text-primary/80">calculator.camly.org</p>
-                  <Separator orientation="vertical" className="h-2 bg-black/20" />
-                  <p className="text-[8px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
-                </div>
+          <div className="flex items-center gap-6 mb-8 pb-6 border-b-2 border-black">
+            <Image src="/camly.png" alt="Camly" width={48} height={48} priority className="object-contain" />
+            <div className="flex flex-col">
+              <h2 className="text-3xl font-black tracking-tighter uppercase font-roboto-slab leading-none">
+                <span className="text-primary">CAMLY</span>
+                <span className="text-black ml-2">CALCULATOR</span>
+              </h2>
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-[10px] font-black text-primary/80">calculator.camly.org</p>
+                <Separator orientation="vertical" className="h-2 bg-black/20" />
+                <p className="text-[8px] font-bold text-black/40 uppercase tracking-widest">camly.org</p>
               </div>
             </div>
-            <Badge variant="outline" className="text-[7px] font-black uppercase tracking-widest border-black text-black px-2 h-5">VERIFIED UNIT</Badge>
+            <Badge variant="outline" className="ml-auto text-[7px] font-black uppercase tracking-widest border-black text-black px-2 h-5">VERIFIED UNIT</Badge>
           </div>
 
           {/* Subject Profile Section */}
@@ -532,11 +540,11 @@ function ChronoFlowContent() {
 
                 <TabsContent value="age" className="space-y-4 mt-0">
                   
-                  {/* Toolbelt: Identity Left, Details Right */}
+                  {/* Toolbelt Triggers: User left, Pencil right */}
                   <div className="flex items-center justify-between px-1 mb-2">
                     <Collapsible open={isIdentityOpen} onOpenChange={setIsIdentityOpen}>
                       <CollapsibleTrigger asChild>
-                        <button className="flex items-center gap-1.5 text-primary/60 hover:text-primary transition-colors group">
+                        <button className="flex items-center gap-1 text-primary/60 hover:text-primary transition-colors group">
                           <User className="w-4 h-4" /> 
                           <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", isIdentityOpen && "rotate-180")} />
                         </button>
@@ -545,7 +553,7 @@ function ChronoFlowContent() {
 
                     <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
                       <CollapsibleTrigger asChild>
-                        <button className="flex items-center gap-1.5 text-primary/60 hover:text-primary transition-colors group">
+                        <button className="flex items-center gap-1 text-primary/60 hover:text-primary transition-colors group">
                           <Pencil className="w-4 h-4" /> 
                           <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", isDetailsOpen && "rotate-180")} />
                         </button>
@@ -590,7 +598,7 @@ function ChronoFlowContent() {
                   <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen} className="space-y-3">
                     <CollapsibleContent className="space-y-2 pt-1 border-t border-border/10">
                       <Textarea 
-                        placeholder="Enter tactical details..." 
+                        placeholder="Enter strategic specifications..." 
                         value={details} 
                         onChange={(e) => setDetails(e.target.value)}
                         className="bg-white/5 border border-black dark:border-white rounded-none min-h-[60px] text-[10px] focus:border-primary shadow-none resize-none"

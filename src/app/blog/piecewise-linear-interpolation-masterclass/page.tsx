@@ -137,7 +137,7 @@ export default function PiecewiseInterpolationMasterclass() {
               <Terminal className="w-4 h-4" /> Technical Specification: Linear Mapping
             </h4>
             <p className="text-lg italic leading-relaxed text-foreground/80">
-              "The Piecewise Mapping algorithm operates on a slope-intercept protocol. If x is the input grade and i is the segment index, then f(x) = m_i * (x - x_i) + y_i. To master the system, one must ensure continuity at every knot where x_i connects to x_{i+1}."
+              "The Piecewise Mapping algorithm operates on a slope-intercept protocol. If x is the input grade and i is the segment index, then f(x) = m_i * (x - x_i) + y_i. To master the system, one must ensure continuity at every knot where x_i connects to x_&#123;i+1&#125;."
             </p>
           </div>
 

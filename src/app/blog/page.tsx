@@ -48,6 +48,15 @@ const BLOG_POSTS = [
     category: "SEO Whitepaper"
   },
   {
+    title: "Clinical Search Dominance: Optimizing Gestational Due Date Engines",
+    description: "The definitive technical whitepaper on optimizing due date calculators for maximum organic authority, featuring maternity keyword clustering and healthcare schema synchronization.",
+    date: "March 02, 2025",
+    author: "Search Intelligence Unit",
+    readTime: "8 hour read",
+    slug: "/blog/seo-due-date-calculator-masterclass",
+    category: "SEO Whitepaper"
+  },
+  {
     title: "The Geometry of User Intent: High-Fidelity Pathfinding in Advanced Utility Suites",
     description: "An exhaustive technical whitepaper exploring the mathematics of user journey mapping, intent-based UI synchronization, and high-fidelity navigational architecture.",
     date: "June 25, 2025",
@@ -91,15 +100,6 @@ const BLOG_POSTS = [
     readTime: "400 min read",
     slug: "/blog/science-of-temporal-drift",
     category: "Chronological Science"
-  },
-  {
-    title: "Clinical Search Dominance: Optimizing Gestational Due Date Engines",
-    description: "The definitive technical whitepaper on optimizing due date calculators for maximum organic authority, featuring maternity keyword clustering and healthcare schema synchronization.",
-    date: "March 02, 2025",
-    author: "Search Intelligence Unit",
-    readTime: "8 hour read",
-    slug: "/blog/seo-due-date-calculator-masterclass",
-    category: "SEO Whitepaper"
   },
   {
     title: "Biometric Authority: The Enterprise Guide to BMI Calculator SEO",

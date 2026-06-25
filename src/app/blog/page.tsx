@@ -12,6 +12,15 @@ import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const BLOG_POSTS = [
   {
+    title: "The Masterclass on Quantitative Academic Performance: The Science of Weighted GPA Inferences",
+    description: "An exhaustive technical whitepaper exploring the mathematics of weighted averages, credit density, and global scholastic grade synchronization.",
+    date: "July 05, 2025",
+    author: "Academic Intelligence Unit",
+    readTime: "8 hour read",
+    slug: "/blog/quantitative-academic-performance-masterclass",
+    category: "Academic Science"
+  },
+  {
     title: "Monetizing Financial Search: The Equated Monthly Installment SEO Audit",
     description: "The definitive technical whitepaper on optimizing EMI calculators for maximum organic authority, featuring fiscal keyword clustering and financial schema synchronization.",
     date: "March 05, 2025",

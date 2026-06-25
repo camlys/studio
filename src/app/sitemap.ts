@@ -4,6 +4,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://calculator.camly.org';
   
   const blogPosts = [
+    'atmospheric-ui-ux-masterclass',
     'quantitative-academic-performance-masterclass',
     'ultimate-emi-seo-masterclass',
     'geometry-of-user-intent-masterclass',

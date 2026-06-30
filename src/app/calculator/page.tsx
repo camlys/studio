@@ -318,6 +318,7 @@ export default function PrecisionCalculator() {
     link.href = url;
     link.download = `Camly_Instruction_Registry_${format(new Date(), 'yyyyMMdd_HHmm')}.txt`;
     document.body.appendChild(link);
+    link.href = url;
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
@@ -536,7 +537,7 @@ export default function PrecisionCalculator() {
           {details && (
             <div className="mb-10 p-6 bg-black/5 rounded-3xl border border-black/10">
               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary block mb-3 flex items-center gap-2">
-                <Pencil className="w-3 h-3" /> Audit Specifications
+                <Pencil className="w-3" /> Audit Specifications
               </span>
               <p className="text-[11px] font-medium leading-relaxed whitespace-pre-wrap">{details}</p>
             </div>
@@ -1076,21 +1077,24 @@ async function getCroppedImg(image: HTMLImageElement, pixelCrop: PixelCrop): Pro
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
 
-  if (!ctx) return '';
+  if (!ctx || !pixelCrop) return '';
 
-  canvas.width = pixelCrop.width;
-  canvas.height = pixelCrop.height;
+  const scaleX = image.naturalWidth / image.width;
+  const scaleY = image.naturalHeight / image.height;
+
+  canvas.width = pixelCrop.width * scaleX;
+  canvas.height = pixelCrop.height * scaleY;
 
   ctx.drawImage(
     image,
-    pixelCrop.x,
-    pixelCrop.y,
-    pixelCrop.width,
-    pixelCrop.height,
+    pixelCrop.x * scaleX,
+    pixelCrop.y * scaleY,
+    pixelCrop.width * scaleX,
+    pixelCrop.height * scaleY,
     0,
     0,
-    pixelCrop.width,
-    pixelCrop.height
+    pixelCrop.width * scaleX,
+    pixelCrop.height * scaleY
   );
 
   return canvas.toDataURL('image/png');

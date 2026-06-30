@@ -923,21 +923,24 @@ async function getCroppedImg(image: HTMLImageElement, pixelCrop: PixelCrop): Pro
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
 
-  if (!ctx) return '';
+  if (!ctx || !pixelCrop) return '';
 
-  canvas.width = pixelCrop.width;
-  canvas.height = pixelCrop.height;
+  const scaleX = image.naturalWidth / image.width;
+  const scaleY = image.naturalHeight / image.height;
+
+  canvas.width = pixelCrop.width * scaleX;
+  canvas.height = pixelCrop.height * scaleY;
 
   ctx.drawImage(
     image,
-    pixelCrop.x,
-    pixelCrop.y,
-    pixelCrop.width,
-    pixelCrop.height,
+    pixelCrop.x * scaleX,
+    pixelCrop.y * scaleY,
+    pixelCrop.width * scaleX,
+    pixelCrop.height * scaleY,
     0,
     0,
-    pixelCrop.width,
-    pixelCrop.height
+    pixelCrop.width * scaleX,
+    pixelCrop.height * scaleY
   );
 
   return canvas.toDataURL('image/png');

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -11,6 +12,15 @@ import { Separator } from "@/components/ui/separator";
 import { InstallPWA } from '@/components/chrono/InstallPWA';
 
 const BLOG_POSTS = [
+  {
+    title: "The Physics of Digital Precision: Mastering IEEE 754 in High-Velocity Web Environments",
+    description: "An exhaustive technical whitepaper exploring the physics of binary precision, floating-point entropy, and high-fidelity mathematical modeling in web-based engines.",
+    date: "June 10, 2025",
+    author: "ALU Intelligence Division",
+    readTime: "420 min read",
+    slug: "/blog/physics-of-digital-precision-masterclass",
+    category: "Computational Science"
+  },
   {
     title: "The Masterclass on Piecewise Linear Interpolation: The Mathematics of Cross-Standard Grade Translations",
     description: "An exhaustive technical whitepaper exploring the mathematical logic of mapping non-linear grading scales across international academic standards using piecewise linear models.",
@@ -39,21 +49,21 @@ const BLOG_POSTS = [
     category: "Academic Science"
   },
   {
-    title: "Monetizing Financial Search: The Equated Monthly Installment SEO Audit",
-    description: "The definitive technical whitepaper on optimizing EMI calculators for maximum organic authority, featuring fiscal keyword clustering and financial schema synchronization.",
-    date: "March 05, 2025",
-    author: "Search Intelligence Unit",
-    readTime: "8 hour read",
-    slug: "/blog/ultimate-emi-seo-masterclass",
-    category: "SEO Whitepaper"
-  },
-  {
     title: "Clinical Search Dominance: Optimizing Gestational Due Date Engines",
     description: "The definitive technical whitepaper on optimizing due date calculators for maximum organic authority, featuring maternity keyword clustering and healthcare schema synchronization.",
     date: "March 02, 2025",
     author: "Search Intelligence Unit",
     readTime: "8 hour read",
     slug: "/blog/seo-due-date-calculator-masterclass",
+    category: "SEO Whitepaper"
+  },
+  {
+    title: "Monetizing Financial Search: The Equated Monthly Installment SEO Audit",
+    description: "The definitive technical whitepaper on optimizing EMI calculators for maximum organic authority, featuring fiscal keyword clustering and financial schema synchronization.",
+    date: "March 05, 2025",
+    author: "Search Intelligence Unit",
+    readTime: "8 hour read",
+    slug: "/blog/ultimate-emi-seo-masterclass",
     category: "SEO Whitepaper"
   },
   {
@@ -64,15 +74,6 @@ const BLOG_POSTS = [
     readTime: "10 hour read",
     slug: "/blog/geometry-of-user-intent-masterclass",
     category: "Productivity Science"
-  },
-  {
-    title: "The Physics of Digital Precision: Mastering IEEE 754 in High-Velocity Web Environments",
-    description: "An exhaustive technical whitepaper exploring the physics of binary precision, floating-point entropy, and high-fidelity mathematical modeling in web-based engines.",
-    date: "June 10, 2025",
-    author: "ALU Intelligence Division",
-    readTime: "420 min read",
-    slug: "/blog/physics-of-digital-precision-masterclass",
-    category: "Computational Science"
   },
   {
     title: "The Masterclass on High-Definition Resource Allocation: The Science of Computational Fluidity",

@@ -1,16 +1,17 @@
+
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://calculator.camly.org';
   
   const blogPosts = [
-    'seo-due-date-calculator-masterclass',
+    'physics-of-digital-precision-masterclass',
     'piecewise-linear-interpolation-masterclass',
     'atmospheric-ui-ux-masterclass',
     'quantitative-academic-performance-masterclass',
+    'seo-due-date-calculator-masterclass',
     'ultimate-emi-seo-masterclass',
     'geometry-of-user-intent-masterclass',
-    'physics-of-digital-precision-masterclass',
     'computational-resource-allocation-masterclass',
     'arithmetic-logic-unit-optimization',
     'science-of-temporal-drift',

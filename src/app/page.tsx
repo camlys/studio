@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
@@ -925,22 +926,33 @@ async function getCroppedImg(image: HTMLImageElement, pixelCrop: PixelCrop): Pro
 
   if (!ctx || !pixelCrop) return '';
 
-  const scaleX = image.naturalWidth / image.width;
-  const scaleY = image.naturalHeight / image.height;
+  // Use natural resolution for maximum fidelity
+  const scaleX = image.naturalWidth / image.clientWidth;
+  const scaleY = image.naturalHeight / image.clientHeight;
 
-  canvas.width = pixelCrop.width * scaleX;
-  canvas.height = pixelCrop.height * scaleY;
+  // Calculate pixel-perfect integer coordinates
+  const sourceX = Math.floor(pixelCrop.x * scaleX);
+  const sourceY = Math.floor(pixelCrop.y * scaleY);
+  const sourceWidth = Math.floor(pixelCrop.width * scaleX);
+  const sourceHeight = Math.floor(pixelCrop.height * scaleY);
+
+  canvas.width = sourceWidth;
+  canvas.height = sourceHeight;
+
+  // Render with high-quality settings
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
 
   ctx.drawImage(
     image,
-    pixelCrop.x * scaleX,
-    pixelCrop.y * scaleY,
-    pixelCrop.width * scaleX,
-    pixelCrop.height * scaleY,
+    sourceX,
+    sourceY,
+    sourceWidth,
+    sourceHeight,
     0,
     0,
-    pixelCrop.width * scaleX,
-    pixelCrop.height * scaleY
+    sourceWidth,
+    sourceHeight
   );
 
   return canvas.toDataURL('image/png');

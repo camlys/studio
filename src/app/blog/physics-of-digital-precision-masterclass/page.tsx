@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -137,7 +138,7 @@ export default function PhysicsOfPrecisionMasterclass() {
               <Terminal className="w-4 h-4" /> Technical Specification: Precision Parity
             </h4>
             <p className="text-lg italic leading-relaxed text-foreground/80">
-              "The Precision Parity algorithm operates on a mantissa-alignment protocol. If ε is the machine epsilon, then the cumulative error E = Σ(δi) * ε. To master the system, one must keep E within sub-atomic tolerances across the entire lifecycle."
+              "The Precision Parity algorithm operates on a mantissa-alignment protocol. If &epsilon; is the machine epsilon, then the cumulative error E = &Sigma;(&delta;i) * &epsilon;. To master the system, one must keep E within sub-atomic tolerances across the entire lifecycle."
             </p>
           </div>
 

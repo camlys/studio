@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -15,7 +16,7 @@ export function ResultCard({ label, value, subLabel, className, delay }: ResultC
   return (
     <div 
       className={cn(
-        "glass p-4 rounded-2xl flex flex-col items-center justify-center text-center animate-fade-in-up border-black dark:border-white/20 shadow-lg",
+        "glass p-4 rounded-2xl flex flex-col items-center justify-center text-center animate-fade-in-up border border-black dark:border-white/20 shadow-lg",
         className
       )}
       style={{ animationDelay: delay }}

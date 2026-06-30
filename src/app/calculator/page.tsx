@@ -32,7 +32,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import Cropper from 'react-easy-crop';
+import ReactCrop, { centerCrop, makeAspectCrop, Crop, PixelCrop } from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 import { InstallPWA } from '@/components/chrono/InstallPWA';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
@@ -97,9 +98,10 @@ export default function PrecisionCalculator() {
 
   // Cropper states
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [crop, setCrop] = useState<Crop>();
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+  const [aspect, setAspect] = useState<number | undefined>(1);
+  const imgRef = useRef<HTMLImageElement>(null);
 
   // Persistence: Load
   useEffect(() => {
@@ -144,9 +146,23 @@ export default function PrecisionCalculator() {
     return () => clearInterval(interval);
   }, []);
 
-  const onCropComplete = useCallback((_: any, croppedAreaPixels: any) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
+  function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
+    const { width, height } = e.currentTarget;
+    const initialCrop = centerCrop(
+      makeAspectCrop(
+        {
+          unit: '%',
+          width: 90,
+        },
+        aspect || 1,
+        width,
+        height
+      ),
+      width,
+      height
+    );
+    setCrop(initialCrop);
+  }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -160,16 +176,18 @@ export default function PrecisionCalculator() {
   };
 
   const createCroppedImage = async () => {
-    try {
-      const croppedImage = await getCroppedImg(imageToCrop!, croppedAreaPixels);
-      setSubjectImage(croppedImage);
-      setImageToCrop(null);
-      toast({
-        title: "Photo Framed",
-        description: "Subject identity synchronized with local registry.",
-      });
-    } catch (e) {
-      console.error(e);
+    if (imgRef.current && completedCrop) {
+      try {
+        const croppedImage = await getCroppedImg(imgRef.current, completedCrop);
+        setSubjectImage(croppedImage);
+        setImageToCrop(null);
+        toast({
+          title: "Photo Framed",
+          description: "Subject identity synchronized with local registry.",
+        });
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
 
@@ -365,49 +383,79 @@ export default function PrecisionCalculator() {
       />
 
       <Dialog open={!!imageToCrop} onOpenChange={(open) => !open && setImageToCrop(null)}>
-        <DialogContent className="sm:max-w-lg bg-background border border-border shadow-2xl p-6 rounded-[2rem]">
+        <DialogContent className="sm:max-w-xl bg-background border border-border shadow-2xl p-6 rounded-[2rem]">
           <DialogHeader>
             <DialogTitle className="text-center text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground pb-4 border-b">
               Identity Frame Selection
             </DialogTitle>
           </DialogHeader>
           
-          <div className="relative h-[320px] w-full bg-transparent rounded-2xl overflow-hidden border mt-4">
-            <Cropper
-              image={imageToCrop || ''}
-              crop={crop}
-              zoom={zoom}
-              aspect={1}
-              onCropChange={setCrop}
-              onZoomChange={setZoom}
-              onCropComplete={onCropComplete}
-              showGrid={true}
-            />
+          <div className="relative h-[480px] w-full bg-transparent rounded-2xl overflow-hidden border mt-4 flex items-center justify-center">
+            {imageToCrop && (
+              <ReactCrop
+                crop={crop}
+                onChange={(c) => setCrop(c)}
+                onComplete={(c) => setCompletedCrop(c)}
+                aspect={aspect}
+                className="max-h-full"
+              >
+                <img
+                  ref={imgRef}
+                  alt="Crop box"
+                  src={imageToCrop}
+                  onLoad={onImageLoad}
+                  style={{ maxHeight: '480px' }}
+                />
+              </ReactCrop>
+            )}
           </div>
 
-          <div className="mt-6 flex flex-row gap-3 justify-center items-center pb-2">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => setImageToCrop(null)} 
-              className="text-[10px] font-black uppercase tracking-widest border border-border rounded-xl h-11 px-8"
-            >
-              Cancel
-            </Button>
-            <Button 
-              size="sm" 
-              onClick={createCroppedImage} 
-              className="bg-primary text-white hover:bg-primary/90 text-[10px] font-black uppercase tracking-widest px-12 rounded-xl h-11 border-2 border-black/10 shadow-xl"
-            >
-              Confirm Identity
-            </Button>
+          <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center items-center pb-2">
+            <div className="flex gap-2 mb-2 sm:mb-0">
+               {[1, 4/3, 3/4].map((a) => (
+                 <Button 
+                   key={a}
+                   variant="outline" 
+                   size="sm" 
+                   onClick={() => setAspect(a)}
+                   className={cn("text-[8px] font-black uppercase h-8 w-12", aspect === a && "border-primary text-primary")}
+                 >
+                   {a === 1 ? "1:1" : a > 1 ? "4:3" : "3:4"}
+                 </Button>
+               ))}
+               <Button 
+                 variant="outline" 
+                 size="sm" 
+                 onClick={() => setAspect(undefined)}
+                 className={cn("text-[8px] font-black uppercase h-8 w-14", aspect === undefined && "border-primary text-primary")}
+               >
+                 FREE
+               </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setImageToCrop(null)} 
+                className="text-[10px] font-black uppercase tracking-widest border border-border rounded-xl h-10 px-6"
+              >
+                Cancel
+              </Button>
+              <Button 
+                size="sm" 
+                onClick={createCroppedImage} 
+                className="bg-primary text-white hover:bg-primary/90 text-[10px] font-black uppercase tracking-widest px-10 rounded-xl h-10 border-2 border-black/10 shadow-xl"
+              >
+                Confirm
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
 
       <div className="fixed -left-[2000px] top-0 pointer-events-none">
         <div ref={receiptRef} className="w-[480px] bg-white text-black p-10 font-mono border-[6px] border-black relative overflow-hidden">
-          <div className="flex items-center justify-between mb-10 pb-8 border-b-4 border-black pr-10">
+          <div className="flex items-center justify-between mb-10 pb-8 border-b-4 border-black pr-12">
             <div className="flex items-center gap-4">
               <Image src="/camly.png" alt="Camly" width={128} height={128} priority className="w-14 h-14 object-contain shrink-0" />
               <div className="flex flex-col">
@@ -1024,8 +1072,7 @@ function CalcButton({ children, onClick, className }: { children: React.ReactNod
   );
 }
 
-async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> {
-  const image = await createImage(imageSrc);
+async function getCroppedImg(image: HTMLImageElement, pixelCrop: PixelCrop): Promise<string> {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
 
@@ -1047,14 +1094,4 @@ async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> 
   );
 
   return canvas.toDataURL('image/png');
-}
-
-function createImage(url: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const image = new window.Image();
-    image.addEventListener('load', () => resolve(image));
-    image.addEventListener('error', (error) => reject(error));
-    image.setAttribute('crossOrigin', 'anonymous');
-    image.src = url;
-  });
 }

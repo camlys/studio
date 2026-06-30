@@ -10,8 +10,8 @@ import { Separator } from "@/components/ui/separator";
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "The 8000-Word Masterclass on SEO Precision and Performance Velocity: The Science of Search Index Synchronization",
-  "image": "https://picsum.photos/seed/seo-master/1200/630",
+  "headline": "Technical SEO Velocity: Achieving Absolute Index Parity and Precision",
+  "image": "https://picsum.photos/seed/seo-precision/1200/630",
   "author": {
     "@type": "Organization",
     "name": "Search Intelligence Unit"
@@ -61,7 +61,7 @@ export default function SEOPrecisionMasterclass() {
             <Badge variant="outline" className="font-black text-[9px] tracking-widest uppercase">8,000-Word Technical Whitepaper</Badge>
           </div>
           <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-[0.9] md:leading-[0.85] mb-8">
-            The Science of <span className="text-primary">SEO</span> Precision
+            Technical <span className="text-primary">SEO</span> Velocity
           </h1>
           <p className="text-xl md:text-3xl text-muted-foreground leading-relaxed italic border-l-8 border-primary/30 pl-8 py-6 max-w-4xl mx-auto lg:mx-0">
             "Organic visibility is not a chance occurrence; it is a vector of technical precision distributed across high-fidelity search nodes."
